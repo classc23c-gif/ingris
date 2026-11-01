@@ -1,1773 +1,804 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tangkap Kata Jawaban! — IPAS Kelas VI: Rotasi Bumi</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Fredoka & Nunito for child-friendly adventure typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <!-- MediaPipe Hands & Drawing Utils CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-
-    <style>
-        :root {
-            --font-heading: 'Fredoka', sans-serif;
-            --font-body: 'Nunito', sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        body {
-            font-family: var(--font-body);
-            overflow: hidden;
-            background: #0f172a;
-            touch-action: none;
-        }
-
-        h1, h2, h3, .font-heading {
-            font-family: var(--font-heading);
-        }
-
-        /* Animated Day/Night Space Sky Background */
-        .space-bg {
-            background: linear-gradient(135deg, #0b132b 0%, #1c2541 35%, #3a506b 70%, #1e3a8a 100%);
-            position: relative;
-        }
-
-        /* Twinkling Stars Animation */
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.25; transform: scale(0.85); }
-            50% { opacity: 1; transform: scale(1.15); }
-        }
-
-        .star-dot {
-            position: absolute;
-            border-radius: 9999px;
-            background: white;
-            pointer-events: none;
-            animation: twinkle var(--duration, 3s) ease-in-out infinite;
-            animation-delay: var(--delay, 0s);
-        }
-
-        /* Rotating Earth & Sun decorative elements */
-        @keyframes spinSlow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes floatGentle {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
-        }
-
-        .spin-slow {
-            animation: spinSlow 45s linear infinite;
-        }
-
-        .float-gentle {
-            animation: floatGentle 4s ease-in-out infinite;
-        }
-
-        /* Answer Bubble Styling */
-        .answer-bubble {
-            position: absolute;
-            left: 0;
-            top: 0;
-            will-change: transform;
-            transition: box-shadow 0.2s ease, filter 0.2s ease;
-            cursor: pointer;
-            touch-action: none;
-        }
-
-        .answer-bubble-inner {
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
-        }
-
-        .answer-bubble.hovering .answer-bubble-inner {
-            transform: scale(1.08);
-            box-shadow: 0 0 30px rgba(250, 204, 21, 0.85), inset 0 0 15px rgba(255, 255, 255, 0.5);
-        }
-
-        .answer-bubble.wrong-shake .answer-bubble-inner {
-            animation: shakeBubble 0.55s cubic-bezier(.36,.07,.19,.97) both;
-        }
-
-        .answer-bubble.correct-pop .answer-bubble-inner {
-            animation: popSuccess 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        @keyframes shakeBubble {
-            10%, 90% { transform: translate3d(-6px, 0, 0) rotate(-2deg); }
-            20%, 80% { transform: translate3d(8px, 0, 0) rotate(2deg); }
-            30%, 50%, 70% { transform: translate3d(-10px, 0, 0) rotate(-3deg); }
-            40%, 60% { transform: translate3d(10px, 0, 0) rotate(3deg); }
-        }
-
-        @keyframes popSuccess {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.22); box-shadow: 0 0 50px #4ade80; }
-            100% { transform: scale(1.12); box-shadow: 0 0 35px #22c55e; }
-        }
-
-        /* 3D Glossy Game Buttons */
-        .btn-game {
-            transition: all 0.15s ease;
-            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.28), 0 10px 20px rgba(0,0,0,0.25);
-        }
-        .btn-game:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.28), 0 14px 24px rgba(0,0,0,0.3);
-        }
-        .btn-game:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28), 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        /* Virtual Hand Catcher Cursor */
-        #hand-cursor {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 84px;
-            height: 84px;
-            margin-left: -42px;
-            margin-top: -42px;
-            pointer-events: none;
-            z-index: 60;
-            will-change: transform;
-            transition: opacity 0.2s ease;
-        }
-
-        /* Mirror webcam video & landmarks so hand movement matches screen left/right naturally */
-        .mirror-view {
-            transform: scaleX(-1);
-        }
-
-        /* Custom Scrollbar for modals */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.4);
-            border-radius: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(96, 165, 250, 0.6);
-            border-radius: 8px;
-        }
-    </style>
-</head>
-<body class="space-bg w-screen h-screen flex flex-col justify-between relative overflow-hidden text-white">
-
-    <!-- ==================== DECORATIVE BACKGROUND LAYER ==================== -->
-    <div id="stars-container" class="fixed inset-0 pointer-events-none z-0"></div>
-
-    <!-- Decorative Sun (Day Side) & Earth/Moon (Night Side) -->
-    <div class="fixed -top-16 -left-16 w-56 h-56 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 opacity-25 blur-2xl pointer-events-none z-0"></div>
-    <div class="fixed top-12 left-8 pointer-events-none z-0 opacity-25 hidden lg:block">
-        <!-- Stylized Sun SVG -->
-        <svg class="w-28 h-28 spin-slow text-amber-300" viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="26" fill="currentColor"/>
-            <g stroke="currentColor" stroke-width="5" stroke-linecap="round">
-                <line x1="50" y1="6" x2="50" y2="16"/>
-                <line x1="50" y1="84" x2="50" y2="94"/>
-                <line x1="6" y1="50" x2="16" y2="50"/>
-                <line x1="84" y1="50" x2="94" y2="50"/>
-                <line x1="19" y1="19" x2="26" y2="26"/>
-                <line x1="74" y1="74" x2="81" y2="81"/>
-                <line x1="81" y1="19" x2="74" y2="26"/>
-                <line x1="26" y1="74" x2="19" y2="81"/>
-            </g>
-        </svg>
-    </div>
-
-    <div class="fixed -bottom-24 -right-20 w-72 h-72 md:w-96 md:h-96 rounded-full bg-gradient-to-tr from-emerald-500/20 via-sky-500/20 to-indigo-500/20 blur-2xl pointer-events-none z-0"></div>
-
-    <!-- ==================== PARTICLE / CONFETTI CANVAS ==================== -->
-    <canvas id="fx-canvas" class="fixed inset-0 pointer-events-none z-40"></canvas>
-
-    <!-- ==================== VIRTUAL HAND / POINTER CURSOR ==================== -->
-    <div id="hand-cursor" class="opacity-0">
-        <!-- SVG Progress Ring for Dwell/Catch Detection -->
-        <svg class="w-full h-full -rotate-90 drop-shadow-[0_0_12px_rgba(250,204,21,0.9)]" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="42" fill="rgba(255, 255, 255, 0.15)" stroke="rgba(255, 255, 255, 0.5)" stroke-width="5" />
-            <circle id="cursor-progress-ring" cx="50" cy="50" r="42" fill="none" stroke="#facc15" stroke-width="9" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" />
-        </svg>
-        <div id="cursor-icon" class="absolute inset-0 flex items-center justify-center text-3xl md:text-4xl drop-shadow-md transition-transform duration-150">
-            ✋
-        </div>
-    </div>
-
-    <!-- ==================== TOP HUD & QUESTION PANEL ==================== -->
-    <header class="relative z-30 w-full px-3 pt-2 md:px-6 md:pt-3 flex flex-col gap-2 max-w-7xl mx-auto">
-        <!-- Top Status Bar -->
-        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900/80 backdrop-blur-md border-2 border-sky-400/40 rounded-2xl px-3 py-2 md:px-5 md:py-2.5 shadow-xl">
-            
-            <!-- Brand & Title -->
-            <div class="flex items-center gap-2.5">
-                <div class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center shadow-inner border border-white/30 text-2xl">
-                    🌍
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-heading text-base md:text-lg font-bold tracking-wide text-amber-300 leading-none">
-                            TANGKAP KATA JAWABAN!
-                        </span>
-                        <span class="hidden sm:inline-block text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-500/30 text-sky-200 border border-sky-400/40">
-                            IPAS Kelas VI
-                        </span>
-                    </div>
-                    <p class="text-xs text-slate-300 hidden md:block">Rotasi Bumi & Terjadinya Siang dan Malam</p>
-                </div>
-            </div>
-
-            <!-- Center Stats: Question Counter, Progress Bar, and Score -->
-            <div class="flex items-center gap-3 md:gap-5 flex-1 justify-center max-w-xl">
-                <!-- Question Number -->
-                <div class="bg-indigo-950/90 border border-indigo-400/40 rounded-xl px-3 py-1 flex items-center gap-2">
-                    <span class="text-xs text-indigo-200 font-bold uppercase">Soal</span>
-                    <span id="hud-question-num" class="font-heading text-lg md:text-xl font-bold text-white">1/10</span>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="hidden sm:flex flex-col flex-1 max-w-[180px] gap-1">
-                    <div class="flex justify-between text-[11px] font-bold text-sky-200">
-                        <span>Progres Petualangan</span>
-                        <span id="hud-progress-pct">10%</span>
-                    </div>
-                    <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-600 p-0.5">
-                        <div id="hud-progress-bar" class="h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 rounded-full transition-all duration-500" style="width: 10%"></div>
-                    </div>
-                </div>
-
-                <!-- Score Counter -->
-                <div class="bg-amber-500/20 border-2 border-amber-400 rounded-xl px-3.5 py-1 flex items-center gap-2 shadow-sm">
-                    <span class="text-lg">⭐</span>
-                    <div>
-                        <span class="text-[10px] uppercase font-extrabold text-amber-200 block leading-none">Skor</span>
-                        <span id="hud-score" class="font-heading text-lg md:text-2xl font-bold text-amber-300 leading-none">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Controls: Mode Indicator, Speed, Sound, Help, Restart -->
-            <div class="flex items-center gap-1.5 md:gap-2">
-                <!-- Camera/Control Status Pill (Clickable to toggle camera/mouse) -->
-                <button id="btn-toggle-mode" onclick="toggleControlMode()" title="Klik untuk ganti mode Kamera / Mouse" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-bold transition">
-                    <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-                    <span id="status-text" class="hidden lg:inline text-slate-200">Siap Bermain</span>
-                    <span id="status-icon" class="text-sm">📷</span>
-                </button>
-
-                <!-- Bubble Speed Toggle (Ramah Smart Board / Anak SD) -->
-                <button id="btn-speed" onclick="cycleSpeed()" title="Kecepatan Gerak Kata" class="px-2.5 py-1.5 rounded-xl bg-indigo-800/80 hover:bg-indigo-700 border border-indigo-400/40 text-xs font-bold text-indigo-100 transition flex items-center gap-1">
-                    <span>🐢</span>
-                    <span id="speed-label" class="hidden xl:inline">Sedang</span>
-                </button>
-
-                <!-- Sound Mute/Unmute -->
-                <button id="btn-sound" onclick="toggleSound()" title="Suara Efek" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-base transition">
-                    🔊
-                </button>
-
-                <!-- Help / Panduan Modal -->
-                <button onclick="openHelpModal()" title="Cara Bermain & Info Teknis" class="p-2 rounded-xl bg-sky-600 hover:bg-sky-500 border border-sky-300/50 text-base font-bold transition">
-                    ❓
-                </button>
-
-                <!-- Restart Button -->
-                <button onclick="restartGame()" title="Mulai Ulang Game" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 border border-rose-300/50 text-xs md:text-sm font-bold flex items-center gap-1 shadow transition">
-                    <span>🔄</span>
-                    <span class="hidden sm:inline">Ulang</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Question Card Banner -->
-        <div id="question-panel" class="relative bg-gradient-to-r from-indigo-950/95 via-slate-900/95 to-indigo-950/95 backdrop-blur-md border-2 border-amber-400/70 rounded-3xl px-4 py-3 md:px-7 md:py-4 shadow-2xl flex items-center justify-between gap-4 transition-all duration-300">
-            <div class="flex items-center gap-3 md:gap-5 w-full">
-                <!-- Question Number Badge -->
-                <div id="question-badge" class="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 font-heading font-bold text-xl md:text-2xl flex flex-col items-center justify-center shadow-lg border-2 border-white">
-                    <span class="text-[10px] font-extrabold uppercase leading-none opacity-80">Soal</span>
-                    <span id="q-number-circle" class="leading-tight">1</span>
-                </div>
-
-                <!-- Question Text -->
-                <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-0.5">
-                        <span class="text-xs font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1">
-                            <span>✨</span> Tangkap Gelembung Jawaban yang Benar!
-                        </span>
-                    </div>
-                    <h2 id="question-text" class="font-heading text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white leading-snug tracking-wide">
-                        Apa yang dimaksud dengan rotasi Bumi?
-                    </h2>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ==================== MAIN PLAY ARENA (FLOATING BUBBLES) ==================== -->
-    <main id="play-arena" class="relative flex-1 w-full overflow-hidden z-20">
-        <!-- Floating Answer Bubbles Container -->
-        <div id="bubbles-container" class="w-full h-full relative"></div>
-
-        <!-- Feedback Toast Overlay (Correct / Try Again) -->
-        <div id="feedback-overlay" class="pointer-events-none fixed inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-50 opacity-0 scale-90 transition-all duration-200">
-            <div id="feedback-box" class="px-6 py-4 md:px-8 md:py-5 rounded-3xl border-4 shadow-2xl text-center max-w-lg mx-4 backdrop-blur-md">
-                <div id="feedback-emoji" class="text-4xl md:text-5xl mb-1">🎉</div>
-                <h3 id="feedback-title" class="font-heading text-2xl md:text-3xl font-bold">Hebat! Jawaban Benar!</h3>
-                <p id="feedback-subtitle" class="text-sm md:text-base font-bold mt-1 text-white/95">+10 Poin • Bersiap ke soal berikutnya...</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- ==================== WEBCAM PREVIEW WIDGET (BOTTOM RIGHT) ==================== -->
-    <div id="webcam-widget" class="fixed bottom-3 right-3 z-30 flex flex-col items-end">
-        <!-- Minimized/Expanded Webcam Card -->
-        <div id="webcam-card" class="bg-slate-900/90 backdrop-blur-md border-2 border-sky-400/60 rounded-2xl p-2 shadow-2xl transition-all duration-300 w-44 sm:w-52 md:w-60">
-            <div class="flex items-center justify-between gap-1 mb-1.5 px-1">
-                <div class="flex items-center gap-1.5 truncate">
-                    <span id="cam-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400 flex-shrink-0"></span>
-                    <span id="cam-status-label" class="text-[11px] font-extrabold text-sky-200 truncate">Kamera Nonaktif</span>
-                </div>
-                <button onclick="toggleWebcamSize()" title="Kecilkan/Besarkan Kamera" class="text-xs bg-slate-800 hover:bg-slate-700 px-1.5 py-0.5 rounded text-slate-300 font-bold">
-                    🗕
-                </button>
-            </div>
-
-            <!-- Video & Hand Landmark Canvas Wrapper -->
-            <div id="webcam-preview-body" class="relative w-full aspect-[4/3] bg-slate-950 rounded-xl overflow-hidden border border-slate-700 flex items-center justify-center">
-                <video id="webcam-video" class="mirror-view w-full h-full object-cover hidden" playsinline muted></video>
-                <canvas id="webcam-canvas" class="mirror-view absolute inset-0 w-full h-full object-cover pointer-events-none"></canvas>
-                
-                <!-- Fallback Placeholder when in Mouse/Touch Mode -->
-                <div id="webcam-placeholder" class="flex flex-col items-center justify-center text-center p-2">
-                    <span class="text-2xl mb-1">🖱️👆</span>
-                    <p id="webcam-placeholder-text" class="text-[11px] text-slate-300 font-bold leading-tight">
-                        Mode Mouse / Sentuh Aktif
-                    </p>
-                    <button onclick="startCameraMode()" class="mt-1.5 px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-[11px] font-extrabold text-white shadow">
-                        Aktifkan Kamera
-                    </button>
-                </div>
-            </div>
-
-            <div class="mt-1.5 flex items-center justify-between text-[10px] text-slate-300 px-1">
-                <span>✋ Arahkan tangan ke kata</span>
-                <span id="fps-counter" class="font-mono text-sky-300"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Helper Instruction Bar -->
-    <footer class="relative z-20 px-4 py-1.5 text-center pointer-events-none hidden sm:block">
-        <div class="inline-flex items-center gap-2 bg-slate-900/75 border border-slate-700/80 px-4 py-1 rounded-full text-xs font-bold text-sky-200 shadow">
-            <span id="footer-hint">💡 Gerakkan tanganmu di depan kamera (atau gunakan jari/mouse) dan tahan sebentar pada gelembung jawaban yang benar!</span>
-        </div>
-    </footer>
-
-    <!-- ==================== MODAL 1: START / CAMERA PERMISSION SCREEN ==================== -->
-    <div id="start-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-gradient-to-b from-indigo-900 via-slate-900 to-slate-950 border-4 border-amber-400 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl text-center relative my-auto">
-            
-            <!-- Floating Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/20 border border-amber-400 text-amber-300 text-xs md:text-sm font-extrabold mb-3">
-                <span>🚀 GAME EDUKASI INTERAKTIF SD</span>
-                <span>•</span>
-                <span>IPAS KELAS VI</span>
-            </div>
-
-            <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-wide drop-shadow mb-2">
-                Tangkap Kata Jawaban!
-            </h1>
-            <p class="text-base md:text-lg text-sky-200 font-bold mb-5">
-                Petualangan Rotasi Bumi & Terjadinya Siang dan Malam 🌍☀️🌙
-            </p>
-
-            <!-- Visual Feature Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left mb-6">
-                <div class="bg-slate-800/80 border border-sky-400/30 rounded-2xl p-3.5 flex items-start gap-3">
-                    <span class="text-2xl md:text-3xl">📷</span>
-                    <div>
-                        <h3 class="font-heading font-bold text-amber-300 text-sm md:text-base">Deteksi Tangan</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Gerakkan tanganmu di udara di depan kamera untuk menangkap gelembung jawaban!</p>
-                    </div>
-                </div>
-                <div class="bg-slate-800/80 border border-sky-400/30 rounded-2xl p-3.5 flex items-start gap-3">
-                    <span class="text-2xl md:text-3xl">🎯</span>
-                    <div>
-                        <h3 class="font-heading font-bold text-emerald-300 text-sm md:text-base">10 Soal Seru</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Setiap jawaban benar mendapat <b>+10 Poin</b>. Kumpulkan skor sempurna <b>100 Poin</b>!</p>
-                    </div>
-                </div>
-                <div class="bg-slate-800/80 border border-sky-400/30 rounded-2xl p-3.5 flex items-start gap-3">
-                    <span class="text-2xl md:text-3xl">👆</span>
-                    <div>
-                        <h3 class="font-heading font-bold text-pink-300 text-sm md:text-base">Multi-Perangkat</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Nyaman dimainkan di Laptop, Tablet, maupun layar sentuh <i>Smart Board</i> kelas.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Camera Permission Notice Box -->
-            <div class="bg-sky-950/80 border border-sky-400/50 rounded-2xl p-4 mb-6 text-left flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400 flex items-center justify-center text-2xl flex-shrink-0">
-                    🔒
-                </div>
-                <div class="text-xs md:text-sm text-sky-100 leading-relaxed">
-                    <b class="text-amber-300">Izin Kamera Aman:</b> Saat kamu menekan tombol <b>"Aktifkan Kamera"</b>, browser akan meminta izin akses kamera. Pilih <b>"Allow / Izinkan"</b> agar gerakan tanganmu bisa terdeteksi secara langsung. Video tidak pernah direkam atau dikirim ke mana pun.
-                </div>
-            </div>
-
-            <!-- Camera Loading / Error Banner inside Start Modal -->
-            <div id="camera-init-status" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-500/20 border border-amber-400 text-sm font-bold text-amber-200">
-                ⏳ Sedang menyiapkan kamera & sensor pendeteksi tangan... Mohon tunggu sebentar.
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5">
-                <button id="btn-start-camera" onclick="startWithCamera()" class="btn-game w-full sm:w-auto px-7 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 text-slate-950 font-heading font-bold text-lg md:text-xl flex items-center justify-center gap-2.5 border-2 border-white">
-                    <span>📷</span>
-                    <span>Aktifkan Kamera & Mulai Main</span>
-                </button>
-
-                <button onclick="startWithTouchOrMouse()" class="btn-game w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-heading font-bold text-base md:text-lg flex items-center justify-center gap-2 border-2 border-sky-200/60">
-                    <span>👆</span>
-                    <span>Main dengan Mouse / Sentuh</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MODAL 2: CAMERA ERROR / FALLBACK GUIDE ==================== -->
-    <div id="camera-error-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border-4 border-rose-400 rounded-3xl max-w-lg w-full p-6 shadow-2xl text-center">
-            <div class="w-16 h-16 rounded-full bg-rose-500/20 border-2 border-rose-400 flex items-center justify-center text-3xl mx-auto mb-3">
-                📷⚠️
-            </div>
-            <h2 class="font-heading text-2xl font-bold text-white mb-2">Kamera Tidak Dapat Diakses</h2>
-            <p id="camera-error-msg" class="text-sm text-slate-300 mb-4 leading-relaxed">
-                Izin kamera ditolak atau perangkat tidak memiliki kamera. Jangan khawatir, kamu tetap bisa bermain menggunakan <b>Mouse atau Layar Sentuh</b>!
-            </p>
-            <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-3.5 text-left text-xs text-slate-200 space-y-1.5 mb-5">
-                <p class="font-bold text-amber-300">💡 Cara Mengaktifkan Kamera di Browser:</p>
-                <p>1. Klik ikon <b>Gembok (🔒)</b> atau <b>Kamera (📷)</b> di sebelah kiri alamat website (URL bar) di bagian atas browser.</p>
-                <p>2. Ubah izin <b>Camera / Kamera</b> menjadi <b>Allow / Izinkan</b>.</p>
-                <p>3. Pastikan website dibuka melalui <b>localhost</b> atau <b>HTTPS</b>, lalu klik tombol <i>Coba Kamera Lagi</i>.</p>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <button onclick="retryCameraFromModal()" class="btn-game px-5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-heading font-bold text-sm">
-                    🔄 Coba Kamera Lagi
-                </button>
-                <button onclick="closeCameraErrorModal()" class="btn-game px-5 py-2.5 rounded-xl bg-sky-500 text-white font-heading font-bold text-sm">
-                    👆 Lanjut dengan Mouse / Sentuh
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MODAL 3: END GAME / FINAL SCORE SCREEN ==================== -->
-    <div id="result-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-gradient-to-b from-indigo-900 via-slate-900 to-slate-950 border-4 border-amber-400 rounded-3xl max-w-xl w-full p-6 md:p-8 shadow-2xl text-center my-auto">
-            
-            <div id="result-stars" class="text-4xl md:text-5xl mb-2 tracking-widest animate-bounce">
-                ⭐⭐⭐
-            </div>
-
-            <span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400 text-emerald-300 text-xs font-extrabold uppercase">
-                Misi Luar Angkasa Selesai!
-            </span>
-
-            <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mt-2 mb-1">
-                Luar Biasa, Penjelajah Bumi!
-            </h2>
-            <p id="result-motivation" class="text-sm md:text-base text-sky-200 font-bold mb-6">
-                Kamu berhasil menyelesaikan seluruh soal tentang Rotasi Bumi dan terjadinya Siang & Malam!
-            </p>
-
-            <!-- Score & Stats Cards -->
-            <div class="grid grid-cols-3 gap-3 mb-6">
-                <div class="bg-amber-500/20 border-2 border-amber-400 rounded-2xl p-3">
-                    <span class="text-xs font-extrabold uppercase text-amber-200 block">Skor Akhir</span>
-                    <span id="final-score" class="font-heading text-3xl md:text-4xl font-bold text-amber-300">100</span>
-                    <span class="text-[11px] text-amber-200/80 block">dari 100 Poin</span>
-                </div>
-                <div class="bg-emerald-500/20 border-2 border-emerald-400 rounded-2xl p-3">
-                    <span class="text-xs font-extrabold uppercase text-emerald-200 block">Jawaban Benar</span>
-                    <span id="final-correct" class="font-heading text-3xl md:text-4xl font-bold text-emerald-300">10/10</span>
-                    <span class="text-[11px] text-emerald-200/80 block">Soal Terjawab</span>
-                </div>
-                <div class="bg-sky-500/20 border-2 border-sky-400 rounded-2xl p-3">
-                    <span class="text-xs font-extrabold uppercase text-sky-200 block">Ketepatan</span>
-                    <span id="final-accuracy" class="font-heading text-3xl md:text-4xl font-bold text-sky-300">100%</span>
-                    <span id="final-attempts" class="text-[11px] text-sky-200/80 block">10 Percobaan</span>
-                </div>
-            </div>
-
-            <!-- Summary Material Box -->
-            <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 text-left text-xs md:text-sm text-slate-200 mb-6 space-y-1">
-                <div class="font-heading font-bold text-amber-300 text-sm mb-1">📌 Rangkuman Pintar Hari Ini:</div>
-                <p>• <b>Rotasi Bumi</b> adalah perputaran Bumi pada porosnya (garis khayal kutub utara–selatan) dari <b>barat ke timur</b> selama <b>24 jam</b>.</p>
-                <p>• Akibatnya terjadi <b>pergantian siang dan malam</b> serta gerak semu harian Matahari yang tampak terbit dari timur.</p>
-            </div>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <button onclick="restartGame()" class="btn-game w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-heading font-bold text-lg md:text-xl flex items-center justify-center gap-2 border-2 border-white">
-                    <span>🔄</span>
-                    <span>Main Lagi (Acak Posisi)</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MODAL 4: HELP & TECHNICAL INSTRUCTIONS ==================== -->
-    <div id="help-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border-4 border-sky-400 rounded-3xl max-w-2xl w-full p-6 shadow-2xl text-left my-auto max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
-                <h2 class="font-heading text-2xl font-bold text-amber-300 flex items-center gap-2">
-                    <span>📖</span> Panduan Bermain & Petunjuk Teknis
-                </h2>
-                <button onclick="closeHelpModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold">✕</button>
-            </div>
-
-            <div class="space-y-4 text-xs md:text-sm text-slate-200 leading-relaxed">
-                <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700">
-                    <h3 class="font-heading font-bold text-sky-300 text-base mb-1.5">🎮 Cara Bermain</h3>
-                    <ul class="list-disc list-inside space-y-1">
-                        <li>Baca pertanyaan pilihan ganda di bagian atas layar.</li>
-                        <li>Empat gelembung jawaban (<b>A, B, C, D</b>) akan melayang secara acak di layar.</li>
-                        <li><b>Mode Kamera:</b> Angkat satu tanganmu di depan kamera. Kursor tangan (✋) di layar akan mengikuti gerakan tanganmu. Arahkan dan tahan sebentar (~0,35 detik) pada gelembung jawaban untuk menangkapnya.</li>
-                        <li><b>Mode Mouse / Layar Sentuh (Smart Board):</b> Klik atau sentuh langsung gelembung jawaban yang dipilih, atau arahkan kursor ke gelembung tersebut.</li>
-                        <li>Jawaban <b>Benar</b> mendapat <b>+10 poin</b> dan otomatis lanjut ke soal berikutnya. Jawaban <b>Salah</b> akan memunculkan pesan <i>"Coba lagi!"</i>.</li>
-                    </ul>
-                </div>
-
-                <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700">
-                    <h3 class="font-heading font-bold text-emerald-300 text-base mb-1.5">💻 Cara Menjalankan Website (Localhost / HTTPS)</h3>
-                    <p class="mb-2">Demi keamanan privasi browser modern, fitur <b>Kamera (WebRTC / MediaPipe)</b> hanya diizinkan berjalan pada protokol <b>HTTPS</b> atau <b>http://localhost</b>. Pilih salah satu cara mudah berikut:</p>
-                    <ol class="list-decimal list-inside space-y-1.5 text-slate-300">
-                        <li><b>VS Code Live Server:</b> Simpan file ini sebagai <code class="bg-slate-950 px-1.5 py-0.5 rounded text-amber-300">index.html</code>, klik kanan di VS Code, lalu pilih <i>"Open with Live Server"</i> (otomatis membuka <code class="bg-slate-950 px-1.5 py-0.5 rounded text-sky-300">http://127.0.0.1:5500</code>).</li>
-                        <li><b>Python Local Server:</b> Buka terminal di folder file ini lalu jalankan <code class="bg-slate-950 px-1.5 py-0.5 rounded text-amber-300">python -m http.server 8000</code>, kemudian buka <code class="bg-slate-950 px-1.5 py-0.5 rounded text-sky-300">http://localhost:8000</code> di Chrome/Edge.</li>
-                        <li><b>Hosting HTTPS Gratis:</b> Unggah file <code class="bg-slate-950 px-1.5 py-0.5 rounded text-amber-300">index.html</code> ke GitHub Pages, Netlify Drop, atau Vercel agar bisa diakses dari Laptop, Tablet, dan Smart Board sekolah secara langsung.</li>
-                    </ol>
-                </div>
-            </div>
-
-            <div class="mt-5 text-right">
-                <button onclick="closeHelpModal()" class="btn-game px-6 py-2.5 rounded-xl bg-sky-500 text-white font-heading font-bold text-sm">
-                    Mengerti & Kembali Bermain
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== JAVASCRIPT GAME ENGINE ==================== -->
-    <script>
-        /********************************************************************
-         * 1. DATA 10 PERTANYAAN PILIHAN GANDA — IPAS KELAS VI
-         * Materi: Rotasi Bumi dan Terjadinya Siang dan Malam
-         ********************************************************************/
-        const QUESTIONS_DATA = [
-            {
-                number: 1,
-                question: "Apa yang dimaksud dengan rotasi Bumi?",
-                options: {
-                    A: "Bumi mengelilingi Matahari",
-                    B: "Bumi berputar pada porosnya",
-                    C: "Bulan mengelilingi Bumi",
-                    D: "Matahari mengelilingi Bumi"
-                },
-                correct: "B"
-            },
-            {
-                number: 2,
-                question: "Berapa lama Bumi membutuhkan waktu untuk berotasi satu kali?",
-                options: {
-                    A: "12 jam",
-                    B: "30 hari",
-                    C: "24 jam",
-                    D: "365 hari"
-                },
-                correct: "C"
-            },
-            {
-                number: 3,
-                question: "Apa akibat utama dari rotasi Bumi?",
-                options: {
-                    A: "Pergantian siang dan malam",
-                    B: "Pergantian tahun",
-                    C: "Perubahan bentuk Bulan",
-                    D: "Terjadinya hujan"
-                },
-                correct: "A"
-            },
-            {
-                number: 4,
-                question: "Bagian Bumi yang menghadap Matahari mengalami waktu apa?",
-                options: {
-                    A: "Malam",
-                    B: "Siang",
-                    C: "Senja sepanjang hari",
-                    D: "Tengah malam"
-                },
-                correct: "B"
-            },
-            {
-                number: 5,
-                question: "Bagian Bumi yang membelakangi Matahari mengalami waktu apa?",
-                options: {
-                    A: "Pagi",
-                    B: "Siang",
-                    C: "Malam",
-                    D: "Sore"
-                },
-                correct: "C"
-            },
-            {
-                number: 6,
-                question: "Ke arah mana Bumi berotasi?",
-                options: {
-                    A: "Timur ke barat",
-                    B: "Barat ke timur",
-                    C: "Utara ke selatan",
-                    D: "Selatan ke utara"
-                },
-                correct: "B"
-            },
-            {
-                number: 7,
-                question: "Mengapa Matahari tampak terbit dari arah timur?",
-                options: {
-                    A: "Bumi berotasi dari barat ke timur",
-                    B: "Matahari mengelilingi Bumi",
-                    C: "Bulan bergerak mengelilingi Matahari",
-                    D: "Bumi tidak bergerak"
-                },
-                correct: "A"
-            },
-            {
-                number: 8,
-                question: "Apa yang menjadi poros rotasi Bumi?",
-                options: {
-                    A: "Garis khatulistiwa",
-                    B: "Orbit Bulan",
-                    C: "Garis khayal yang melewati kutub utara dan selatan",
-                    D: "Cahaya Matahari"
-                },
-                correct: "C"
-            },
-            {
-                number: 9,
-                question: "Berapa kali Bumi berotasi dalam waktu sekitar 48 jam?",
-                options: {
-                    A: "Satu kali",
-                    B: "Dua kali",
-                    C: "Tiga kali",
-                    D: "Empat kali"
-                },
-                correct: "B"
-            },
-            {
-                number: 10,
-                question: "Jika suatu wilayah mengalami siang hari, apa yang sedang terjadi pada wilayah tersebut terhadap Matahari?",
-                options: {
-                    A: "Wilayah tersebut menghadap Matahari",
-                    B: "Wilayah tersebut membelakangi Matahari",
-                    C: "Matahari berada di bawah Bumi",
-                    D: "Bumi berhenti berotasi"
-                },
-                correct: "A"
-            }
-        ];
-
-        /********************************************************************
-         * 2. SOUND EFFECTS SYNTHESIZER (WEB AUDIO API)
-         * Tidak membutuhkan file MP3 eksternal agar 100% langsung jalan.
-         ********************************************************************/
-        class SoundFX {
-            constructor() {
-                this.ctx = null;
-                this.muted = false;
-            }
-
-            init() {
-                if (!this.ctx) {
-                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                    if (AudioCtx) this.ctx = new AudioCtx();
-                }
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-            }
-
-            playHoverTick() {
-                if (this.muted) return;
-                this.init();
-                if (!this.ctx) return;
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(520, now);
-                osc.frequency.exponentialRampToValueAtTime(680, now + 0.06);
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.06);
-            }
-
-            playCorrect() {
-                if (this.muted) return;
-                this.init();
-                if (!this.ctx) return;
-                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-                notes.forEach((freq, idx) => {
-                    const now = this.ctx.currentTime + idx * 0.09;
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now);
-                    gain.gain.setValueAtTime(0.22, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.32);
-                });
-            }
-
-            playWrong() {
-                if (this.muted) return;
-                this.init();
-                if (!this.ctx) return;
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(240, now);
-                osc.frequency.linearRampToValueAtTime(150, now + 0.28);
-                gain.gain.setValueAtTime(0.16, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            }
-
-            playFanfare() {
-                if (this.muted) return;
-                this.init();
-                if (!this.ctx) return;
-                const melody = [
-                    { f: 523.25, t: 0.0, d: 0.15 },
-                    { f: 659.25, t: 0.15, d: 0.15 },
-                    { f: 783.99, t: 0.30, d: 0.15 },
-                    { f: 1046.50, t: 0.45, d: 0.35 },
-                    { f: 783.99, t: 0.80, d: 0.15 },
-                    { f: 1046.50, t: 0.98, d: 0.55 }
-                ];
-                melody.forEach(n => {
-                    const now = this.ctx.currentTime + n.t;
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(n.f, now);
-                    gain.gain.setValueAtTime(0.25, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + n.d);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now);
-                    osc.stop(now + n.d);
-                });
-            }
-        }
-
-        const sfx = new SoundFX();
-
-        /********************************************************************
-         * 3. GAME STATE & CONFIGURATION
-         ********************************************************************/
-        const state = {
-            currentQuestionIndex: 0,
-            score: 0,
-            correctCount: 0,
-            totalAttempts: 0,
-            questionResolved: false, // Mencegah soal dihitung lebih dari 1 kali
-            gameActive: false,
-            controlMode: 'mouse', // 'camera' atau 'mouse'
-            cameraRunning: false,
-            handDetected: false,
-            speedMultiplier: 1.0, // 0.65 (Santai), 1.0 (Sedang), 1.45 (Cepat)
-            speedModeIndex: 1,
-            webcamMinimized: false,
-            // Posisi kursor/tangan dalam koordinat layar (px)
-            pointer: {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2,
-                targetX: window.innerWidth / 2,
-                targetY: window.innerHeight / 2,
-                active: false
-            },
-            // Dwell/hover state untuk menangkap gelembung
-            hoveredBubbleKey: null,
-            hoverProgress: 0, // 0 sampai 1
-            hoverDurationMs: 360, // 0.36 detik agar responsif tapi tidak salah sentuh
-            bubbles: [],
-            particles: [],
-            lastFrameTime: performance.now()
-        };
-
-        // Tema warna ceria untuk gelembung A, B, C, D
-        const BUBBLE_THEMES = {
-            A: {
-                badgeBg: "from-rose-400 to-pink-600",
-                cardBg: "from-rose-500/90 via-pink-600/90 to-rose-700/90",
-                border: "border-pink-200",
-                glow: "rgba(244, 63, 94, 0.55)"
-            },
-            B: {
-                badgeBg: "from-amber-300 to-orange-500",
-                cardBg: "from-amber-500/90 via-orange-500/90 to-amber-600/90",
-                border: "border-amber-100",
-                glow: "rgba(245, 158, 11, 0.55)"
-            },
-            C: {
-                badgeBg: "from-emerald-300 to-teal-600",
-                cardBg: "from-emerald-500/90 via-teal-600/90 to-emerald-700/90",
-                border: "border-emerald-100",
-                glow: "rgba(16, 185, 129, 0.55)"
-            },
-            D: {
-                badgeBg: "from-sky-300 to-indigo-600",
-                cardBg: "from-sky-500/90 via-blue-600/90 to-indigo-700/90",
-                border: "border-sky-100",
-                glow: "rgba(56, 189, 248, 0.55)"
-            }
-        };
-
-        /********************************************************************
-         * 4. INITIALIZE DECORATIVE STARS & FX CANVAS
-         ********************************************************************/
-        function createBackgroundStars() {
-            const container = document.getElementById('stars-container');
-            container.innerHTML = '';
-            const count = 45;
-            for (let i = 0; i < count; i++) {
-                const star = document.createElement('div');
-                star.className = 'star-dot';
-                const size = Math.random() * 3.5 + 1.5;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.setProperty('--duration', `${(Math.random() * 3 + 2).toFixed(1)}s`);
-                star.style.setProperty('--delay', `${(Math.random() * 3).toFixed(1)}s`);
-                container.appendChild(star);
-            }
-        }
-
-        const fxCanvas = document.getElementById('fx-canvas');
-        const fxCtx = fxCanvas.getContext('2d');
-
-        function resizeFxCanvas() {
-            fxCanvas.width = window.innerWidth;
-            fxCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', () => {
-            resizeFxCanvas();
-            keepBubblesInBounds();
-        });
-        resizeFxCanvas();
-        createBackgroundStars();
-
-        /********************************************************************
-         * 5. FLOATING BUBBLES CREATION & PHYSICS (RANDOMIZED PER QUESTION)
-         ********************************************************************/
-        function loadQuestion(index) {
-            state.currentQuestionIndex = index;
-            state.questionResolved = false;
-            state.hoveredBubbleKey = null;
-            state.hoverProgress = 0;
-            updateCursorRing(0);
-
-            const qData = QUESTIONS_DATA[index];
-
-            // Update HUD
-            document.getElementById('hud-question-num').textContent = `${index + 1}/${QUESTIONS_DATA.length}`;
-            document.getElementById('q-number-circle').textContent = index + 1;
-            const pct = Math.round(((index + 1) / QUESTIONS_DATA.length) * 100);
-            document.getElementById('hud-progress-pct').textContent = `${pct}%`;
-            document.getElementById('hud-progress-bar').style.width = `${pct}%`;
-            document.getElementById('hud-score').textContent = state.score;
-
-            // Animasi transisi kartu soal
-            const qPanel = document.getElementById('question-panel');
-            qPanel.classList.add('scale-[0.98]');
-            setTimeout(() => qPanel.classList.remove('scale-[0.98]'), 180);
-
-            document.getElementById('question-text').textContent = qData.question;
-
-            // Buat 4 gelembung jawaban dengan posisi dan arah gerak acak
-            spawnAnswerBubbles(qData);
-        }
-
-        function spawnAnswerBubbles(qData) {
-            const container = document.getElementById('bubbles-container');
-            container.innerHTML = '';
-            state.bubbles = [];
-
-            const arenaRect = container.getBoundingClientRect();
-            const arenaW = Math.max(arenaRect.width, 320);
-            const arenaH = Math.max(arenaRect.height, 260);
-
-            // Buat 4 zona awal (kuadran) lalu acak urutannya agar tidak menumpuk di awal
-            // dan posisi A, B, C, D selalu teracak setiap ronde
-            const quadrants = [
-                { xRatio: 0.22, yRatio: 0.28 },
-                { xRatio: 0.72, yRatio: 0.28 },
-                { xRatio: 0.22, yRatio: 0.72 },
-                { xRatio: 0.72, yRatio: 0.72 }
-            ].sort(() => Math.random() - 0.5);
-
-            const keys = ['A', 'B', 'C', 'D'];
-
-            keys.forEach((key, idx) => {
-                const text = qData.options[key];
-                const theme = BUBBLE_THEMES[key];
-
-                // Buat elemen DOM Gelembung
-                const el = document.createElement('div');
-                el.className = 'answer-bubble select-none';
-                el.dataset.key = key;
-
-                el.innerHTML = `
-                    <div class="answer-bubble-inner relative flex items-center gap-3 px-4 py-3 sm:px-5 sm:py-3.5 rounded-3xl bg-gradient-to-br ${theme.cardBg} border-4 ${theme.border} shadow-2xl max-w-[260px] sm:max-w-[310px] md:max-w-[350px] backdrop-blur-sm"
-                         style="box-shadow: 0 12px 28px ${theme.glow};">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br ${theme.badgeBg} border-2 border-white flex items-center justify-center font-heading font-bold text-xl sm:text-2xl text-slate-950 shadow-md flex-shrink-0">
-                            ${key}
-                        </div>
-                        <div class="text-left pr-1">
-                            <p class="font-bold text-sm sm:text-base md:text-lg text-white leading-snug drop-shadow-sm">
-                                ${text}
-                            </p>
-                        </div>
-                        <div class="tried-badge hidden absolute -top-2.5 -right-2.5 px-2 py-0.5 rounded-full bg-rose-600 border-2 border-white text-[10px] font-extrabold uppercase shadow">
-                            Coba Lagi ✕
-                        </div>
-                    </div>
-                `;
-
-                // Event klik/tap langsung untuk layar sentuh (Smart Board / Tablet) & Mouse
-                el.addEventListener('pointerdown', (e) => {
-                    e.stopPropagation();
-                    if (!state.gameActive || state.questionResolved) return;
-                    const rect = el.getBoundingClientRect();
-                    state.pointer.x = rect.left + rect.width / 2;
-                    state.pointer.y = rect.top + rect.height / 2;
-                    state.pointer.targetX = state.pointer.x;
-                    state.pointer.targetY = state.pointer.y;
-                    evaluateBubbleSelection(bubbleObj);
-                });
-
-                container.appendChild(el);
-
-                // Ukur dimensi aktual elemen setelah dirender
-                const rect = el.getBoundingClientRect();
-                const w = rect.width || 240;
-                const h = rect.height || 76;
-
-                // Hitung posisi awal dalam kuadran acak + jitter acak
-                const qZone = quadrants[idx];
-                const jitterX = (Math.random() - 0.5) * 60;
-                const jitterY = (Math.random() - 0.5) * 40;
-                let startX = qZone.xRatio * arenaW - w / 2 + jitterX;
-                let startY = qZone.yRatio * arenaH - h / 2 + jitterY;
-
-                // Pastikan di dalam batas arena
-                const pad = 14;
-                startX = Math.max(pad, Math.min(arenaW - w - pad, startX));
-                startY = Math.max(pad, Math.min(arenaH - h - pad, startY));
-
-                // Kecepatan & sudut gerak acak
-                const angle = Math.random() * Math.PI * 2;
-                const baseSpeed = 58 + Math.random() * 34; // px per detik
-
-                const bubbleObj = {
-                    key,
-                    text,
-                    el,
-                    x: startX,
-                    y: startY,
-                    w,
-                    h,
-                    vx: Math.cos(angle) * baseSpeed,
-                    vy: Math.sin(angle) * baseSpeed,
-                    triedWrong: false,
-                    cooldownUntil: 0
-                };
-
-                el.style.transform = `translate3d(${ bubbleObj.x }px, ${ bubbleObj.y }px, 0)`;
-                state.bubbles.push(bubbleObj);
-            });
-        }
-
-        function keepBubblesInBounds() {
-            const container = document.getElementById('bubbles-container');
-            if (!container) return;
-            const arenaRect = container.getBoundingClientRect();
-            const pad = 10;
-
-            state.bubbles.forEach(b => {
-                const rect = b.el.getBoundingClientRect();
-                b.w = rect.width || b.w;
-                b.h = rect.height || b.h;
-                if (b.x + b.w > arenaRect.width - pad) b.x = Math.max(pad, arenaRect.width - b.w - pad);
-                if (b.y + b.h > arenaRect.height - pad) b.y = Math.max(pad, arenaRect.height - b.h - pad);
-            });
-        }
-
-        /********************************************************************
-         * 6. COLLISION DETECTION & ANSWER EVALUATION
-         ********************************************************************/
-        function updateBubblesAndCheckCollisions(dt) {
-            const container = document.getElementById('bubbles-container');
-            const arenaRect = container.getBoundingClientRect();
-            const arenaW = arenaRect.width;
-            const arenaH = arenaRect.height;
-
-            // Zona aman untuk menghindari tertutup widget kamera di pojok kanan bawah
-            const camCard = document.getElementById('webcam-card');
-            const camRect = camCard ? camCard.getBoundingClientRect() : null;
-
-            const pad = 12;
-
-            // 1. Update posisi masing-masing gelembung
-            for (let i = 0; i < state.bubbles.length; i++) {
-                const b = state.bubbles[i];
-                if (state.questionResolved) continue;
-
-                b.x += b.vx * state.speedMultiplier * dt;
-                b.y += b.vy * state.speedMultiplier * dt;
-
-                // Pantulan dinding kiri/kanan
-                if (b.x <= pad) {
-                    b.x = pad;
-                    b.vx = Math.abs(b.vx);
-                } else if (b.x + b.w >= arenaW - pad) {
-                    b.x = Math.max(pad, arenaW - b.w - pad);
-                    b.vx = -Math.abs(b.vx);
-                }
-
-                // Pantulan dinding atas/bawah
-                if (b.y <= pad) {
-                    b.y = pad;
-                    b.vy = Math.abs(b.vy);
-                } else if (b.y + b.h >= arenaH - pad) {
-                    b.y = Math.max(pad, arenaH - b.h - pad);
-                    b.vy = -Math.abs(b.vy);
-                }
-
-                // Pantulan lembut dari kotak pratinjau kamera di pojok kanan bawah agar gelembung selalu mudah ditangkap
-                if (camRect && camRect.width > 50) {
-                    const camLocalX = camRect.left - arenaRect.left - 10;
-                    const camLocalY = camRect.top - arenaRect.top - 10;
-                    if (b.x + b.w > camLocalX && b.y + b.h > camLocalY) {
-                        if (b.x + b.w - camLocalX < b.y + b.h - camLocalY) {
-                            b.x = Math.max(pad, camLocalX - b.w);
-                            b.vx = -Math.abs(b.vx);
-                        } else {
-                            b.y = Math.max(pad, camLocalY - b.h);
-                            b.vy = -Math.abs(b.vy);
-                        }
-                    }
-                }
-            }
-
-            // 2. Tolak-menolak lembut antar gelembung agar tidak saling bertumpuk
-            for (let i = 0; i < state.bubbles.length; i++) {
-                for (let j = i + 1; j < state.bubbles.length; j++) {
-                    const b1 = state.bubbles[i];
-                    const b2 = state.bubbles[j];
-                    const c1x = b1.x + b1.w / 2;
-                    const c1y = b1.y + b1.h / 2;
-                    const c2x = b2.x + b2.w / 2;
-                    const c2y = b2.y + b2.h / 2;
-
-                    const dx = c2x - c1x;
-                    const dy = c2y - c1y;
-                    const minSepX = (b1.w + b2.w) * 0.48;
-                    const minSepY = (b1.h + b2.h) * 0.56;
-
-                    if (Math.abs(dx) < minSepX && Math.abs(dy) < minSepY) {
-                        const overlapX = minSepX - Math.abs(dx);
-                        const overlapY = minSepY - Math.abs(dy);
-                        if (overlapX < overlapY) {
-                            const sign = dx >= 0 ? 1 : -1;
-                            b1.x -= sign * overlapX * 0.3;
-                            b2.x += sign * overlapX * 0.3;
-                            b1.vx = -Math.abs(b1.vx) * sign;
-                            b2.vx = Math.abs(b2.vx) * sign;
-                        } else {
-                            const sign = dy >= 0 ? 1 : -1;
-                            b1.y -= sign * overlapY * 0.3;
-                            b2.y += sign * overlapY * 0.3;
-                            b1.vy = -Math.abs(b1.vy) * sign;
-                            b2.vy = Math.abs(b2.vy) * sign;
-                        }
-                    }
-                }
-            }
-
-            // 3. Render transform & deteksi tabrakan dengan posisi tangan / kursor
-            const now = performance.now();
-            let hitBubble = null;
-
-            state.bubbles.forEach(b => {
-                b.el.style.transform = `translate3d(${b.x.toFixed(1)}px, ${b.y.toFixed(1)}px, 0)`;
-
-                if (!state.pointer.active || state.questionResolved) {
-                    b.el.classList.remove('hovering');
-                    return;
-                }
-
-                // Cek apakah posisi tangan berada di dalam area gelembung (dengan sedikit toleransi ekstra untuk anak SD)
-                const rect = b.el.getBoundingClientRect();
-                const hitMargin = 14;
-                const inside =
-                    state.pointer.x >= rect.left - hitMargin &&
-                    state.pointer.x <= rect.right + hitMargin &&
-                    state.pointer.y >= rect.top - hitMargin &&
-                    state.pointer.y <= rect.bottom + hitMargin;
-
-                if (inside && now > b.cooldownUntil) {
-                    hitBubble = b;
-                } else {
-                    b.el.classList.remove('hovering');
-                }
-            });
-
-            // 4. Proses Dwell / Penangkapan Kata Jawaban
-            if (hitBubble && !state.questionResolved) {
-                hitBubble.el.classList.add('hovering');
-                // Perlambat sedikit gelembung yang sedang ditangkap agar anak SD mudah menguncinya
-                hitBubble.x -= hitBubble.vx * state.speedMultiplier * dt * 0.65;
-                hitBubble.y -= hitBubble.vy * state.speedMultiplier * dt * 0.65;
-
-                if (state.hoveredBubbleKey !== hitBubble.key) {
-                    state.hoveredBubbleKey = hitBubble.key;
-                    state.hoverProgress = 0;
-                    sfx.playHoverTick();
-                }
-
-                state.hoverProgress += (dt * 1000) / state.hoverDurationMs;
-                updateCursorRing(Math.min(1, state.hoverProgress));
-
-                if (state.hoverProgress >= 1) {
-                    state.hoverProgress = 0;
-                    updateCursorRing(0);
-                    evaluateBubbleSelection(hitBubble);
-                }
-            } else {
-                state.hoveredBubbleKey = null;
-                state.hoverProgress = Math.max(0, state.hoverProgress - dt * 4);
-                updateCursorRing(state.hoverProgress);
-            }
-        }
-
-        function updateCursorRing(progress) {
-            const ring = document.getElementById('cursor-progress-ring');
-            const icon = document.getElementById('cursor-icon');
-            if (!ring) return;
-            const circumference = 264;
-            const offset = circumference * (1 - Math.max(0, Math.min(1, progress)));
-            ring.style.strokeDashoffset = offset;
-            if (progress > 0.1) {
-                icon.style.transform = 'scale(1.18)';
-                icon.textContent = '✊';
-            } else {
-                icon.style.transform = 'scale(1)';
-                icon.textContent = state.controlMode === 'camera' ? '✋' : '👆';
-            }
-        }
-
-        function evaluateBubbleSelection(bubbleObj) {
-            if (state.questionResolved) return;
-
-            const qData = QUESTIONS_DATA[state.currentQuestionIndex];
-            state.totalAttempts++;
-
-            const rect = bubbleObj.el.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            if (bubbleObj.key === qData.correct) {
-                // JAWABAN BENAR!
-                state.questionResolved = true;
-                state.score += 10;
-                state.correctCount += 1;
-
-                document.getElementById('hud-score').textContent = state.score;
-                bubbleObj.el.classList.remove('hovering');
-                bubbleObj.el.classList.add('correct-pop');
-
-                sfx.playCorrect();
-                spawnCelebrationParticles(centerX, centerY, 45);
-                showFeedbackBanner(
-                    true,
-                    "Hebat! Jawaban Benar! 🌟",
-                    `+10 Poin • (${bubbleObj.key}) ${bubbleObj.text}`
-                );
-
-                // Otomatis lanjut ke soal berikutnya setelah jeda singkat (1.8 detik)
-                setTimeout(() => {
-                    hideFeedbackBanner();
-                    if (state.currentQuestionIndex + 1 < QUESTIONS_DATA.length) {
-                        loadQuestion(state.currentQuestionIndex + 1);
-                    } else {
-                        showFinalResultScreen();
-                    }
-                }, 1850);
-
-            } else {
-                // JAWABAN SALAH -> "Coba lagi!" dan jangan lanjut ke soal berikutnya
-                bubbleObj.triedWrong = true;
-                bubbleObj.cooldownUntil = performance.now() + 1300; // Cooldown 1.3 detik agar tidak terpicu beruntun
-                bubbleObj.el.classList.remove('hovering');
-                bubbleObj.el.classList.remove('wrong-shake');
-                void bubbleObj.el.offsetWidth; // Reflow untuk mengulang animasi getar
-                bubbleObj.el.classList.add('wrong-shake');
-
-                const badge = bubbleObj.el.querySelector('.tried-badge');
-                if (badge) badge.classList.remove('hidden');
-
-                // Pantulkan gelembung menjauh sedikit
-                bubbleObj.vx = -bubbleObj.vx;
-                bubbleObj.vy = -bubbleObj.vy;
-
-                sfx.playWrong();
-                spawnWrongParticles(centerX, centerY, 14);
-                showFeedbackBanner(
-                    false,
-                    "Coba lagi! 💪",
-                    `Pilihan ${bubbleObj.key} belum tepat. Yuk tangkap jawaban yang benar!`
-                );
-
-                setTimeout(() => {
-                    if (!state.questionResolved) hideFeedbackBanner();
-                }, 1250);
-            }
-        }
-
-        /********************************************************************
-         * 7. FEEDBACK BANNER & PARTICLE EFFECTS
-         ********************************************************************/
-        function showFeedbackBanner(isSuccess, title, subtitle) {
-            const overlay = document.getElementById('feedback-overlay');
-            const box = document.getElementById('feedback-box');
-            const emoji = document.getElementById('feedback-emoji');
-            const titleEl = document.getElementById('feedback-title');
-            const subEl = document.getElementById('feedback-subtitle');
-
-            if (isSuccess) {
-                box.className = "px-6 py-4 md:px-8 md:py-5 rounded-3xl border-4 border-emerald-200 bg-gradient-to-b from-emerald-500/95 to-teal-700/95 shadow-[0_0_50px_rgba(16,185,129,0.8)] text-center max-w-lg mx-4 backdrop-blur-md";
-                emoji.textContent = "🎉🌟";
-            } else {
-                box.className = "px-6 py-3.5 md:px-7 md:py-4 rounded-3xl border-4 border-amber-200 bg-gradient-to-b from-rose-500/95 to-orange-600/95 shadow-[0_0_40px_rgba(244,63,94,0.75)] text-center max-w-md mx-4 backdrop-blur-md";
-                emoji.textContent = "🤔💡";
-            }
-
-            titleEl.textContent = title;
-            subEl.textContent = subtitle;
-
-            overlay.classList.remove('opacity-0', 'scale-90');
-            overlay.classList.add('opacity-100', 'scale-100');
-        }
-
-        function hideFeedbackBanner() {
-            const overlay = document.getElementById('feedback-overlay');
-            overlay.classList.remove('opacity-100', 'scale-100');
-            overlay.classList.add('opacity-0', 'scale-90');
-        }
-
-        function spawnCelebrationParticles(x, y, count) {
-            const colors = ['#facc15', '#4ade80', '#38bdf8', '#f472b6', '#ffffff', '#fb923c'];
-            for (let i = 0; i < count; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 360 + 90;
-                state.particles.push({
-                    x,
-                    y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed - 80,
-                    size: Math.random() * 8 + 5,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    alpha: 1,
-                    life: Math.random() * 0.6 + 0.5,
-                    star: Math.random() > 0.45
-                });
-            }
-        }
-
-        function spawnWrongParticles(x, y, count) {
-            const colors = ['#fb7185', '#fda4af', '#fcd34d'];
-            for (let i = 0; i < count; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 180 + 50;
-                state.particles.push({
-                    x,
-                    y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    size: Math.random() * 6 + 4,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    alpha: 1,
-                    life: 0.45,
-                    star: false
-                });
-            }
-        }
-
-        function updateAndDrawParticles(dt) {
-            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-            for (let i = state.particles.length - 1; i >= 0; i--) {
-                const p = state.particles[i];
-                p.life -= dt;
-                if (p.life <= 0) {
-                    state.particles.splice(i, 1);
-                    continue;
-                }
-                p.x += p.vx * dt;
-                p.y += p.vy * dt;
-                p.vy += 380 * dt; // gravitasi lembut
-                p.alpha = Math.max(0, Math.min(1, p.life * 2));
-
-                fxCtx.save();
-                fxCtx.globalAlpha = p.alpha;
-                fxCtx.fillStyle = p.color;
-                fxCtx.beginPath();
-                fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                fxCtx.fill();
-                fxCtx.restore();
-            }
-        }
-
-        /********************************************************************
-         * 8. MEDIAPIPE HANDS & CAMERA CONTROL + MOUSE/TOUCH FALLBACK
-         ********************************************************************/
-        let handsDetector = null;
-        let mediaStream = null;
-        let videoFrameRequestId = null;
-
-        async function initMediaPipeHands() {
-            if (handsDetector) return handsDetector;
-            if (typeof Hands === 'undefined') {
-                throw new Error("Pustaka MediaPipe Hands tidak termuat. Periksa koneksi internet.");
-            }
-
-            handsDetector = new Hands({
-                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-            });
-
-            handsDetector.setOptions({
-                maxNumHands: 1,
-                modelComplexity: 0, // Lite model agar sangat ringan dan cepat di laptop sekolah / tablet
-                minDetectionConfidence: 0.55,
-                minTrackingConfidence: 0.55
-            });
-
-            handsDetector.onResults(onHandResults);
-            return handsDetector;
-        }
-
-        async function startCameraMode() {
-            const initBanner = document.getElementById('camera-init-status');
-            if (initBanner) initBanner.classList.remove('hidden');
-
-            updateCameraStatusUI('loading', 'Meminta Izin Kamera...');
-
-            try {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    throw new Error("Browser ini tidak mendukung akses kamera atau belum dijalankan melalui HTTPS/localhost.");
-                }
-
-                // Minta izin kamera pengguna
-                mediaStream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        facingMode: "user"
-                    },
-                    audio: false
-                });
-
-                const videoEl = document.getElementById('webcam-video');
-                videoEl.srcObject = mediaStream;
-                await videoEl.play();
-
-                // Siapkan MediaPipe Hands
-                await initMediaPipeHands();
-
-                state.controlMode = 'camera';
-                state.cameraRunning = true;
-
-                // Tampilkan video pratinjau & sembunyikan placeholder
-                videoEl.classList.remove('hidden');
-                document.getElementById('webcam-placeholder').classList.add('hidden');
-                document.getElementById('hand-cursor').classList.remove('opacity-0');
-
-                updateCameraStatusUI('searching', 'Kamera Aktif • Mencari Tangan...');
-
-                // Mulai loop pemrosesan frame video
-                processVideoFrame();
-                return true;
-
-            } catch (err) {
-                console.warn("Kamera gagal diaktifkan, beralih ke mode Mouse/Sentuh:", err);
-                stopCameraStream();
-                activateMouseTouchFallback(err.message || "Izin kamera tidak diberikan.");
-                return false;
-            } finally {
-                if (initBanner) initBanner.classList.add('hidden');
-            }
-        }
-
-        async function processVideoFrame() {
-            if (!state.cameraRunning) return;
-            const videoEl = document.getElementById('webcam-video');
-            if (videoEl && videoEl.readyState >= 2 && handsDetector) {
-                try {
-                    await handsDetector.send({ image: videoEl });
-                } catch (e) {
-                    // Abaikan error frame tunggal
-                }
-            }
-            if (state.cameraRunning) {
-                videoFrameRequestId = requestAnimationFrame(processVideoFrame);
-            }
-        }
-
-        function onHandResults(results) {
-            const canvasEl = document.getElementById('webcam-canvas');
-            const ctx = canvasEl.getContext('2d');
-            const videoEl = document.getElementById('webcam-video');
-
-            if (canvasEl.width !== videoEl.videoWidth || canvasEl.height !== videoEl.videoHeight) {
-                canvasEl.width = videoEl.videoWidth || 320;
-                canvasEl.height = videoEl.videoHeight || 240;
-            }
-
-            ctx.save();
-            ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-
-            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                const landmarks = results.multiHandLandmarks[0];
-                state.handDetected = true;
-                state.pointer.active = true;
-
-                // Gambar kerangka tangan pada webcam preview
-                if (typeof drawConnectors !== 'undefined' && typeof HAND_CONNECTIONS !== 'undefined') {
-                    drawConnectors(ctx, landmarks, HAND_CONNECTIONS, { color: '#38bdf8', lineWidth: 3 });
-                    drawLandmarks(ctx, landmarks, { color: '#facc15', lineWidth: 1, radius: 4 });
-                }
-
-                // Gunakan titik tengah antara ujung telunjuk (8) dan pangkal jari tengah (9) agar stabil untuk anak SD
-                const indexTip = landmarks[8];
-                const palmCenter = landmarks[9];
-                const rawNormX = (indexTip.x * 0.65 + palmCenter.x * 0.35);
-                const rawNormY = (indexTip.y * 0.65 + palmCenter.y * 0.35);
-
-                // Mirror horizontal (1 - x) dan petakan dengan sedikit margin agar tangan mudah menjangkau tepi layar
-                const margin = 0.08;
-                const clampedX = Math.max(0, Math.min(1, ((1 - rawNormX) - margin) / (1 - margin * 2)));
-                const clampedY = Math.max(0, Math.min(1, (rawNormY - margin) / (1 - margin * 2)));
-
-                state.pointer.targetX = clampedX * window.innerWidth;
-                state.pointer.targetY = clampedY * window.innerHeight;
-
-                updateCameraStatusUI('detected', 'Tangan Terdeteksi ✋');
-            } else {
-                state.handDetected = false;
-                if (state.controlMode === 'camera') {
-                    updateCameraStatusUI('searching', 'Arahkan Tangan ke Kamera...');
-                }
-            }
-
-            ctx.restore();
-        }
-
-        function stopCameraStream() {
-            state.cameraRunning = false;
-            state.handDetected = false;
-            if (videoFrameRequestId) {
-                cancelAnimationFrame(videoFrameRequestId);
-                videoFrameRequestId = null;
-            }
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(t => t.stop());
-                mediaStream = null;
-            }
-            const videoEl = document.getElementById('webcam-video');
-            if (videoEl) {
-                videoEl.srcObject = null;
-                videoEl.classList.add('hidden');
-            }
-            const canvasEl = document.getElementById('webcam-canvas');
-            if (canvasEl) {
-                const ctx = canvasEl.getContext('2d');
-                ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-            }
-            document.getElementById('webcam-placeholder').classList.remove('hidden');
-        }
-
-        function activateMouseTouchFallback(reasonMsg) {
-            state.controlMode = 'mouse';
-            state.cameraRunning = false;
-            updateCameraStatusUI('mouse', 'Mode Sentuh / Mouse');
-
-            if (reasonMsg) {
-                document.getElementById('camera-error-msg').innerHTML =
-                    `Kamera belum dapat diakses (<i>${reasonMsg}</i>). Jangan khawatir! Kamu tetap dapat bermain dengan lancar menggunakan <b>Mouse atau Layar Sentuh</b>.`;
-                document.getElementById('camera-error-modal').classList.remove('hidden');
-                document.getElementById('camera-error-modal').classList.add('flex');
-            }
-        }
-
-        function updateCameraStatusUI(mode, text) {
-            const dot = document.getElementById('status-dot');
-            const statusText = document.getElementById('status-text');
-            const statusIcon = document.getElementById('status-icon');
-            const camLiveDot = document.getElementById('cam-live-dot');
-            const camLabel = document.getElementById('cam-status-label');
-
-            statusText.textContent = text;
-            camLabel.textContent = text;
-
-            if (mode === 'detected') {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping";
-                camLiveDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
-                statusIcon.textContent = "✋";
-            } else if (mode === 'searching' || mode === 'loading') {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
-                camLiveDot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
-                statusIcon.textContent = "📷";
-            } else {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-sky-400";
-                camLiveDot.className = "w-2.5 h-2.5 rounded-full bg-sky-400";
-                statusIcon.textContent = "👆";
-            }
-        }
-
-        // Listener Mouse & Sentuh (Selalu aktif sebagai pendukung maupun mode utama)
-        window.addEventListener('pointermove', (e) => {
-            // Jika kamera tidak sedang mendeteksi tangan, gunakan posisi mouse/sentuhan
-            if (state.controlMode === 'mouse' || !state.handDetected) {
-                state.pointer.targetX = e.clientX;
-                state.pointer.targetY = e.clientY;
-                state.pointer.active = true;
-                document.getElementById('hand-cursor').classList.remove('opacity-0');
-            }
-        });
-
-        window.addEventListener('pointerdown', (e) => {
-            sfx.init();
-            if (state.controlMode === 'mouse' || !state.handDetected) {
-                state.pointer.targetX = e.clientX;
-                state.pointer.targetY = e.clientY;
-                state.pointer.x = e.clientX;
-                state.pointer.y = e.clientY;
-                state.pointer.active = true;
-                document.getElementById('hand-cursor').classList.remove('opacity-0');
-            }
-        });
-
-        /********************************************************************
-         * 9. MAIN ANIMATION LOOP
-         ********************************************************************/
-        function gameLoop(now) {
-            const dt = Math.min(0.05, (now - state.lastFrameTime) / 1000);
-            state.lastFrameTime = now;
-
-            // Haluskan pergerakan kursor tangan (Linear Interpolation)
-            const lerpFactor = state.controlMode === 'camera' ? 0.32 : 0.55;
-            state.pointer.x += (state.pointer.targetX - state.pointer.x) * lerpFactor;
-            state.pointer.y += (state.pointer.targetY - state.pointer.y) * lerpFactor;
-
-            const cursorEl = document.getElementById('hand-cursor');
-            if (cursorEl) {
-                cursorEl.style.transform = `translate3d(${state.pointer.x.toFixed(1)}px, ${state.pointer.y.toFixed(1)}px, 0)`;
-            }
-
-            if (state.gameActive) {
-                updateBubblesAndCheckCollisions(dt);
-            }
-
-            updateAndDrawParticles(dt);
-
-            requestAnimationFrame(gameLoop);
-        }
-
-        /********************************************************************
-         * 10. UI CONTROLS, START, RESTART & FINAL SCREEN
-         ********************************************************************/
-        async function startWithCamera() {
-            sfx.init();
-            const btn = document.getElementById('btn-start-camera');
-            btn.disabled = true;
-            btn.classList.add('opacity-75');
-
-            const ok = await startCameraMode();
-
-            btn.disabled = false;
-            btn.classList.remove('opacity-75');
-
-            document.getElementById('start-modal').classList.add('hidden');
-            beginNewGameSession();
-        }
-
-        function startWithTouchOrMouse() {
-            sfx.init();
-            stopCameraStream();
-            state.controlMode = 'mouse';
-            updateCameraStatusUI('mouse', 'Mode Sentuh / Mouse');
-            document.getElementById('start-modal').classList.add('hidden');
-            document.getElementById('hand-cursor').classList.remove('opacity-0');
-            beginNewGameSession();
-        }
-
-        function beginNewGameSession() {
-            state.score = 0;
-            state.correctCount = 0;
-            state.totalAttempts = 0;
-            state.currentQuestionIndex = 0;
-            state.gameActive = true;
-            document.getElementById('result-modal').classList.add('hidden');
-            document.getElementById('result-modal').classList.remove('flex');
-            hideFeedbackBanner();
-            loadQuestion(0);
-        }
-
-        function restartGame() {
-            sfx.init();
-            beginNewGameSession();
-        }
-
-        function showFinalResultScreen() {
-            state.gameActive = false;
-            sfx.playFanfare();
-
-            // Ledakan konfeti perayaan
-            spawnCelebrationParticles(window.innerWidth * 0.3, window.innerHeight * 0.35, 50);
-            spawnCelebrationParticles(window.innerWidth * 0.7, window.innerHeight * 0.35, 50);
-
-            document.getElementById('final-score').textContent = state.score;
-            document.getElementById('final-correct').textContent = `${state.correctCount}/${QUESTIONS_DATA.length}`;
-
-            const acc = state.totalAttempts > 0
-                ? Math.round((state.correctCount / state.totalAttempts) * 100)
-                : 100;
-            document.getElementById('final-accuracy').textContent = `${acc}%`;
-            document.getElementById('final-attempts').textContent = `${state.totalAttempts} Percobaan`;
-
-            const starsEl = document.getElementById('result-stars');
-            const motEl = document.getElementById('result-motivation');
-
-            if (acc >= 85) {
-                starsEl.textContent = "⭐⭐⭐";
-                motEl.textContent = "Sempurna! Kamu sangat memahami materi Rotasi Bumi dan terjadinya Siang & Malam. Pertahankan prestasimu!";
-            } else if (acc >= 65) {
-                starsEl.textContent = "⭐⭐🌟";
-                motEl.textContent = "Hebat sekali! Kamu berhasil menangkap semua jawaban benar dengan semangat pantang menyerah!";
-            } else {
-                starsEl.textContent = "⭐⭐";
-                motEl.textContent = "Kerja bagus! Kamu sudah menyelesaikan semua tantangan. Yuk main lagi supaya makin mahir!";
-            }
-
-            const modal = document.getElementById('result-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function toggleControlMode() {
-            sfx.init();
-            if (state.cameraRunning) {
-                stopCameraStream();
-                state.controlMode = 'mouse';
-                updateCameraStatusUI('mouse', 'Mode Sentuh / Mouse');
-            } else {
-                startCameraMode();
-            }
-        }
-
-        function cycleSpeed() {
-            sfx.init();
-            const modes = [
-                { label: "Santai", mult: 0.65, icon: "🐢" },
-                { label: "Sedang", mult: 1.0, icon: "🚀" },
-                { label: "Cepat", mult: 1.45, icon: "⚡" }
-            ];
-            state.speedModeIndex = (state.speedModeIndex + 1) % modes.length;
-            const current = modes[state.speedModeIndex];
-            state.speedMultiplier = current.mult;
-            document.getElementById(' btn-speed');
-            const btn = document.getElementById('btn-speed');
-            btn.innerHTML = `<span>${current.icon}</span><span id="speed-label" class="hidden xl:inline">${current.label}</span>`;
-        }
-
-        function toggleSound() {
-            sfx.muted = !sfx.muted;
-            document.getElementById('btn-sound').textContent = sfx.muted ? '🔇' : '🔊';
-        }
-
-        function toggleWebcamSize() {
-            const body = document.getElementById('webcam-preview-body');
-            state.webcamMinimized = !state.webcamMinimized;
-            if (state.webcamMinimized) {
-                body.classList.add('hidden');
-            } else {
-                body.classList.remove('hidden');
-            }
-        }
-
-        function openHelpModal() {
-            const m = document.getElementById('help-modal');
-            m.classList.remove('hidden');
-            m.classList.add('flex');
-        }
-
-        function closeHelpModal() {
-            const m = document.getElementById('help-modal');
-            m.classList.add('hidden');
-            m.classList.remove('flex');
-        }
-
-        function closeCameraErrorModal() {
-            const m = document.getElementById('camera-error-modal');
-            m.classList.add('hidden');
-            m.classList.remove('flex');
-        }
-
-        async function retryCameraFromModal() {
-            closeCameraErrorModal();
-            await startCameraMode();
-        }
-
-        // Mulai loop utama saat halaman selesai dimuat
-        window.onload = function () {
-            loadQuestion(0);
-            requestAnimationFrame(gameLoop);
-        };
-    </script>
-</body>
-</html>
+# PROYEK WEBSITE GAME EDUKASI
+# ASTRONAUT BOXING BATTLE – SPACE CHAMPIONSHIP
+
+Buat sebuah website game edukasi interaktif dengan konsep pertarungan dua tim astronot di arena luar angkasa.
+
+Mata pelajaran: IPAS.
+Kelas: VI Sekolah Dasar.
+Materi: Rotasi dan Revolusi Bumi.
+Jumlah tim: 2 tim.
+Jumlah soal: 15 pertanyaan pilihan ganda.
+Sistem permainan: SIMULTANEOUS BATTLE (KEDUA TIM BERMAIN BERSAMAAN).
+
+TUJUAN UTAMA:
+Membuat permainan edukasi yang menggabungkan kuis pengetahuan dan pertarungan tinju karakter astronot.
+
+Website harus terasa seperti game arcade sungguhan, bukan sekadar kuis dengan tampilan biasa.
+
+Kedua tim harus dapat menjawab pertanyaan secara bersamaan, mendapatkan skor secara otomatis, menyerang lawan melalui animasi tinju, dan bersaing sampai 15 soal selesai.
+
+==================================================
+1. KONSEP PERMAINAN
+==================================================
+
+Buat cerita permainan sebagai berikut:
+
+Dua kelompok astronot sedang mengikuti kompetisi pengetahuan di sebuah planet bernama SPACE ARENA.
+
+Mereka harus menjawab 15 pertanyaan IPAS mengenai rotasi dan revolusi Bumi.
+
+Setiap pertanyaan diberikan kepada kedua tim secara bersamaan.
+
+Kedua tim berlomba memilih jawaban yang benar.
+
+Setelah kedua tim selesai menjawab, sistem akan membandingkan hasil jawaban.
+
+Jika satu tim benar dan lawannya salah, astronot yang benar melakukan pukulan kepada lawannya.
+
+Jika kedua tim benar, keduanya memperoleh poin tanpa saling menyerang.
+
+Jika kedua tim salah, keduanya tidak memperoleh poin dan tidak ada serangan.
+
+Tim yang memperoleh skor tertinggi setelah 15 soal menjadi juara.
+
+==================================================
+2. DESAIN VISUAL DAN GAYA GAME
+==================================================
+
+Gunakan desain 3D cartoon arcade game.
+
+Jangan menggunakan desain seperti formulir atau aplikasi ujian.
+
+A. Latar belakang:
+- Galaksi luas.
+- Planet Bumi.
+- Planet Saturnus.
+- Bulan.
+- Bintang berkelap-kelip.
+- Meteor bergerak.
+- Nebula berwarna biru, ungu, dan merah.
+- Efek cahaya luar angkasa.
+
+B. Arena:
+- Ring tinju futuristik.
+- Ring berada di tengah layar.
+- Terdapat empat tali pembatas.
+- Lantai arena memiliki desain teknologi futuristik.
+- Lampu sorot di atas ring.
+- Papan skor digital.
+- Efek cahaya di sekeliling arena.
+
+C. Warna:
+- Tim 1 menggunakan warna merah.
+- Tim 2 menggunakan warna biru.
+- Latar dominan biru gelap, ungu, dan hitam.
+- Gunakan warna kuning atau emas untuk informasi penting.
+
+D. Tampilan:
+- Resolusi desain utama 16:9.
+- Cocok untuk laptop, PC, tablet, dan Smart Board.
+- Seluruh teks mudah dibaca dari jarak jauh.
+- Tombol besar dan mudah ditekan.
+- Tidak ada elemen yang saling menutupi.
+- Tampilan menyesuaikan ukuran layar.
+
+==================================================
+3. KARAKTER ASTRONOT
+==================================================
+
+Buat dua karakter utama yang benar-benar terlihat seperti karakter game.
+
+ASTRONOT MERAH:
+- Baju astronot merah.
+- Helm luar angkasa dengan kaca transparan.
+- Sarung tinju merah.
+- Sepatu astronot.
+- Tubuh kartun 3D.
+- Berdiri di sebelah kiri arena.
+
+ASTRONOT BIRU:
+- Baju astronot biru.
+- Helm luar angkasa dengan kaca transparan.
+- Sarung tinju biru.
+- Sepatu astronot.
+- Tubuh kartun 3D.
+- Berdiri di sebelah kanan arena.
+
+Kedua karakter harus memiliki animasi:
+1. Idle: berdiri sambil bergerak ringan.
+2. Walk: berjalan menuju arena.
+3. Jump: melompat.
+4. Punch: memukul.
+5. Hit: terkena pukulan.
+6. Dodge: menghindar.
+7. Block: menangkis.
+8. Stun: terlihat pusing.
+9. Knockdown: jatuh.
+10. Victory: mengangkat kedua tangan.
+
+Jangan menggunakan emoji sebagai karakter utama.
+
+Gunakan model 3D melalui Three.js atau animasi karakter berkualitas tinggi melalui sprite/CSS jika model 3D tidak tersedia.
+
+Karakter harus terlihat jelas dan tidak terlalu kecil.
+
+==================================================
+4. MENU UTAMA
+==================================================
+
+Buat halaman pembuka yang menarik.
+
+Judul:
+ASTRONAUT BOXING BATTLE.
+
+Subjudul:
+THE GREAT SPACE CHAMPIONSHIP.
+
+Di tengah layar:
+- Astronot merah berada di sebelah kiri.
+- Astronot biru berada di sebelah kanan.
+- Keduanya saling berhadapan.
+- Planet dan bintang bergerak di latar belakang.
+
+Tombol:
+- MULAI PERTANDINGAN.
+- PANDUAN BERMAIN.
+- PENGATURAN SUARA.
+- FULLSCREEN.
+
+Ketika tombol MULAI ditekan, masuk ke halaman pengaturan tim.
+
+==================================================
+5. PENGATURAN TIM
+==================================================
+
+Sebelum bermain, tampilkan dua panel pengaturan.
+
+PANEL TIM MERAH:
+- Input nama tim.
+- Karakter astronot merah.
+- Ikon sarung tinju merah.
+
+PANEL TIM BIRU:
+- Input nama tim.
+- Karakter astronot biru.
+- Ikon sarung tinju biru.
+
+Nama default:
+RED TEAM.
+BLUE TEAM.
+
+Sediakan tombol MULAI BATTLE.
+
+Setelah ditekan, tampilkan animasi:
+1. Countdown 3.
+2. Countdown 2.
+3. Countdown 1.
+4. Kedua astronot masuk ke ring.
+5. Bel pertandingan berbunyi.
+6. Muncul tulisan LET'S BATTLE!
+7. Pertanyaan pertama ditampilkan.
+
+==================================================
+6. LAYOUT ARENA PERTANDINGAN
+==================================================
+
+Gunakan tata letak yang terstruktur.
+
+BAGIAN ATAS:
+- Nama Tim Merah.
+- Skor Tim Merah.
+- HP Tim Merah.
+- Nomor soal.
+- Skor Tim Biru.
+- HP Tim Biru.
+- Nama Tim Biru.
+
+BAGIAN TENGAH:
+- Arena tinju luar angkasa.
+- Astronot merah di sebelah kiri.
+- Astronot biru di sebelah kanan.
+- Efek animasi saat menyerang.
+- Efek cahaya dan bintang.
+
+BAGIAN BAWAH:
+- Pertanyaan.
+- Empat pilihan jawaban.
+- Timer.
+- Status jawaban masing-masing tim.
+
+Jangan membuat pertanyaan menutupi karakter.
+
+Gunakan ukuran font yang besar.
+
+==================================================
+7. SISTEM PERMAINAN BERSAMAAN
+==================================================
+
+INI ADALAH ATURAN PALING PENTING.
+
+Kedua tim harus bermain secara bersamaan.
+
+JANGAN menggunakan sistem bergantian.
+
+JANGAN memberikan soal khusus untuk satu tim.
+
+JANGAN membuat Tim Merah menunggu Tim Biru pada ronde berikutnya.
+
+Setiap ronde harus memiliki pertanyaan yang sama untuk kedua tim.
+
+Contoh:
+
+RONDE 1:
+Pertanyaan yang muncul untuk kedua tim:
+"Perputaran Bumi pada porosnya disebut ...."
+
+Tim Merah memiliki empat tombol jawaban:
+A. Revolusi Bumi
+B. Rotasi Bumi
+C. Gerhana Bumi
+D. Gravitasi Bumi
+
+Tim Biru memiliki empat tombol jawaban yang sama.
+
+Kedua tim dapat memilih jawaban kapan saja selama timer berjalan.
+
+Sistem harus mencatat:
+- Jawaban Tim Merah.
+- Waktu menjawab Tim Merah.
+- Jawaban Tim Biru.
+- Waktu menjawab Tim Biru.
+
+Setiap tim hanya dapat menjawab satu kali per soal.
+
+Jika Tim Merah sudah menjawab, tombol Tim Merah dinonaktifkan, tetapi Tim Biru tetap dapat menjawab.
+
+Jika Tim Biru sudah menjawab, tombol Tim Biru dinonaktifkan, tetapi Tim Merah tetap dapat menjawab.
+
+Jika kedua tim sudah menjawab, hentikan timer dan tampilkan hasil.
+
+Jika salah satu tim belum menjawab, tunggu sampai tim tersebut menjawab atau timer habis.
+
+Jangan langsung melanjutkan soal ketika hanya satu tim yang menjawab.
+
+==================================================
+8. SISTEM JAWABAN DAN HASIL PERTANDINGAN
+==================================================
+
+Buat lima kondisi hasil.
+
+KONDISI A: KEDUA TIM MENJAWAB BENAR.
+
+- Tim Merah mendapat 100 poin.
+- Tim Biru mendapat 100 poin.
+- Tidak ada pengurangan HP.
+- Tidak ada serangan.
+- Kedua astronot melakukan gerakan senang.
+- Muncul tulisan DOUBLE CORRECT!
+
+KONDISI B: TIM MERAH BENAR, TIM BIRU SALAH.
+
+- Tim Merah mendapatkan 100 poin.
+- HP Tim Biru berkurang 15.
+- Astronot merah maju dan memukul.
+- Astronot biru terkena pukulan.
+- Muncul efek benturan.
+- Muncul tulisan RED TEAM WINS THE ROUND!
+
+KONDISI C: TIM BIRU BENAR, TIM MERAH SALAH.
+
+- Tim Biru mendapatkan 100 poin.
+- HP Tim Merah berkurang 15.
+- Astronot biru maju dan memukul.
+- Astronot merah terkena pukulan.
+- Muncul efek benturan.
+- Muncul tulisan BLUE TEAM WINS THE ROUND!
+
+KONDISI D: KEDUA TIM SALAH.
+
+- Tidak ada tambahan skor.
+- Tidak ada pengurangan HP.
+- Tidak ada serangan.
+- Kedua astronot menunjukkan ekspresi bingung.
+- Tampilkan jawaban yang benar.
+- Muncul tulisan BOTH WRONG!
+
+KONDISI E: SATU ATAU KEDUA TIM TIDAK MENJAWAB.
+
+Jika Tim Merah benar dan Tim Biru tidak menjawab:
+- Merah mendapatkan 100 poin.
+- HP Biru berkurang 15.
+- Astronot merah menyerang.
+
+Jika Tim Biru benar dan Tim Merah tidak menjawab:
+- Biru mendapatkan 100 poin.
+- HP Merah berkurang 15.
+- Astronot biru menyerang.
+
+Jika satu tim salah dan lawannya tidak menjawab:
+- Tidak ada tim yang mendapat poin.
+- Tidak ada serangan.
+
+Jika kedua tim tidak menjawab:
+- Tidak ada poin.
+- Tidak ada serangan.
+- Tampilkan kunci jawaban.
+
+==================================================
+9. SISTEM SKOR DAN HEALTH POINT
+==================================================
+
+Masing-masing tim memiliki:
+
+SKOR AWAL: 0.
+HP AWAL: 100.
+JUMLAH BENAR: 0.
+JUMLAH SALAH: 0.
+
+Setiap jawaban benar:
++100 poin.
+
+Setiap jawaban salah:
++0 poin.
+
+Jika tim menjawab salah sementara lawan menjawab benar:
+HP tim yang salah berkurang 15.
+
+Jika tim tidak menjawab sementara lawan menjawab benar:
+HP tim yang tidak menjawab berkurang 15.
+
+Jika kedua tim salah atau tidak menjawab:
+HP tidak berkurang.
+
+Ketentuan:
+- HP minimal 0.
+- HP maksimal 100.
+- Skor tidak boleh berkurang.
+- Semua perubahan harus otomatis.
+- Perubahan skor harus langsung terlihat.
+
+Jika HP mencapai 0:
+- Astronot mengalami KNOCKOUT.
+- Astronot jatuh secara kartun.
+- Muncul tulisan KNOCKOUT!
+- Namun tim tersebut tetap boleh menjawab pertanyaan berikutnya.
+- Jangan mengeluarkan tim dari permainan.
+
+Pemenang akhir ditentukan berdasarkan skor, bukan HP.
+
+==================================================
+10. SISTEM TIMER
+==================================================
+
+Setiap pertanyaan memiliki waktu 20 detik.
+
+Timer dimulai ketika pertanyaan muncul.
+
+Aturan:
+- Countdown dimulai dari 20.
+- Kedua tim memiliki waktu yang sama.
+- Jika satu tim menjawab, jawaban dikunci.
+- Tim lain tetap dapat menjawab.
+- Jika kedua tim sudah menjawab, timer langsung dihentikan.
+- Jika waktu habis, jawaban yang belum dipilih dianggap tidak menjawab.
+
+Desain timer:
+- Angka besar di tengah atas.
+- Warna hijau saat 20–11 detik.
+- Warna kuning saat 10–6 detik.
+- Warna merah saat 5–1 detik.
+- Animasi berkedip saat 5 detik terakhir.
+- Suara countdown opsional.
+
+==================================================
+11. ANIMASI TINJU
+==================================================
+
+Setiap serangan harus mempunyai animasi yang jelas.
+
+Saat Tim Merah menyerang:
+1. Astronot merah bergerak maju.
+2. Astronot merah mengangkat sarung tinju.
+3. Astronot merah melakukan gerakan jab atau hook.
+4. Astronot biru menerima pukulan.
+5. Tubuh astronot biru terdorong ke belakang.
+6. Muncul efek bintang.
+7. HP biru berkurang.
+8. Astronot kembali ke posisi semula.
+
+Saat Tim Biru menyerang:
+Lakukan animasi yang sama dengan posisi berlawanan.
+
+Tambahkan variasi:
+- Pukulan cepat.
+- Pukulan melingkar.
+- Gerakan menghindar.
+- Gerakan menangkis.
+- Efek terkena pukulan.
+- Animasi jatuh.
+
+Animasi tidak boleh hanya mengubah posisi gambar secara tiba-tiba.
+
+Gunakan transisi gerakan yang halus.
+
+Tidak boleh ada darah atau kekerasan realistis.
+
+==================================================
+12. TAMPILAN KOTAK SOAL
+==================================================
+
+Pertanyaan muncul di bagian tengah bawah arena.
+
+Susunan:
+
+RONDE 01 / 15
+
+Pertanyaan:
+Perputaran Bumi pada porosnya disebut ....
+
+Pilihan:
+A. Revolusi Bumi
+B. Rotasi Bumi
+C. Gerhana Bumi
+D. Gravitasi Bumi
+
+Buat dua area tombol yang terpisah:
+
+AREA JAWABAN TIM MERAH:
+- Tombol A.
+- Tombol B.
+- Tombol C.
+- Tombol D.
+
+AREA JAWABAN TIM BIRU:
+- Tombol A.
+- Tombol B.
+- Tombol C.
+- Tombol D.
+
+Meskipun pertanyaan sama, kedua tim harus memiliki kontrol masing-masing.
+
+Ketika tim memilih:
+- Tombol yang dipilih berubah warna.
+- Muncul status ANSWER LOCKED.
+- Tidak dapat mengganti jawaban.
+- Tim lawan masih bisa menjawab.
+
+Setelah kedua tim selesai, tampilkan:
+- Jawaban Tim Merah.
+- Jawaban Tim Biru.
+- Hasil benar atau salah.
+- Kunci jawaban.
+- Penjelasan materi.
+
+==================================================
+13. TRANSISI ANTARSOAL
+==================================================
+
+Setelah kedua tim selesai menjawab:
+1. Tampilkan hasil jawaban.
+2. Jalankan animasi serangan jika memenuhi kondisi.
+3. Perbarui skor.
+4. Perbarui HP.
+5. Tampilkan penjelasan jawaban selama 3–4 detik.
+6. Munculkan tulisan NEXT ROUND.
+7. Lanjutkan ke pertanyaan berikutnya.
+
+Tambahkan efek bel setiap awal ronde.
+
+==================================================
+14. BANK SOAL IPAS
+==================================================
+
+Masukkan 15 pertanyaan berikut.
+
+JANGAN MENGUBAH ISI PERTANYAAN.
+JANGAN MENGUBAH PILIHAN JAWABAN.
+JANGAN MENGUBAH KUNCI JAWABAN.
+
+SOAL 1
+Perputaran Bumi pada porosnya disebut ....
+A. Revolusi Bumi
+B. Rotasi Bumi (BENAR)
+C. Gerhana Bumi
+D. Gravitasi Bumi
+
+SOAL 2
+Waktu yang dibutuhkan Bumi untuk melakukan satu kali rotasi adalah ....
+A. 12 jam
+B. 24 jam (BENAR)
+C. 30 hari
+D. 365 hari
+
+SOAL 3
+Salah satu akibat dari rotasi Bumi adalah ....
+A. Terjadinya siang dan malam (BENAR)
+B. Terjadinya pergantian tahun
+C. Terjadinya perubahan musim
+D. Terjadinya gerhana Bulan
+
+SOAL 4
+Bagian Bumi yang terkena cahaya Matahari mengalami ....
+A. Malam hari
+B. Musim hujan
+C. Siang hari (BENAR)
+D. Musim kemarau
+
+SOAL 5
+Bagian Bumi yang tidak terkena cahaya Matahari mengalami ....
+A. Siang hari
+B. Malam hari (BENAR)
+C. Musim panas
+D. Musim semi
+
+SOAL 6
+Perputaran Bumi mengelilingi Matahari disebut ....
+A. Rotasi Bumi
+B. Revolusi Bumi (BENAR)
+C. Gravitasi Bumi
+D. Gerak Bulan
+
+SOAL 7
+Waktu yang dibutuhkan Bumi untuk melakukan satu kali revolusi adalah ....
+A. 24 jam
+B. 7 hari
+C. 30 hari
+D. 365¼ hari (BENAR)
+
+SOAL 8
+Revolusi Bumi bersama dengan kemiringan sumbu Bumi menyebabkan ....
+A. Terjadinya siang dan malam
+B. Terjadinya pergantian musim di beberapa wilayah Bumi (BENAR)
+C. Terjadinya gempa Bumi
+D. Terjadinya angin topan
+
+SOAL 9
+Perbedaan waktu di berbagai wilayah Bumi merupakan salah satu akibat dari ....
+A. Rotasi Bumi (BENAR)
+B. Revolusi Bumi
+C. Gerhana Matahari
+D. Gerhana Bulan
+
+SOAL 10
+Alat peraga yang dapat digunakan untuk menunjukkan bentuk Bumi dalam pembelajaran adalah ....
+A. Penggaris
+B. Globe (BENAR)
+C. Buku tulis
+D. Pensil
+
+SOAL 11
+Dalam percobaan menggunakan globe dan senter, senter berfungsi sebagai ....
+A. Bulan
+B. Bintang
+C. Matahari (BENAR)
+D. Bumi
+
+SOAL 12
+Ketika globe diputar di depan cahaya senter, bagian yang terkena cahaya menunjukkan ....
+A. Wilayah yang mengalami malam
+B. Wilayah yang mengalami siang (BENAR)
+C. Wilayah yang mengalami musim hujan
+D. Wilayah yang mengalami musim kemarau
+
+SOAL 13
+Tahun kabisat berkaitan dengan waktu revolusi Bumi yang berlangsung sekitar ....
+A. 24 jam
+B. 30 hari
+C. 365¼ hari (BENAR)
+D. 400 hari
+
+SOAL 14
+Perbedaan utama antara rotasi dan revolusi Bumi adalah ....
+A. Rotasi adalah perputaran Bumi pada porosnya, sedangkan revolusi adalah perputaran Bumi mengelilingi Matahari (BENAR)
+B. Rotasi adalah perputaran Bumi mengelilingi Matahari, sedangkan revolusi adalah perputaran Bumi pada porosnya
+C. Rotasi dan revolusi memiliki arti yang sama
+D. Rotasi dan revolusi hanya terjadi pada malam hari
+
+SOAL 15
+Saat melakukan percobaan revolusi Bumi menggunakan globe dan senter, globe harus ....
+A. Diletakkan tanpa bergerak
+B. Diputar mengelilingi senter dengan arah kemiringan sumbu tetap (BENAR)
+C. Dijauhkan dari senter
+D. Diletakkan terbalik
+
+==================================================
+15. PENJELASAN MATERI
+==================================================
+
+Setelah setiap soal selesai, tampilkan penjelasan singkat.
+
+Penjelasan harus sesuai dengan pertanyaan.
+
+Contoh:
+
+ROTASI BUMI:
+Rotasi adalah gerakan Bumi berputar pada porosnya. Satu kali rotasi membutuhkan waktu sekitar 24 jam. Akibatnya adalah terjadinya siang dan malam.
+
+REVOLUSI BUMI:
+Revolusi adalah gerakan Bumi mengelilingi Matahari. Satu kali revolusi berlangsung sekitar 365¼ hari.
+
+SIANG DAN MALAM:
+Bagian Bumi yang terkena cahaya Matahari mengalami siang hari, sedangkan bagian yang tidak terkena cahaya mengalami malam hari.
+
+TAHUN KABISAT:
+Sisa waktu sekitar seperempat hari setiap tahun akan terkumpul menjadi satu hari tambahan setiap empat tahun, sehingga dikenal tahun kabisat.
+
+==================================================
+16. HALAMAN HASIL AKHIR
+==================================================
+
+Setelah ronde 15 selesai, hentikan permainan dan tampilkan halaman kemenangan.
+
+Tampilkan kedua astronot berdiri di tengah arena.
+
+Jika Tim Merah menang:
+- Astronot merah mengangkat kedua tangan.
+- Astronot biru memberikan salam.
+- Konfeti berjatuhan.
+- Muncul tulisan RED TEAM CHAMPION!
+
+Jika Tim Biru menang:
+- Astronot biru mengangkat kedua tangan.
+- Astronot merah memberikan salam.
+- Konfeti berjatuhan.
+- Muncul tulisan BLUE TEAM CHAMPION!
+
+Jika seri:
+- Kedua astronot berjabat tangan.
+- Muncul tulisan DRAW! AMAZING BATTLE!
+
+Tampilkan tabel hasil:
+
+TIM MERAH:
+- Nama tim.
+- Skor akhir.
+- Jumlah jawaban benar.
+- Jumlah jawaban salah.
+- Jumlah tidak menjawab.
+- Sisa HP.
+
+TIM BIRU:
+- Nama tim.
+- Skor akhir.
+- Jumlah jawaban benar.
+- Jumlah jawaban salah.
+- Jumlah tidak menjawab.
+- Sisa HP.
+
+Pemenang ditentukan berdasarkan skor tertinggi.
+
+Tambahkan tombol:
+- MAIN LAGI.
+- ULANGI PERTANDINGAN.
+- KEMBALI KE MENU.
+- LIHAT HASIL.
+
+==================================================
+17. PENGATURAN DAN FITUR TAMBAHAN
+==================================================
+
+Tambahkan:
+- Musik latar luar angkasa.
+- Efek suara pukulan.
+- Efek suara jawaban benar.
+- Efek suara jawaban salah.
+- Efek suara countdown.
+- Tombol mute.
+- Tombol fullscreen.
+- Tombol pause.
+- Tombol resume.
+- Tombol restart.
+
+Ketika permainan dijeda:
+- Timer berhenti.
+- Kedua karakter berhenti.
+- Proses perpindahan soal berhenti.
+- Status permainan disimpan sementara.
+
+Ketika dilanjutkan:
+- Permainan melanjutkan kondisi sebelumnya.
+
+==================================================
+18. TEKNOLOGI PEMBUATAN
+==================================================
+
+Gunakan:
+- HTML.
+- CSS.
+- JavaScript atau React.
+- Three.js untuk karakter dan arena 3D jika memungkinkan.
+- Animasi CSS untuk transisi.
+- Web Audio API atau file audio lokal untuk efek suara.
+
+Buat game tanpa membutuhkan API berbayar.
+
+Tidak perlu login.
+
+Pastikan bisa dijalankan melalui browser Google Chrome.
+
+Buat kode yang rapi dan terstruktur.
+
+Gunakan state terpisah untuk:
+- Skor Tim Merah.
+- Skor Tim Biru.
+- HP Tim Merah.
+- HP Tim Biru.
+- Jawaban Tim Merah.
+- Jawaban Tim Biru.
+- Status waktu.
+- Nomor soal.
+- Status animasi.
+- Status permainan.
+
+Pastikan jawaban kedua tim tidak saling menimpa.
+
+Pastikan setiap soal hanya diproses satu kali.
+
+==================================================
+19. PENGUJIAN WAJIB
+==================================================
+
+Sebelum menyelesaikan website, uji semua kondisi:
+
+UJI 1:
+Kedua tim menjawab benar.
+Hasil harus memberikan 100 poin kepada masing-masing.
+
+UJI 2:
+Tim Merah benar, Tim Biru salah.
+Merah mendapat 100 poin dan biru kehilangan 15 HP.
+
+UJI 3:
+Tim Biru benar, Tim Merah salah.
+Biru mendapat 100 poin dan merah kehilangan 15 HP.
+
+UJI 4:
+Kedua tim salah.
+Tidak ada skor dan tidak ada serangan.
+
+UJI 5:
+Satu tim tidak menjawab.
+Sistem mencatat tidak menjawab dengan benar.
+
+UJI 6:
+Kedua tim menjawab pada detik yang hampir bersamaan.
+Kedua jawaban tetap harus tercatat secara independen.
+
+UJI 7:
+HP mencapai nol.
+Karakter knockout, tetapi tetap bisa bermain sampai selesai.
+
+UJI 8:
+Permainan sampai soal nomor 15.
+Hasil akhir dihitung dengan benar.
+
+==================================================
+20. HASIL AKHIR YANG DIHARAPKAN
+==================================================
+
+Buat website yang benar-benar berfungsi dan dapat dimainkan.
+
+Jangan hanya membuat desain gambar atau tampilan statis.
+
+Semua tombol harus bekerja.
+
+Kedua tim harus memiliki kontrol jawaban masing-masing.
+
+Kedua tim harus mendapatkan soal yang sama secara bersamaan.
+
+Animasi tinju harus berjalan sesuai hasil jawaban.
+
+Skor dan HP harus diperbarui otomatis.
+
+Semua 15 soal harus dimasukkan.
+
+Hasil pertandingan harus dihitung otomatis.
+
+Prioritas utama adalah:
+1. Game benar-benar bisa dimainkan.
+2. Kedua tim menjawab bersamaan.
+3. Karakter astronot dapat melakukan animasi tinju.
+4. Tampilan arena 3D menarik.
+5. Seluruh pertanyaan berfungsi dengan benar.
+
+Jangan menghilangkan fitur apa pun dari instruksi ini.
