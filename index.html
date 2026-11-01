@@ -1,804 +1,3098 @@
-# PROYEK WEBSITE GAME EDUKASI
-# ASTRONAUT BOXING BATTLE – SPACE CHAMPIONSHIP
-
-Buat sebuah website game edukasi interaktif dengan konsep pertarungan dua tim astronot di arena luar angkasa.
-
-Mata pelajaran: IPAS.
-Kelas: VI Sekolah Dasar.
-Materi: Rotasi dan Revolusi Bumi.
-Jumlah tim: 2 tim.
-Jumlah soal: 15 pertanyaan pilihan ganda.
-Sistem permainan: SIMULTANEOUS BATTLE (KEDUA TIM BERMAIN BERSAMAAN).
-
-TUJUAN UTAMA:
-Membuat permainan edukasi yang menggabungkan kuis pengetahuan dan pertarungan tinju karakter astronot.
-
-Website harus terasa seperti game arcade sungguhan, bukan sekadar kuis dengan tampilan biasa.
-
-Kedua tim harus dapat menjawab pertanyaan secara bersamaan, mendapatkan skor secara otomatis, menyerang lawan melalui animasi tinju, dan bersaing sampai 15 soal selesai.
-
-==================================================
-1. KONSEP PERMAINAN
-==================================================
-
-Buat cerita permainan sebagai berikut:
-
-Dua kelompok astronot sedang mengikuti kompetisi pengetahuan di sebuah planet bernama SPACE ARENA.
-
-Mereka harus menjawab 15 pertanyaan IPAS mengenai rotasi dan revolusi Bumi.
-
-Setiap pertanyaan diberikan kepada kedua tim secara bersamaan.
-
-Kedua tim berlomba memilih jawaban yang benar.
-
-Setelah kedua tim selesai menjawab, sistem akan membandingkan hasil jawaban.
-
-Jika satu tim benar dan lawannya salah, astronot yang benar melakukan pukulan kepada lawannya.
-
-Jika kedua tim benar, keduanya memperoleh poin tanpa saling menyerang.
-
-Jika kedua tim salah, keduanya tidak memperoleh poin dan tidak ada serangan.
-
-Tim yang memperoleh skor tertinggi setelah 15 soal menjadi juara.
-
-==================================================
-2. DESAIN VISUAL DAN GAYA GAME
-==================================================
-
-Gunakan desain 3D cartoon arcade game.
-
-Jangan menggunakan desain seperti formulir atau aplikasi ujian.
-
-A. Latar belakang:
-- Galaksi luas.
-- Planet Bumi.
-- Planet Saturnus.
-- Bulan.
-- Bintang berkelap-kelip.
-- Meteor bergerak.
-- Nebula berwarna biru, ungu, dan merah.
-- Efek cahaya luar angkasa.
-
-B. Arena:
-- Ring tinju futuristik.
-- Ring berada di tengah layar.
-- Terdapat empat tali pembatas.
-- Lantai arena memiliki desain teknologi futuristik.
-- Lampu sorot di atas ring.
-- Papan skor digital.
-- Efek cahaya di sekeliling arena.
-
-C. Warna:
-- Tim 1 menggunakan warna merah.
-- Tim 2 menggunakan warna biru.
-- Latar dominan biru gelap, ungu, dan hitam.
-- Gunakan warna kuning atau emas untuk informasi penting.
-
-D. Tampilan:
-- Resolusi desain utama 16:9.
-- Cocok untuk laptop, PC, tablet, dan Smart Board.
-- Seluruh teks mudah dibaca dari jarak jauh.
-- Tombol besar dan mudah ditekan.
-- Tidak ada elemen yang saling menutupi.
-- Tampilan menyesuaikan ukuran layar.
-
-==================================================
-3. KARAKTER ASTRONOT
-==================================================
-
-Buat dua karakter utama yang benar-benar terlihat seperti karakter game.
-
-ASTRONOT MERAH:
-- Baju astronot merah.
-- Helm luar angkasa dengan kaca transparan.
-- Sarung tinju merah.
-- Sepatu astronot.
-- Tubuh kartun 3D.
-- Berdiri di sebelah kiri arena.
-
-ASTRONOT BIRU:
-- Baju astronot biru.
-- Helm luar angkasa dengan kaca transparan.
-- Sarung tinju biru.
-- Sepatu astronot.
-- Tubuh kartun 3D.
-- Berdiri di sebelah kanan arena.
-
-Kedua karakter harus memiliki animasi:
-1. Idle: berdiri sambil bergerak ringan.
-2. Walk: berjalan menuju arena.
-3. Jump: melompat.
-4. Punch: memukul.
-5. Hit: terkena pukulan.
-6. Dodge: menghindar.
-7. Block: menangkis.
-8. Stun: terlihat pusing.
-9. Knockdown: jatuh.
-10. Victory: mengangkat kedua tangan.
-
-Jangan menggunakan emoji sebagai karakter utama.
-
-Gunakan model 3D melalui Three.js atau animasi karakter berkualitas tinggi melalui sprite/CSS jika model 3D tidak tersedia.
-
-Karakter harus terlihat jelas dan tidak terlalu kecil.
-
-==================================================
-4. MENU UTAMA
-==================================================
-
-Buat halaman pembuka yang menarik.
-
-Judul:
-ASTRONAUT BOXING BATTLE.
-
-Subjudul:
-THE GREAT SPACE CHAMPIONSHIP.
-
-Di tengah layar:
-- Astronot merah berada di sebelah kiri.
-- Astronot biru berada di sebelah kanan.
-- Keduanya saling berhadapan.
-- Planet dan bintang bergerak di latar belakang.
-
-Tombol:
-- MULAI PERTANDINGAN.
-- PANDUAN BERMAIN.
-- PENGATURAN SUARA.
-- FULLSCREEN.
-
-Ketika tombol MULAI ditekan, masuk ke halaman pengaturan tim.
-
-==================================================
-5. PENGATURAN TIM
-==================================================
-
-Sebelum bermain, tampilkan dua panel pengaturan.
-
-PANEL TIM MERAH:
-- Input nama tim.
-- Karakter astronot merah.
-- Ikon sarung tinju merah.
-
-PANEL TIM BIRU:
-- Input nama tim.
-- Karakter astronot biru.
-- Ikon sarung tinju biru.
-
-Nama default:
-RED TEAM.
-BLUE TEAM.
-
-Sediakan tombol MULAI BATTLE.
-
-Setelah ditekan, tampilkan animasi:
-1. Countdown 3.
-2. Countdown 2.
-3. Countdown 1.
-4. Kedua astronot masuk ke ring.
-5. Bel pertandingan berbunyi.
-6. Muncul tulisan LET'S BATTLE!
-7. Pertanyaan pertama ditampilkan.
-
-==================================================
-6. LAYOUT ARENA PERTANDINGAN
-==================================================
-
-Gunakan tata letak yang terstruktur.
-
-BAGIAN ATAS:
-- Nama Tim Merah.
-- Skor Tim Merah.
-- HP Tim Merah.
-- Nomor soal.
-- Skor Tim Biru.
-- HP Tim Biru.
-- Nama Tim Biru.
-
-BAGIAN TENGAH:
-- Arena tinju luar angkasa.
-- Astronot merah di sebelah kiri.
-- Astronot biru di sebelah kanan.
-- Efek animasi saat menyerang.
-- Efek cahaya dan bintang.
-
-BAGIAN BAWAH:
-- Pertanyaan.
-- Empat pilihan jawaban.
-- Timer.
-- Status jawaban masing-masing tim.
-
-Jangan membuat pertanyaan menutupi karakter.
-
-Gunakan ukuran font yang besar.
-
-==================================================
-7. SISTEM PERMAINAN BERSAMAAN
-==================================================
-
-INI ADALAH ATURAN PALING PENTING.
-
-Kedua tim harus bermain secara bersamaan.
-
-JANGAN menggunakan sistem bergantian.
-
-JANGAN memberikan soal khusus untuk satu tim.
-
-JANGAN membuat Tim Merah menunggu Tim Biru pada ronde berikutnya.
-
-Setiap ronde harus memiliki pertanyaan yang sama untuk kedua tim.
-
-Contoh:
-
-RONDE 1:
-Pertanyaan yang muncul untuk kedua tim:
-"Perputaran Bumi pada porosnya disebut ...."
-
-Tim Merah memiliki empat tombol jawaban:
-A. Revolusi Bumi
-B. Rotasi Bumi
-C. Gerhana Bumi
-D. Gravitasi Bumi
-
-Tim Biru memiliki empat tombol jawaban yang sama.
-
-Kedua tim dapat memilih jawaban kapan saja selama timer berjalan.
-
-Sistem harus mencatat:
-- Jawaban Tim Merah.
-- Waktu menjawab Tim Merah.
-- Jawaban Tim Biru.
-- Waktu menjawab Tim Biru.
-
-Setiap tim hanya dapat menjawab satu kali per soal.
-
-Jika Tim Merah sudah menjawab, tombol Tim Merah dinonaktifkan, tetapi Tim Biru tetap dapat menjawab.
-
-Jika Tim Biru sudah menjawab, tombol Tim Biru dinonaktifkan, tetapi Tim Merah tetap dapat menjawab.
-
-Jika kedua tim sudah menjawab, hentikan timer dan tampilkan hasil.
-
-Jika salah satu tim belum menjawab, tunggu sampai tim tersebut menjawab atau timer habis.
-
-Jangan langsung melanjutkan soal ketika hanya satu tim yang menjawab.
-
-==================================================
-8. SISTEM JAWABAN DAN HASIL PERTANDINGAN
-==================================================
-
-Buat lima kondisi hasil.
-
-KONDISI A: KEDUA TIM MENJAWAB BENAR.
-
-- Tim Merah mendapat 100 poin.
-- Tim Biru mendapat 100 poin.
-- Tidak ada pengurangan HP.
-- Tidak ada serangan.
-- Kedua astronot melakukan gerakan senang.
-- Muncul tulisan DOUBLE CORRECT!
-
-KONDISI B: TIM MERAH BENAR, TIM BIRU SALAH.
-
-- Tim Merah mendapatkan 100 poin.
-- HP Tim Biru berkurang 15.
-- Astronot merah maju dan memukul.
-- Astronot biru terkena pukulan.
-- Muncul efek benturan.
-- Muncul tulisan RED TEAM WINS THE ROUND!
-
-KONDISI C: TIM BIRU BENAR, TIM MERAH SALAH.
-
-- Tim Biru mendapatkan 100 poin.
-- HP Tim Merah berkurang 15.
-- Astronot biru maju dan memukul.
-- Astronot merah terkena pukulan.
-- Muncul efek benturan.
-- Muncul tulisan BLUE TEAM WINS THE ROUND!
-
-KONDISI D: KEDUA TIM SALAH.
-
-- Tidak ada tambahan skor.
-- Tidak ada pengurangan HP.
-- Tidak ada serangan.
-- Kedua astronot menunjukkan ekspresi bingung.
-- Tampilkan jawaban yang benar.
-- Muncul tulisan BOTH WRONG!
-
-KONDISI E: SATU ATAU KEDUA TIM TIDAK MENJAWAB.
-
-Jika Tim Merah benar dan Tim Biru tidak menjawab:
-- Merah mendapatkan 100 poin.
-- HP Biru berkurang 15.
-- Astronot merah menyerang.
-
-Jika Tim Biru benar dan Tim Merah tidak menjawab:
-- Biru mendapatkan 100 poin.
-- HP Merah berkurang 15.
-- Astronot biru menyerang.
-
-Jika satu tim salah dan lawannya tidak menjawab:
-- Tidak ada tim yang mendapat poin.
-- Tidak ada serangan.
-
-Jika kedua tim tidak menjawab:
-- Tidak ada poin.
-- Tidak ada serangan.
-- Tampilkan kunci jawaban.
-
-==================================================
-9. SISTEM SKOR DAN HEALTH POINT
-==================================================
-
-Masing-masing tim memiliki:
-
-SKOR AWAL: 0.
-HP AWAL: 100.
-JUMLAH BENAR: 0.
-JUMLAH SALAH: 0.
-
-Setiap jawaban benar:
-+100 poin.
-
-Setiap jawaban salah:
-+0 poin.
-
-Jika tim menjawab salah sementara lawan menjawab benar:
-HP tim yang salah berkurang 15.
-
-Jika tim tidak menjawab sementara lawan menjawab benar:
-HP tim yang tidak menjawab berkurang 15.
-
-Jika kedua tim salah atau tidak menjawab:
-HP tidak berkurang.
-
-Ketentuan:
-- HP minimal 0.
-- HP maksimal 100.
-- Skor tidak boleh berkurang.
-- Semua perubahan harus otomatis.
-- Perubahan skor harus langsung terlihat.
-
-Jika HP mencapai 0:
-- Astronot mengalami KNOCKOUT.
-- Astronot jatuh secara kartun.
-- Muncul tulisan KNOCKOUT!
-- Namun tim tersebut tetap boleh menjawab pertanyaan berikutnya.
-- Jangan mengeluarkan tim dari permainan.
-
-Pemenang akhir ditentukan berdasarkan skor, bukan HP.
-
-==================================================
-10. SISTEM TIMER
-==================================================
-
-Setiap pertanyaan memiliki waktu 20 detik.
-
-Timer dimulai ketika pertanyaan muncul.
-
-Aturan:
-- Countdown dimulai dari 20.
-- Kedua tim memiliki waktu yang sama.
-- Jika satu tim menjawab, jawaban dikunci.
-- Tim lain tetap dapat menjawab.
-- Jika kedua tim sudah menjawab, timer langsung dihentikan.
-- Jika waktu habis, jawaban yang belum dipilih dianggap tidak menjawab.
-
-Desain timer:
-- Angka besar di tengah atas.
-- Warna hijau saat 20–11 detik.
-- Warna kuning saat 10–6 detik.
-- Warna merah saat 5–1 detik.
-- Animasi berkedip saat 5 detik terakhir.
-- Suara countdown opsional.
-
-==================================================
-11. ANIMASI TINJU
-==================================================
-
-Setiap serangan harus mempunyai animasi yang jelas.
-
-Saat Tim Merah menyerang:
-1. Astronot merah bergerak maju.
-2. Astronot merah mengangkat sarung tinju.
-3. Astronot merah melakukan gerakan jab atau hook.
-4. Astronot biru menerima pukulan.
-5. Tubuh astronot biru terdorong ke belakang.
-6. Muncul efek bintang.
-7. HP biru berkurang.
-8. Astronot kembali ke posisi semula.
-
-Saat Tim Biru menyerang:
-Lakukan animasi yang sama dengan posisi berlawanan.
-
-Tambahkan variasi:
-- Pukulan cepat.
-- Pukulan melingkar.
-- Gerakan menghindar.
-- Gerakan menangkis.
-- Efek terkena pukulan.
-- Animasi jatuh.
-
-Animasi tidak boleh hanya mengubah posisi gambar secara tiba-tiba.
-
-Gunakan transisi gerakan yang halus.
-
-Tidak boleh ada darah atau kekerasan realistis.
-
-==================================================
-12. TAMPILAN KOTAK SOAL
-==================================================
-
-Pertanyaan muncul di bagian tengah bawah arena.
-
-Susunan:
-
-RONDE 01 / 15
-
-Pertanyaan:
-Perputaran Bumi pada porosnya disebut ....
-
-Pilihan:
-A. Revolusi Bumi
-B. Rotasi Bumi
-C. Gerhana Bumi
-D. Gravitasi Bumi
-
-Buat dua area tombol yang terpisah:
-
-AREA JAWABAN TIM MERAH:
-- Tombol A.
-- Tombol B.
-- Tombol C.
-- Tombol D.
-
-AREA JAWABAN TIM BIRU:
-- Tombol A.
-- Tombol B.
-- Tombol C.
-- Tombol D.
-
-Meskipun pertanyaan sama, kedua tim harus memiliki kontrol masing-masing.
-
-Ketika tim memilih:
-- Tombol yang dipilih berubah warna.
-- Muncul status ANSWER LOCKED.
-- Tidak dapat mengganti jawaban.
-- Tim lawan masih bisa menjawab.
-
-Setelah kedua tim selesai, tampilkan:
-- Jawaban Tim Merah.
-- Jawaban Tim Biru.
-- Hasil benar atau salah.
-- Kunci jawaban.
-- Penjelasan materi.
-
-==================================================
-13. TRANSISI ANTARSOAL
-==================================================
-
-Setelah kedua tim selesai menjawab:
-1. Tampilkan hasil jawaban.
-2. Jalankan animasi serangan jika memenuhi kondisi.
-3. Perbarui skor.
-4. Perbarui HP.
-5. Tampilkan penjelasan jawaban selama 3–4 detik.
-6. Munculkan tulisan NEXT ROUND.
-7. Lanjutkan ke pertanyaan berikutnya.
-
-Tambahkan efek bel setiap awal ronde.
-
-==================================================
-14. BANK SOAL IPAS
-==================================================
-
-Masukkan 15 pertanyaan berikut.
-
-JANGAN MENGUBAH ISI PERTANYAAN.
-JANGAN MENGUBAH PILIHAN JAWABAN.
-JANGAN MENGUBAH KUNCI JAWABAN.
-
-SOAL 1
-Perputaran Bumi pada porosnya disebut ....
-A. Revolusi Bumi
-B. Rotasi Bumi (BENAR)
-C. Gerhana Bumi
-D. Gravitasi Bumi
-
-SOAL 2
-Waktu yang dibutuhkan Bumi untuk melakukan satu kali rotasi adalah ....
-A. 12 jam
-B. 24 jam (BENAR)
-C. 30 hari
-D. 365 hari
-
-SOAL 3
-Salah satu akibat dari rotasi Bumi adalah ....
-A. Terjadinya siang dan malam (BENAR)
-B. Terjadinya pergantian tahun
-C. Terjadinya perubahan musim
-D. Terjadinya gerhana Bulan
-
-SOAL 4
-Bagian Bumi yang terkena cahaya Matahari mengalami ....
-A. Malam hari
-B. Musim hujan
-C. Siang hari (BENAR)
-D. Musim kemarau
-
-SOAL 5
-Bagian Bumi yang tidak terkena cahaya Matahari mengalami ....
-A. Siang hari
-B. Malam hari (BENAR)
-C. Musim panas
-D. Musim semi
-
-SOAL 6
-Perputaran Bumi mengelilingi Matahari disebut ....
-A. Rotasi Bumi
-B. Revolusi Bumi (BENAR)
-C. Gravitasi Bumi
-D. Gerak Bulan
-
-SOAL 7
-Waktu yang dibutuhkan Bumi untuk melakukan satu kali revolusi adalah ....
-A. 24 jam
-B. 7 hari
-C. 30 hari
-D. 365¼ hari (BENAR)
-
-SOAL 8
-Revolusi Bumi bersama dengan kemiringan sumbu Bumi menyebabkan ....
-A. Terjadinya siang dan malam
-B. Terjadinya pergantian musim di beberapa wilayah Bumi (BENAR)
-C. Terjadinya gempa Bumi
-D. Terjadinya angin topan
-
-SOAL 9
-Perbedaan waktu di berbagai wilayah Bumi merupakan salah satu akibat dari ....
-A. Rotasi Bumi (BENAR)
-B. Revolusi Bumi
-C. Gerhana Matahari
-D. Gerhana Bulan
-
-SOAL 10
-Alat peraga yang dapat digunakan untuk menunjukkan bentuk Bumi dalam pembelajaran adalah ....
-A. Penggaris
-B. Globe (BENAR)
-C. Buku tulis
-D. Pensil
-
-SOAL 11
-Dalam percobaan menggunakan globe dan senter, senter berfungsi sebagai ....
-A. Bulan
-B. Bintang
-C. Matahari (BENAR)
-D. Bumi
-
-SOAL 12
-Ketika globe diputar di depan cahaya senter, bagian yang terkena cahaya menunjukkan ....
-A. Wilayah yang mengalami malam
-B. Wilayah yang mengalami siang (BENAR)
-C. Wilayah yang mengalami musim hujan
-D. Wilayah yang mengalami musim kemarau
-
-SOAL 13
-Tahun kabisat berkaitan dengan waktu revolusi Bumi yang berlangsung sekitar ....
-A. 24 jam
-B. 30 hari
-C. 365¼ hari (BENAR)
-D. 400 hari
-
-SOAL 14
-Perbedaan utama antara rotasi dan revolusi Bumi adalah ....
-A. Rotasi adalah perputaran Bumi pada porosnya, sedangkan revolusi adalah perputaran Bumi mengelilingi Matahari (BENAR)
-B. Rotasi adalah perputaran Bumi mengelilingi Matahari, sedangkan revolusi adalah perputaran Bumi pada porosnya
-C. Rotasi dan revolusi memiliki arti yang sama
-D. Rotasi dan revolusi hanya terjadi pada malam hari
-
-SOAL 15
-Saat melakukan percobaan revolusi Bumi menggunakan globe dan senter, globe harus ....
-A. Diletakkan tanpa bergerak
-B. Diputar mengelilingi senter dengan arah kemiringan sumbu tetap (BENAR)
-C. Dijauhkan dari senter
-D. Diletakkan terbalik
-
-==================================================
-15. PENJELASAN MATERI
-==================================================
-
-Setelah setiap soal selesai, tampilkan penjelasan singkat.
-
-Penjelasan harus sesuai dengan pertanyaan.
-
-Contoh:
-
-ROTASI BUMI:
-Rotasi adalah gerakan Bumi berputar pada porosnya. Satu kali rotasi membutuhkan waktu sekitar 24 jam. Akibatnya adalah terjadinya siang dan malam.
-
-REVOLUSI BUMI:
-Revolusi adalah gerakan Bumi mengelilingi Matahari. Satu kali revolusi berlangsung sekitar 365¼ hari.
-
-SIANG DAN MALAM:
-Bagian Bumi yang terkena cahaya Matahari mengalami siang hari, sedangkan bagian yang tidak terkena cahaya mengalami malam hari.
-
-TAHUN KABISAT:
-Sisa waktu sekitar seperempat hari setiap tahun akan terkumpul menjadi satu hari tambahan setiap empat tahun, sehingga dikenal tahun kabisat.
-
-==================================================
-16. HALAMAN HASIL AKHIR
-==================================================
-
-Setelah ronde 15 selesai, hentikan permainan dan tampilkan halaman kemenangan.
-
-Tampilkan kedua astronot berdiri di tengah arena.
-
-Jika Tim Merah menang:
-- Astronot merah mengangkat kedua tangan.
-- Astronot biru memberikan salam.
-- Konfeti berjatuhan.
-- Muncul tulisan RED TEAM CHAMPION!
-
-Jika Tim Biru menang:
-- Astronot biru mengangkat kedua tangan.
-- Astronot merah memberikan salam.
-- Konfeti berjatuhan.
-- Muncul tulisan BLUE TEAM CHAMPION!
-
-Jika seri:
-- Kedua astronot berjabat tangan.
-- Muncul tulisan DRAW! AMAZING BATTLE!
-
-Tampilkan tabel hasil:
-
-TIM MERAH:
-- Nama tim.
-- Skor akhir.
-- Jumlah jawaban benar.
-- Jumlah jawaban salah.
-- Jumlah tidak menjawab.
-- Sisa HP.
-
-TIM BIRU:
-- Nama tim.
-- Skor akhir.
-- Jumlah jawaban benar.
-- Jumlah jawaban salah.
-- Jumlah tidak menjawab.
-- Sisa HP.
-
-Pemenang ditentukan berdasarkan skor tertinggi.
-
-Tambahkan tombol:
-- MAIN LAGI.
-- ULANGI PERTANDINGAN.
-- KEMBALI KE MENU.
-- LIHAT HASIL.
-
-==================================================
-17. PENGATURAN DAN FITUR TAMBAHAN
-==================================================
-
-Tambahkan:
-- Musik latar luar angkasa.
-- Efek suara pukulan.
-- Efek suara jawaban benar.
-- Efek suara jawaban salah.
-- Efek suara countdown.
-- Tombol mute.
-- Tombol fullscreen.
-- Tombol pause.
-- Tombol resume.
-- Tombol restart.
-
-Ketika permainan dijeda:
-- Timer berhenti.
-- Kedua karakter berhenti.
-- Proses perpindahan soal berhenti.
-- Status permainan disimpan sementara.
-
-Ketika dilanjutkan:
-- Permainan melanjutkan kondisi sebelumnya.
-
-==================================================
-18. TEKNOLOGI PEMBUATAN
-==================================================
-
-Gunakan:
-- HTML.
-- CSS.
-- JavaScript atau React.
-- Three.js untuk karakter dan arena 3D jika memungkinkan.
-- Animasi CSS untuk transisi.
-- Web Audio API atau file audio lokal untuk efek suara.
-
-Buat game tanpa membutuhkan API berbayar.
-
-Tidak perlu login.
-
-Pastikan bisa dijalankan melalui browser Google Chrome.
-
-Buat kode yang rapi dan terstruktur.
-
-Gunakan state terpisah untuk:
-- Skor Tim Merah.
-- Skor Tim Biru.
-- HP Tim Merah.
-- HP Tim Biru.
-- Jawaban Tim Merah.
-- Jawaban Tim Biru.
-- Status waktu.
-- Nomor soal.
-- Status animasi.
-- Status permainan.
-
-Pastikan jawaban kedua tim tidak saling menimpa.
-
-Pastikan setiap soal hanya diproses satu kali.
-
-==================================================
-19. PENGUJIAN WAJIB
-==================================================
-
-Sebelum menyelesaikan website, uji semua kondisi:
-
-UJI 1:
-Kedua tim menjawab benar.
-Hasil harus memberikan 100 poin kepada masing-masing.
-
-UJI 2:
-Tim Merah benar, Tim Biru salah.
-Merah mendapat 100 poin dan biru kehilangan 15 HP.
-
-UJI 3:
-Tim Biru benar, Tim Merah salah.
-Biru mendapat 100 poin dan merah kehilangan 15 HP.
-
-UJI 4:
-Kedua tim salah.
-Tidak ada skor dan tidak ada serangan.
-
-UJI 5:
-Satu tim tidak menjawab.
-Sistem mencatat tidak menjawab dengan benar.
-
-UJI 6:
-Kedua tim menjawab pada detik yang hampir bersamaan.
-Kedua jawaban tetap harus tercatat secara independen.
-
-UJI 7:
-HP mencapai nol.
-Karakter knockout, tetapi tetap bisa bermain sampai selesai.
-
-UJI 8:
-Permainan sampai soal nomor 15.
-Hasil akhir dihitung dengan benar.
-
-==================================================
-20. HASIL AKHIR YANG DIHARAPKAN
-==================================================
-
-Buat website yang benar-benar berfungsi dan dapat dimainkan.
-
-Jangan hanya membuat desain gambar atau tampilan statis.
-
-Semua tombol harus bekerja.
-
-Kedua tim harus memiliki kontrol jawaban masing-masing.
-
-Kedua tim harus mendapatkan soal yang sama secara bersamaan.
-
-Animasi tinju harus berjalan sesuai hasil jawaban.
-
-Skor dan HP harus diperbarui otomatis.
-
-Semua 15 soal harus dimasukkan.
-
-Hasil pertandingan harus dihitung otomatis.
-
-Prioritas utama adalah:
-1. Game benar-benar bisa dimainkan.
-2. Kedua tim menjawab bersamaan.
-3. Karakter astronot dapat melakukan animasi tinju.
-4. Tampilan arena 3D menarik.
-5. Seluruh pertanyaan berfungsi dengan benar.
-
-Jangan menghilangkan fitur apa pun dari instruksi ini.
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ASTRONAUT BOXING BATTLE – THE GREAT SPACE CHAMPIONSHIP</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js r128 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts: Orbitron & Fredoka & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@500;600;700;800&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --red-glow: #ef4444;
+            --blue-glow: #3b82f6;
+            --gold-glow: #facc15;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050514;
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+        }
+
+        .font-arcade {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-cartoon {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* 3D Canvas Container */
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* UI Layer Overlay */
+        #ui-layer {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Arcade Neon Text & Borders */
+        .text-glow-gold {
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.8), 0 0 25px rgba(234, 179, 8, 0.6), 0 4px 0 #854d0e;
+        }
+
+        .text-glow-red {
+            text-shadow: 0 0 12px rgba(239, 68, 68, 0.9), 0 3px 0 #7f1d1d;
+        }
+
+        .text-glow-blue {
+            text-shadow: 0 0 12px rgba(59, 130, 246, 0.9), 0 3px 0 #1e3a8a;
+        }
+
+        .text-glow-cyan {
+            text-shadow: 0 0 12px rgba(34, 211, 238, 0.9), 0 3px 0 #155e75;
+        }
+
+        .panel-space {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(10, 12, 32, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .panel-red {
+            background: linear-gradient(145deg, rgba(69, 10, 10, 0.9) 0%, rgba(28, 6, 15, 0.95) 100%);
+            border: 2px solid #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.35), inset 0 0 15px rgba(239, 68, 68, 0.15);
+        }
+
+        .panel-blue {
+            background: linear-gradient(145deg, rgba(15, 23, 72, 0.9) 0%, rgba(8, 14, 44, 0.95) 100%);
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.35), inset 0 0 15px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Arcade 3D Push Buttons */
+        .btn-arcade {
+            position: relative;
+            transition: all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(0);
+        }
+
+        .btn-arcade:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.01);
+            filter: brightness(1.12);
+        }
+
+        .btn-arcade:active:not(:disabled) {
+            transform: translateY(3px);
+        }
+
+        .btn-gold {
+            background: linear-gradient(180deg, #fde047 0%, #eab308 55%, #ca8a04 100%);
+            color: #1e1b4b;
+            border: 2px solid #fef08a;
+            box-shadow: 0 5px 0 #854d0e, 0 8px 20px rgba(234, 179, 8, 0.5);
+        }
+
+        .btn-red-team {
+            background: linear-gradient(180deg, #f87171 0%, #dc2626 55%, #991b1b 100%);
+            color: #ffffff;
+            border: 2px solid #fca5a5;
+            box-shadow: 0 4px 0 #7f1d1d, 0 6px 14px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-blue-team {
+            background: linear-gradient(180deg, #60a5fa 0%, #2563eb 55%, #1d4ed8 100%);
+            color: #ffffff;
+            border: 2px solid #93c5fd;
+            box-shadow: 0 4px 0 #1e3a8a, 0 6px 14px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-option-red {
+            background: linear-gradient(180deg, rgba(127, 29, 29, 0.88) 0%, rgba(69, 10, 10, 0.96) 100%);
+            border: 2px solid rgba(248, 113, 113, 0.6);
+            box-shadow: 0 4px 0 #450a0a, 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-option-red:hover:not(:disabled) {
+            background: linear-gradient(180deg, rgba(185, 28, 28, 0.95) 0%, rgba(127, 29, 29, 0.98) 100%);
+            border-color: #fca5a5;
+        }
+
+        .btn-option-red.selected {
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%) !important;
+            border-color: #fef08a !important;
+            color: #0f172a !important;
+            box-shadow: 0 0 18px rgba(251, 191, 36, 0.8), 0 3px 0 #78350f !important;
+            transform: translateY(2px);
+        }
+
+        .btn-option-blue {
+            background: linear-gradient(180deg, rgba(30, 58, 138, 0.88) 0%, rgba(23, 37, 84, 0.96) 100%);
+            border: 2px solid rgba(96, 165, 250, 0.6);
+            box-shadow: 0 4px 0 #172554, 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-option-blue:hover:not(:disabled) {
+            background: linear-gradient(180deg, rgba(29, 78, 216, 0.95) 0%, rgba(30, 58, 138, 0.98) 100%);
+            border-color: #93c5fd;
+        }
+
+        .btn-option-blue.selected {
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%) !important;
+            border-color: #fef08a !important;
+            color: #0f172a !important;
+            box-shadow: 0 0 18px rgba(251, 191, 36, 0.8), 0 3px 0 #78350f !important;
+            transform: translateY(2px);
+        }
+
+        .option-correct-reveal {
+            background: linear-gradient(180deg, #22c55e 0%, #15803d 100%) !important;
+            border-color: #bbf7d0 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.85) !important;
+        }
+
+        .option-wrong-reveal {
+            background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%) !important;
+            border-color: #fecaca !important;
+            color: #ffffff !important;
+            opacity: 0.9;
+        }
+
+        /* Timer & Pulse Animations */
+        @keyframes pulseUrgent {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.9); }
+            50% { transform: scale(1.12); box-shadow: 0 0 35px rgba(239, 68, 68, 1); }
+        }
+
+        .timer-urgent {
+            animation: pulseUrgent 0.45s infinite ease-in-out;
+        }
+
+        @keyframes bannerPop {
+            0% { transform: scale(0.3) rotate(-4deg); opacity: 0; }
+            65% { transform: scale(1.08) rotate(1deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .animate-banner-pop {
+            animation: bannerPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .animate-float {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+
+        /* HP Bar Gloss & Skew */
+        .hp-bar-frame {
+            transform: skewX(-12deg);
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+        }
+
+        .hp-bar-fill {
+            transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+        }
+
+        /* Custom Scrollbar for Modals */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(96, 165, 250, 0.6);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(250, 204, 21, 0.8);
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 25;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D SPACE ARENA & CHARACTERS CANVAS -->
+    <div id="canvas-container"></div>
+
+    <!-- CONFETTI OVERLAY CANVAS (FOR CHAMPIONSHIP SCREEN) -->
+    <canvas id="confetti-canvas" class="hidden"></canvas>
+
+    <!-- FLOATING 2D COMIC IMPACT OVERLAY (POW!, BAM!, -15 HP, +100 PTS) -->
+    <div id="impact-overlay" class="fixed inset-0 pointer-events-none z-20 flex items-center justify-center overflow-hidden"></div>
+
+    <!-- MAIN UI OVERLAY -->
+    <div id="ui-layer">
+
+        <!-- ================================================== -->
+        <!-- 1. SCREEN: MAIN MENU (HALAMAN PEMBUKA)             -->
+        <!-- ================================================== -->
+        <div id="screen-menu" class="w-full h-full flex flex-col justify-between p-4 md:p-6 lg:p-8">
+            <!-- Top Badge & Quick Utility Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="panel-space px-4 py-2 rounded-2xl flex items-center gap-3 border border-cyan-400/40">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="font-arcade text-xs md:text-sm tracking-wider text-cyan-300">IPAS KELAS VI SD • ROTASI & REVOLUSI BUMI</span>
+                </div>
+
+                <!-- Camera & Animation Preview Bar on Menu -->
+                <div class="flex items-center gap-2 interactive">
+                    <div class="hidden xl:flex items-center gap-1 panel-space px-3 py-1.5 rounded-xl text-xs text-slate-300 border border-slate-600/50">
+                        <i class="fa-solid fa-arrows-rotate text-yellow-400 mr-1"></i>
+                        <span>Geser layar untuk putar kamera 3D</span>
+                    </div>
+                    <button onclick="toggleMute()" id="btn-menu-mute" class="btn-arcade panel-space px-3.5 py-2 rounded-xl text-yellow-300 hover:text-white border border-yellow-400/40 text-sm md:text-base" title="Suara">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <button onclick="toggleFullscreen()" class="btn-arcade panel-space px-3.5 py-2 rounded-xl text-cyan-300 hover:text-white border border-cyan-400/40 text-sm md:text-base" title="Layar Penuh">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Title Header -->
+            <div class="text-center my-auto pt-2 pb-32 md:pb-40 pointer-events-none">
+                <div class="inline-block px-5 py-1.5 rounded-full bg-gradient-to-r from-red-600/80 via-purple-600/80 to-blue-600/80 border border-yellow-300/60 shadow-lg mb-2 animate-float">
+                    <span class="font-arcade text-xs md:text-sm tracking-widest text-yellow-200 uppercase">★ SIMULTANEOUS 3D ARCADE EDUCATION GAME ★</span>
+                </div>
+                <h1 class="font-arcade font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-yellow-400 text-glow-gold leading-none">
+                    ASTRONAUT BOXING BATTLE
+                </h1>
+                <h2 class="font-arcade font-bold text-base sm:text-xl md:text-2xl lg:text-3xl tracking-widest text-cyan-300 text-glow-cyan mt-2">
+                    THE GREAT SPACE CHAMPIONSHIP
+                </h2>
+            </div>
+
+            <!-- Bottom Control Buttons & 3D Character Demo Strip -->
+            <div class="w-full max-w-5xl mx-auto flex flex-col gap-3 items-center interactive">
+                <!-- Interactive 3D Character Animation Tester Strip -->
+                <div class="panel-space px-3 py-2 rounded-2xl border border-purple-400/30 flex flex-wrap items-center justify-center gap-1.5 text-xs">
+                    <span class="font-arcade text-yellow-300 mr-1"><i class="fa-solid fa-gamepad mr-1"></i>UJI ANIMASI 3D:</span>
+                    <button onclick="demoAnimation('idle')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-semibold">1. Idle</button>
+                    <button onclick="demoAnimation('walk')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-semibold">2. Walk</button>
+                    <button onclick="demoAnimation('jump')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-semibold">3. Jump</button>
+                    <button onclick="demoAnimation('punch')" class="px-2.5 py-1 rounded-lg bg-red-900/80 hover:bg-red-700 border border-red-500 font-semibold">4. Punch</button>
+                    <button onclick="demoAnimation('hit')" class="px-2.5 py-1 rounded-lg bg-orange-900/80 hover:bg-orange-700 border border-orange-500 font-semibold">5. Hit</button>
+                    <button onclick="demoAnimation('dodge')" class="px-2.5 py-1 rounded-lg bg-cyan-900/80 hover:bg-cyan-700 border border-cyan-500 font-semibold">6. Dodge</button>
+                    <button onclick="demoAnimation('block')" class="px-2.5 py-1 rounded-lg bg-blue-900/80 hover:bg-blue-700 border border-blue-500 font-semibold">7. Block</button>
+                    <button onclick="demoAnimation('stun')" class="px-2.5 py-1 rounded-lg bg-amber-900/80 hover:bg-amber-700 border border-amber-500 font-semibold">8. Stun</button>
+                    <button onclick="demoAnimation('knockdown')" class="px-2.5 py-1 rounded-lg bg-rose-900/80 hover:bg-rose-700 border border-rose-500 font-semibold">9. Knockdown</button>
+                    <button onclick="demoAnimation('victory')" class="px-2.5 py-1 rounded-lg bg-emerald-900/80 hover:bg-emerald-700 border border-emerald-500 font-semibold">10. Victory</button>
+                </div>
+
+                <!-- Main Menu 4 Action Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+                    <button onclick="openSetupScreen()" class="btn-arcade btn-gold py-4 px-5 rounded-2xl font-arcade font-black text-base md:text-lg flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-rocket text-xl"></i>
+                        <span>MULAI PERTANDINGAN</span>
+                    </button>
+                    <button onclick="openModal('modal-guide')" class="btn-arcade btn-blue-team py-4 px-5 rounded-2xl font-arcade font-bold text-sm md:text-base flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-book-open text-lg"></i>
+                        <span>PANDUAN BERMAIN</span>
+                    </button>
+                    <button onclick="openModal('modal-sound')" class="btn-arcade panel-space py-4 px-5 rounded-2xl font-arcade font-bold text-sm md:text-base text-yellow-300 border-2 border-yellow-400/60 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-sliders text-lg"></i>
+                        <span>PENGATURAN SUARA</span>
+                    </button>
+                    <button onclick="toggleFullscreen()" class="btn-arcade panel-space py-4 px-5 rounded-2xl font-arcade font-bold text-sm md:text-base text-cyan-300 border-2 border-cyan-400/60 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-expand text-lg"></i>
+                        <span>FULLSCREEN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================== -->
+        <!-- 2. SCREEN: TEAM SETUP (PENGATURAN TIM)             -->
+        <!-- ================================================== -->
+        <div id="screen-setup" class="hidden w-full h-full flex flex-col justify-between p-4 md:p-8 overflow-y-auto interactive">
+            <div class="flex items-center justify-between max-w-6xl w-full mx-auto">
+                <button onclick="backToMenu()" class="btn-arcade panel-space px-4 py-2.5 rounded-xl font-arcade text-xs md:text-sm text-slate-200 flex items-center gap-2 border border-slate-500">
+                    <i class="fa-solid fa-arrow-left"></i> KEMBALI KE MENU
+                </button>
+                <div class="text-center">
+                    <h2 class="font-arcade font-black text-xl sm:text-3xl md:text-4xl text-yellow-400 text-glow-gold">PERSIAPAN TIM ASTRONOT</h2>
+                    <p class="text-xs md:text-sm text-cyan-200">Masukkan nama kedua tim sebelum memasuki Space Boxing Arena!</p>
+                </div>
+                <button onclick="toggleFullscreen()" class="btn-arcade panel-space px-3.5 py-2.5 rounded-xl text-cyan-300 border border-cyan-500/40">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+            </div>
+
+            <!-- Two Team Setup Panels -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl w-full mx-auto my-auto py-4">
+                <!-- PANEL TIM MERAH -->
+                <div class="panel-red rounded-3xl p-5 md:p-7 flex flex-col justify-between relative overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-red-400/30 pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-2xl bg-red-600 border-2 border-red-300 flex items-center justify-center shadow-lg">
+                                <!-- Custom Boxing Glove SVG Icon -->
+                                <svg class="w-9 h-9 text-white" viewBox="0 0 64 64" fill="currentColor">
+                                    <path d="M44 10c-9 0-16 5-18 12-4 0-8 3-8 8v8c0 6 5 10 11 10h1v8h20v-8c5-2 8-7 8-14V24c0-8-6-14-14-14zm-14 24c-2 0-4-2-4-4v-4c0-2 2-4 4-4h2v12h-2zm18 18H34v-4h14v4z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-xs font-arcade tracking-widest text-red-300 uppercase">SUDUT KIRI • TIM 1</span>
+                                <h3 class="font-arcade font-black text-2xl md:text-3xl text-white text-glow-red">PANEL TIM MERAH</h3>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-red-500/30 border border-red-400 font-arcade text-xs text-red-200">READY</span>
+                    </div>
+
+                    <!-- Astronaut Red Card Graphic -->
+                    <div class="my-4 bg-black/35 rounded-2xl p-4 border border-red-500/30 flex items-center gap-4">
+                        <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-b from-red-500 to-red-900 border-2 border-red-300 flex items-center justify-center shrink-0 shadow-inner">
+                            <svg class="w-16 h-16" viewBox="0 0 100 100">
+                                <circle cx="50" cy="40" r="26" fill="#ef4444" stroke="#fca5a5" stroke-width="3"/>
+                                <ellipse cx="50" cy="40" rx="18" ry="14" fill="#38bdf8" stroke="#e0f2fe" stroke-width="2"/>
+                                <path d="M40 34 Q50 30 60 34" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+                                <rect x="30" y="65" width="40" height="25" rx="8" fill="#dc2626" stroke="#fca5a5" stroke-width="3"/>
+                                <circle cx="22" cy="74" r="10" fill="#ef4444" stroke="#fef08a" stroke-width="2"/>
+                                <circle cx="78" cy="74" r="10" fill="#ef4444" stroke="#fef08a" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="text-xs md:text-sm text-red-100 space-y-1">
+                            <div class="font-arcade font-bold text-red-300 text-sm md:text-base">KARAKTER: ASTRONOT MERAH</div>
+                            <div>• Armor Luar Angkasa Merah & Visor Transparan</div>
+                            <div>• Sarung Tinju Gravitasi Merah</div>
+                            <div>• Kontrol Cepat: Klik Tombol Kiri / Keyboard <kbd class="px-1.5 py-0.5 bg-red-950 rounded border border-red-400 font-mono">A S D F</kbd></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="input-red-name" class="block font-arcade text-xs md:text-sm text-red-200 mb-2">NAMA TIM MERAH:</label>
+                        <input id="input-red-name" type="text" maxlength="18" value="RED TEAM"
+                            class="w-full px-4 py-3.5 rounded-xl bg-red-950/90 border-2 border-red-400 text-white font-arcade font-bold text-lg md:text-xl focus:outline-none focus:ring-4 focus:ring-yellow-400 uppercase tracking-wider"
+                            placeholder="RED TEAM">
+                    </div>
+                </div>
+
+                <!-- PANEL TIM BIRU -->
+                <div class="panel-blue rounded-3xl p-5 md:p-7 flex flex-col justify-between relative overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-blue-400/30 pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-600 border-2 border-blue-300 flex items-center justify-center shadow-lg">
+                                <!-- Custom Boxing Glove SVG Icon -->
+                                <svg class="w-9 h-9 text-white" viewBox="0 0 64 64" fill="currentColor">
+                                    <path d="M44 10c-9 0-16 5-18 12-4 0-8 3-8 8v8c0 6 5 10 11 10h1v8h20v-8c5-2 8-7 8-14V24c0-8-6-14-14-14zm-14 24c-2 0-4-2-4-4v-4c0-2 2-4 4-4h2v12h-2zm18 18H34v-4h14v4z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-xs font-arcade tracking-widest text-blue-300 uppercase">SUDUT KANAN • TIM 2</span>
+                                <h3 class="font-arcade font-black text-2xl md:text-3xl text-white text-glow-blue">PANEL TIM BIRU</h3>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-blue-500/30 border border-blue-400 font-arcade text-xs text-blue-200">READY</span>
+                    </div>
+
+                    <!-- Astronaut Blue Card Graphic -->
+                    <div class="my-4 bg-black/35 rounded-2xl p-4 border border-blue-500/30 flex items-center gap-4">
+                        <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-900 border-2 border-blue-300 flex items-center justify-center shrink-0 shadow-inner">
+                            <svg class="w-16 h-16" viewBox="0 0 100 100">
+                                <circle cx="50" cy="40" r="26" fill="#3b82f6" stroke="#93c5fd" stroke-width="3"/>
+                                <ellipse cx="50" cy="40" rx="18" ry="14" fill="#38bdf8" stroke="#e0f2fe" stroke-width="2"/>
+                                <path d="M40 34 Q50 30 60 34" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+                                <rect x="30" y="65" width="40" height="25" rx="8" fill="#2563eb" stroke="#93c5fd" stroke-width="3"/>
+                                <circle cx="22" cy="74" r="10" fill="#3b82f6" stroke="#fef08a" stroke-width="2"/>
+                                <circle cx="78" cy="74" r="10" fill="#3b82f6" stroke="#fef08a" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="text-xs md:text-sm text-blue-100 space-y-1">
+                            <div class="font-arcade font-bold text-blue-300 text-sm md:text-base">KARAKTER: ASTRONOT BIRU</div>
+                            <div>• Armor Luar Angkasa Biru & Visor Transparan</div>
+                            <div>• Sarung Tinju Gravitasi Biru</div>
+                            <div>• Kontrol Cepat: Klik Tombol Kanan / Keyboard <kbd class="px-1.5 py-0.5 bg-blue-950 rounded border border-blue-400 font-mono">J K L ;</kbd></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="input-blue-name" class="block font-arcade text-xs md:text-sm text-blue-200 mb-2">NAMA TIM BIRU:</label>
+                        <input id="input-blue-name" type="text" maxlength="18" value="BLUE TEAM"
+                            class="w-full px-4 py-3.5 rounded-xl bg-blue-950/90 border-2 border-blue-400 text-white font-arcade font-bold text-lg md:text-xl focus:outline-none focus:ring-4 focus:ring-yellow-400 uppercase tracking-wider"
+                            placeholder="BLUE TEAM">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Battle Button -->
+            <div class="max-w-md w-full mx-auto text-center pb-2">
+                <button onclick="startBattleIntro()" class="w-full btn-arcade btn-gold py-4 px-8 rounded-2xl font-arcade font-black text-xl md:text-2xl tracking-wider flex items-center justify-center gap-3 shadow-2xl">
+                    <i class="fa-solid fa-bolt text-2xl"></i>
+                    <span>MULAI BATTLE!</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================================================== -->
+        <!-- 3. SCREEN: COUNTDOWN INTRO OVERLAY                 -->
+        <!-- ================================================== -->
+        <div id="screen-intro" class="hidden fixed inset-0 z-30 flex items-center justify-center pointer-events-none">
+            <div id="intro-banner-text" class="font-arcade font-black text-6xl sm:text-8xl md:text-9xl text-yellow-400 text-glow-gold text-center px-6 animate-banner-pop">
+                3
+            </div>
+        </div>
+
+        <!-- ================================================== -->
+        <!-- 4. SCREEN: MAIN BATTLE (ARENA + HUD + QUIZ)        -->
+        <!-- ================================================== -->
+        <div id="screen-battle" class="hidden w-full h-full flex flex-col justify-between p-2 sm:p-3 md:p-4">
+
+            <!-- BAGIAN ATAS: TOP ARCADE HUD -->
+            <div class="w-full max-w-[1600px] mx-auto grid grid-cols-12 gap-2 items-center interactive">
+                
+                <!-- TIM MERAH HUD (Cols 1-4) -->
+                <div class="col-span-5 md:col-span-4 panel-red rounded-2xl p-2 sm:p-3 flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="flex items-center gap-2 truncate">
+                            <span class="w-3 h-3 rounded-full bg-red-400 shrink-0"></span>
+                            <span id="hud-red-name" class="font-arcade font-black text-xs sm:text-base md:text-lg text-white truncate">RED TEAM</span>
+                        </div>
+                        <div class="px-2.5 py-0.5 rounded-lg bg-black/50 border border-yellow-400/60 shrink-0">
+                            <span class="text-[10px] sm:text-xs text-yellow-200 font-arcade mr-1">SKOR</span>
+                            <span id="hud-red-score" class="font-arcade font-black text-sm sm:text-lg md:text-xl text-yellow-400">0</span>
+                        </div>
+                    </div>
+                    <!-- HP Bar Red -->
+                    <div class="w-full flex items-center gap-2">
+                        <span class="font-arcade font-bold text-[10px] sm:text-xs text-red-200 shrink-0">HP</span>
+                        <div class="hp-bar-frame flex-1 h-4 sm:h-5 rounded-md relative">
+                            <div id="hud-red-hp-bar" class="hp-bar-fill h-full bg-gradient-to-r from-red-600 via-orange-500 to-emerald-400" style="width: 100%;"></div>
+                            <span id="hud-red-hp-text" class="absolute inset-0 flex items-center justify-center font-arcade font-bold text-[10px] sm:text-xs text-white drop-shadow">100 / 100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CENTER HUD: ROUND, TIMER, CONTROLS (Cols 5-8) -->
+                <div class="col-span-2 md:col-span-4 flex flex-col items-center justify-center">
+                    <div class="panel-space rounded-2xl px-2 sm:px-4 py-1.5 sm:py-2 border-2 border-yellow-400/60 flex items-center gap-2 sm:gap-4 shadow-xl">
+                        <!-- Round Info -->
+                        <div class="text-center hidden md:block">
+                            <div class="text-[10px] font-arcade text-cyan-300 tracking-widest">RONDE</div>
+                            <div id="hud-round-number" class="font-arcade font-black text-base lg:text-xl text-white">01 / 15</div>
+                        </div>
+
+                        <!-- Digital Countdown Timer -->
+                        <div id="hud-timer-box" class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-slate-900 border-2 border-emerald-400 flex flex-col items-center justify-center shadow-inner transition-colors">
+                            <span class="text-[8px] sm:text-[9px] font-arcade text-slate-300 leading-none">TIME</span>
+                            <span id="hud-timer-text" class="font-arcade font-black text-xl sm:text-2xl md:text-3xl text-emerald-400 leading-tight">20</span>
+                        </div>
+
+                        <!-- Quick Utility Buttons -->
+                        <div class="hidden sm:flex items-center gap-1.5">
+                            <button onclick="togglePauseGame()" id="btn-hud-pause" class="btn-arcade w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-500 text-yellow-300 flex items-center justify-center" title="Pause / Jeda">
+                                <i class="fa-solid fa-pause"></i>
+                            </button>
+                            <button onclick="toggleMute()" id="btn-hud-mute" class="btn-arcade w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-500 text-cyan-300 flex items-center justify-center" title="Mute / Suara">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                            <button onclick="confirmRestartMatch()" class="btn-arcade w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-500 text-rose-300 flex items-center justify-center" title="Restart Pertandingan">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                            <button onclick="toggleFullscreen()" class="btn-arcade w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-500 text-emerald-300 flex items-center justify-center" title="Fullscreen">
+                                <i class="fa-solid fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Mobile Round Pill -->
+                    <div id="hud-round-mobile" class="md:hidden mt-1 px-2.5 py-0.5 rounded-full bg-slate-900/90 border border-cyan-400/40 font-arcade text-[10px] text-cyan-300">
+                        RONDE 01 / 15
+                    </div>
+                </div>
+
+                <!-- TIM BIRU HUD (Cols 9-12) -->
+                <div class="col-span-5 md:col-span-4 panel-blue rounded-2xl p-2 sm:p-3 flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="px-2.5 py-0.5 rounded-lg bg-black/50 border border-yellow-400/60 shrink-0">
+                            <span class="text-[10px] sm:text-xs text-yellow-200 font-arcade mr-1">SKOR</span>
+                            <span id="hud-blue-score" class="font-arcade font-black text-sm sm:text-lg md:text-xl text-yellow-400">0</span>
+                        </div>
+                        <div class="flex items-center gap-2 truncate">
+                            <span id="hud-blue-name" class="font-arcade font-black text-xs sm:text-base md:text-lg text-white truncate">BLUE TEAM</span>
+                            <span class="w-3 h-3 rounded-full bg-blue-400 shrink-0"></span>
+                        </div>
+                    </div>
+                    <!-- HP Bar Blue -->
+                    <div class="w-full flex items-center gap-2">
+                        <div class="hp-bar-frame flex-1 h-4 sm:h-5 rounded-md relative">
+                            <div id="hud-blue-hp-bar" class="hp-bar-fill h-full bg-gradient-to-l from-blue-600 via-cyan-500 to-emerald-400 ml-auto" style="width: 100%;"></div>
+                            <span id="hud-blue-hp-text" class="absolute inset-0 flex items-center justify-center font-arcade font-bold text-[10px] sm:text-xs text-white drop-shadow">100 / 100</span>
+                        </div>
+                        <span class="font-arcade font-bold text-[10px] sm:text-xs text-blue-200 shrink-0">HP</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN TENGAH: 3D ARENA VIEWPORT + ANNOUNCEMENT BANNERS -->
+            <div class="flex-1 relative flex items-start justify-center pointer-events-none pt-1 sm:pt-2">
+                <!-- Round / Action Announcement Banner (Diposisikan di atas agar tidak menghalangi astronot bertarung) -->
+                <div id="arena-banner" class="hidden px-5 py-1.5 sm:py-2 rounded-2xl bg-slate-950/80 backdrop-blur-md border-2 border-yellow-400 shadow-2xl text-center animate-banner-pop max-w-xl">
+                    <div id="arena-banner-title" class="font-arcade font-black text-lg sm:text-2xl md:text-3xl text-yellow-400 text-glow-gold tracking-wider leading-tight">
+                        DOUBLE CORRECT!
+                    </div>
+                    <div id="arena-banner-sub" class="font-cartoon font-bold text-xs sm:text-sm text-cyan-200">
+                        Kedua tim mendapatkan +100 Poin!
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN BAWAH: PERTANYAAN & KONTROL SIMULTAN KEDUA TIM -->
+            <div class="w-full max-w-[1600px] mx-auto flex flex-col gap-2 interactive">
+
+                <!-- PANEL PENJELASAN & EVALUASI JAWABAN (MUNCUL SETELAH ANIMASI PUKULAN SELESAI) -->
+                <div id="round-explanation-card" class="hidden panel-space rounded-2xl p-3 sm:p-4 border-2 border-yellow-400 shadow-2xl animate-banner-pop">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
+                        <!-- Status Jawaban Tim Merah -->
+                        <div class="lg:col-span-3 bg-red-950/80 border border-red-400/60 rounded-xl p-2.5 flex items-center justify-between">
+                            <div>
+                                <div class="text-[10px] font-arcade text-red-300">JAWABAN TIM MERAH</div>
+                                <div id="exp-red-choice" class="font-bold text-sm sm:text-base text-white">B. Rotasi Bumi</div>
+                                <div id="exp-red-time" class="text-[11px] text-red-200">Waktu: 4.2 detik</div>
+                            </div>
+                            <span id="exp-red-badge" class="px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-emerald-600 text-white">BENAR +100</span>
+                        </div>
+
+                        <!-- Kunci Jawaban & Penjelasan Materi IPAS -->
+                        <div class="lg:col-span-6 bg-slate-900/95 border border-yellow-400/50 rounded-xl p-2.5 sm:p-3 text-center">
+                            <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-yellow-400/20 border border-yellow-400 text-yellow-300 font-arcade font-bold text-xs mb-1">
+                                <i class="fa-solid fa-key"></i>
+                                <span id="exp-correct-key">KUNCI JAWABAN: B. Rotasi Bumi</span>
+                            </div>
+                            <p id="exp-materi-text" class="text-xs sm:text-sm md:text-base text-slate-100 font-medium leading-snug">
+                                Rotasi Bumi adalah perputaran Bumi pada porosnya yang membutuhkan waktu 24 jam dan menyebabkan terjadinya siang dan malam.
+                            </p>
+                        </div>
+
+                        <!-- Status Jawaban Tim Biru -->
+                        <div class="lg:col-span-3 bg-blue-950/80 border border-blue-400/60 rounded-xl p-2.5 flex items-center justify-between">
+                            <div>
+                                <div class="text-[10px] font-arcade text-blue-300">JAWABAN TIM BIRU</div>
+                                <div id="exp-blue-choice" class="font-bold text-sm sm:text-base text-white">B. Rotasi Bumi</div>
+                                <div id="exp-blue-time" class="text-[11px] text-blue-200">Waktu: 5.1 detik</div>
+                            </div>
+                            <span id="exp-blue-badge" class="px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-emerald-600 text-white">BENAR +100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTAINER PERTANYAAN & PILIHAN JAWABAN (DISEMBUNYIKAN SAAT ANIMASI MEMUKUL BERLANGSUNG) -->
+                <div id="active-quiz-panel" class="flex flex-col gap-2 transition-all duration-300">
+                    <!-- KOTAK PERTANYAAN UTAMA -->
+                    <div class="panel-space rounded-2xl px-4 py-2.5 sm:py-3 border-2 border-cyan-400/50 shadow-xl text-center relative">
+                        <div class="flex items-center justify-between text-[11px] sm:text-xs font-arcade text-yellow-300 mb-1">
+                            <span id="question-round-label">RONDE 01 / 15</span>
+                            <span class="text-cyan-300">SIMULTANEOUS BATTLE • JAWAB BERSAMAAN!</span>
+                            <span id="question-topic-badge" class="hidden sm:inline text-purple-300">IPAS KELAS VI</span>
+                        </div>
+                        <h3 id="question-text" class="font-cartoon font-bold text-base sm:text-xl md:text-2xl lg:text-3xl text-white tracking-wide leading-snug">
+                            Perputaran Bumi pada porosnya disebut ....
+                        </h3>
+                    </div>
+
+                    <!-- DUA AREA TOMBOL JAWABAN TERPISAH (KIRI: TIM MERAH, KANAN: TIM BIRU) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4">
+                        
+                        <!-- AREA JAWABAN TIM MERAH -->
+                        <div class="panel-red rounded-2xl p-2.5 sm:p-3 flex flex-col gap-2">
+                            <div class="flex items-center justify-between px-1">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-hand-fist text-red-400"></i>
+                                    <span id="pad-red-title" class="font-arcade font-bold text-xs sm:text-sm text-red-200">KONTROL TIM MERAH</span>
+                                </div>
+                                <span id="status-red-lock" class="px-2.5 py-0.5 rounded-full bg-red-950 border border-red-400/50 font-arcade font-bold text-[10px] sm:text-xs text-yellow-300">
+                                    PILIH JAWABAN!
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button id="btn-red-0" onclick="handleTeamAnswer('RED', 0)" class="btn-arcade btn-option-red rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">A</span>
+                                    <span id="text-red-0" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Revolusi Bumi</span>
+                                </button>
+                                <button id="btn-red-1" onclick="handleTeamAnswer('RED', 1)" class="btn-arcade btn-option-red rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">B</span>
+                                    <span id="text-red-1" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Rotasi Bumi</span>
+                                </button>
+                                <button id="btn-red-2" onclick="handleTeamAnswer('RED', 2)" class="btn-arcade btn-option-red rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">C</span>
+                                    <span id="text-red-2" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Gerhana Bumi</span>
+                                </button>
+                                <button id="btn-red-3" onclick="handleTeamAnswer('RED', 3)" class="btn-arcade btn-option-red rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">D</span>
+                                    <span id="text-red-3" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Gravitasi Bumi</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- AREA JAWABAN TIM BIRU -->
+                        <div class="panel-blue rounded-2xl p-2.5 sm:p-3 flex flex-col gap-2">
+                            <div class="flex items-center justify-between px-1">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-hand-fist text-blue-400"></i>
+                                    <span id="pad-blue-title" class="font-arcade font-bold text-xs sm:text-sm text-blue-200">KONTROL TIM BIRU</span>
+                                </div>
+                                <span id="status-blue-lock" class="px-2.5 py-0.5 rounded-full bg-blue-950 border border-blue-400/50 font-arcade font-bold text-[10px] sm:text-xs text-yellow-300">
+                                    PILIH JAWABAN!
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button id="btn-blue-0" onclick="handleTeamAnswer('BLUE', 0)" class="btn-arcade btn-option-blue rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">A</span>
+                                    <span id="text-blue-0" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Revolusi Bumi</span>
+                                </button>
+                                <button id="btn-blue-1" onclick="handleTeamAnswer('BLUE', 1)" class="btn-arcade btn-option-blue rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">B</span>
+                                    <span id="text-blue-1" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Rotasi Bumi</span>
+                                </button>
+                                <button id="btn-blue-2" onclick="handleTeamAnswer('BLUE', 2)" class="btn-arcade btn-option-blue rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">C</span>
+                                    <span id="text-blue-2" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Gerhana Bumi</span>
+                                </button>
+                                <button id="btn-blue-3" onclick="handleTeamAnswer('BLUE', 3)" class="btn-arcade btn-option-blue rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5">
+                                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500 text-white font-arcade font-black text-sm sm:text-base flex items-center justify-center shrink-0">D</span>
+                                    <span id="text-blue-3" class="font-bold text-xs sm:text-sm md:text-base text-white leading-tight">Gravitasi Bumi</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================== -->
+        <!-- 5. SCREEN: VICTORY / CHAMPIONSHIP (HALAMAN AKHIR)  -->
+        <!-- ================================================== -->
+        <div id="screen-victory" class="hidden w-full h-full flex flex-col justify-between p-4 md:p-6 overflow-y-auto interactive">
+            <!-- Top Championship Banner -->
+            <div class="text-center pt-1">
+                <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-yellow-400/20 border border-yellow-300 text-yellow-300 font-arcade text-xs md:text-sm mb-1">
+                    <i class="fa-solid fa-trophy"></i> PERTANDINGAN 15 RONDE SELESAI!
+                </div>
+                <h1 id="victory-headline" class="font-arcade font-black text-3xl sm:text-5xl md:text-6xl text-yellow-400 text-glow-gold tracking-wide">
+                    RED TEAM CHAMPION!
+                </h1>
+                <p id="victory-subline" class="font-cartoon text-sm sm:text-lg text-cyan-200">
+                    Selamat kepada sang juara Space Boxing Championship!
+                </p>
+            </div>
+
+            <!-- Middle Spacer so 3D Astronauts celebrating in center arena are clearly visible -->
+            <div id="victory-results-wrapper" class="max-w-5xl w-full mx-auto my-auto py-2 transition-all">
+                <div class="panel-space rounded-3xl p-4 sm:p-6 border-2 border-yellow-400/70 shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-slate-600 pb-3 mb-4">
+                        <h3 class="font-arcade font-bold text-base sm:text-xl text-yellow-300 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-Simple"></i> TABEL HASIL KEJUARAAN
+                        </h3>
+                        <span class="text-xs font-arcade text-cyan-300">PEMENANG DITENTUKAN BERDASARKAN SKOR TERTINGGI</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Result Card: Tim Merah -->
+                        <div class="panel-red rounded-2xl p-4 relative">
+                            <div id="badge-winner-red" class="hidden absolute -top-3 right-4 px-3 py-1 rounded-full bg-yellow-400 text-slate-950 font-arcade font-black text-xs shadow-lg">
+                                <i class="fa-solid fa-crown mr-1"></i>CHAMPION
+                            </div>
+                            <h4 id="res-red-name" class="font-arcade font-black text-xl sm:text-2xl text-white mb-3 border-b border-red-400/40 pb-2">RED TEAM</h4>
+                            <div class="space-y-2 text-sm sm:text-base">
+                                <div class="flex justify-between items-center bg-black/30 px-3 py-2 rounded-xl">
+                                    <span class="text-red-200">Skor Akhir</span>
+                                    <span id="res-red-score" class="font-arcade font-black text-xl text-yellow-400">1200</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-red-200">Jumlah Jawaban Benar</span>
+                                    <span id="res-red-correct" class="font-arcade font-bold text-emerald-400">12</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-red-200">Jumlah Jawaban Salah</span>
+                                    <span id="res-red-wrong" class="font-arcade font-bold text-rose-400">2</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-red-200">Jumlah Tidak Menjawab</span>
+                                    <span id="res-red-noans" class="font-arcade font-bold text-amber-300">1</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-red-200">Sisa HP</span>
+                                    <span id="res-red-hp" class="font-arcade font-bold text-cyan-300">70 / 100</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Result Card: Tim Biru -->
+                        <div class="panel-blue rounded-2xl p-4 relative">
+                            <div id="badge-winner-blue" class="hidden absolute -top-3 right-4 px-3 py-1 rounded-full bg-yellow-400 text-slate-950 font-arcade font-black text-xs shadow-lg">
+                                <i class="fa-solid fa-crown mr-1"></i>CHAMPION
+                            </div>
+                            <h4 id="res-blue-name" class="font-arcade font-black text-xl sm:text-2xl text-white mb-3 border-b border-blue-400/40 pb-2">BLUE TEAM</h4>
+                            <div class="space-y-2 text-sm sm:text-base">
+                                <div class="flex justify-between items-center bg-black/30 px-3 py-2 rounded-xl">
+                                    <span class="text-blue-200">Skor Akhir</span>
+                                    <span id="res-blue-score" class="font-arcade font-black text-xl text-yellow-400">1000</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-blue-200">Jumlah Jawaban Benar</span>
+                                    <span id="res-blue-correct" class="font-arcade font-bold text-emerald-400">10</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-blue-200">Jumlah Jawaban Salah</span>
+                                    <span id="res-blue-wrong" class="font-arcade font-bold text-rose-400">4</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-blue-200">Jumlah Tidak Menjawab</span>
+                                    <span id="res-blue-noans" class="font-arcade font-bold text-amber-300">1</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-black/20 px-3 py-1.5 rounded-xl">
+                                    <span class="text-blue-200">Sisa HP</span>
+                                    <span id="res-blue-hp" class="font-arcade font-bold text-cyan-300">55 / 100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Victory Action Buttons -->
+            <div class="max-w-5xl w-full mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3 pb-1">
+                <button onclick="openSetupScreen()" class="btn-arcade btn-gold py-3.5 px-4 rounded-2xl font-arcade font-black text-xs sm:text-sm md:text-base flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> MAIN LAGI
+                </button>
+                <button onclick="rematchImmediate()" class="btn-arcade btn-red-team py-3.5 px-4 rounded-2xl font-arcade font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate"></i> ULANGI PERTANDINGAN
+                </button>
+                <button onclick="backToMenu()" class="btn-arcade btn-blue-team py-3.5 px-4 rounded-2xl font-arcade font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-house"></i> KEMBALI KE MENU
+                </button>
+                <button onclick="toggleVictoryTable()" id="btn-toggle-results" class="btn-arcade panel-space py-3.5 px-4 rounded-2xl font-arcade font-bold text-xs sm:text-sm md:text-base text-yellow-300 border-2 border-yellow-400/60 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-table-list"></i> LIHAT HASIL / ARENA
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================================================== -->
+    <!-- MODALS: PANDUAN, PENGATURAN SUARA, PAUSE, RESTART  -->
+    <!-- ================================================== -->
+
+    <!-- MODAL PANDUAN BERMAIN -->
+    <div id="modal-guide" class="hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 interactive">
+        <div class="panel-space max-w-3xl w-full rounded-3xl p-6 md:p-8 border-2 border-cyan-400 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-4 mb-4">
+                <h3 class="font-arcade font-black text-xl sm:text-2xl text-yellow-400 flex items-center gap-3">
+                    <i class="fa-solid fa-book-open text-cyan-400"></i> PANDUAN BERMAIN
+                </h3>
+                <button onclick="closeModal('modal-guide')" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-rose-600 text-white font-bold">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm sm:text-base text-slate-200 leading-relaxed">
+                <div class="bg-slate-900/90 p-4 rounded-2xl border border-cyan-500/30">
+                    <h4 class="font-arcade font-bold text-cyan-300 mb-1">1. KONSEP SIMULTANEOUS BATTLE (BERMAIN BERSAMAAN)</h4>
+                    <p>Dua tim astronot (<strong>Tim Merah</strong> & <strong>Tim Biru</strong>) bertanding menjawab <strong>15 pertanyaan IPAS Kelas VI SD</strong> tentang <em>Rotasi dan Revolusi Bumi</em>. Kedua tim menjawab soal yang sama secara bersamaan dalam waktu <strong>20 detik</strong> per soal!</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="bg-red-950/50 p-4 rounded-2xl border border-red-500/40">
+                        <h4 class="font-arcade font-bold text-red-300 mb-1">KONTROL TIM MERAH (KIRI)</h4>
+                        <p>• Sentuh/Klik tombol <strong>A, B, C, D</strong> pada panel merah di kiri bawah.</p>
+                        <p>• Atau gunakan tombol keyboard: <kbd class="px-2 py-0.5 bg-black rounded border border-red-400">A</kbd> <kbd class="px-2 py-0.5 bg-black rounded border border-red-400">S</kbd> <kbd class="px-2 py-0.5 bg-black rounded border border-red-400">D</kbd> <kbd class="px-2 py-0.5 bg-black rounded border border-red-400">F</kbd></p>
+                    </div>
+                    <div class="bg-blue-950/50 p-4 rounded-2xl border border-blue-500/40">
+                        <h4 class="font-arcade font-bold text-blue-300 mb-1">KONTROL TIM BIRU (KANAN)</h4>
+                        <p>• Sentuh/Klik tombol <strong>A, B, C, D</strong> pada panel biru di kanan bawah.</p>
+                        <p>• Atau gunakan tombol keyboard: <kbd class="px-2 py-0.5 bg-black rounded border border-blue-400">J</kbd> <kbd class="px-2 py-0.5 bg-black rounded border border-blue-400">K</kbd> <kbd class="px-2 py-0.5 bg-black rounded border border-blue-400">L</kbd> <kbd class="px-2 py-0.5 bg-black rounded border border-blue-400">;</kbd></p>
+                    </div>
+                </div>
+                <div class="bg-slate-900/90 p-4 rounded-2xl border border-yellow-500/30 space-y-2">
+                    <h4 class="font-arcade font-bold text-yellow-300">2. ATURAN SKOR, SERANGAN TINJU & HP</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Kedua Tim Benar (DOUBLE CORRECT!):</strong> Masing-masing mendapat <strong>+100 Poin</strong>, tidak ada pengurangan HP, kedua astronot melompat gembira.</li>
+                        <li><strong>Satu Tim Benar & Lawan Salah / Tidak Menjawab:</strong> Tim yang benar mendapat <strong>+100 Poin</strong> dan maju melakukan <strong>Serangan Tinju</strong>! HP lawan berkurang <strong>-15 HP</strong>.</li>
+                        <li><strong>Kedua Tim Salah / Tidak Menjawab:</strong> Tidak ada tambahan poin dan tidak ada serangan. Kunci jawaban dan penjelasan materi tetap ditampilkan.</li>
+                        <li><strong>Knockout (HP = 0):</strong> Jika HP mencapai 0, astronot mengalami <em>KNOCKOUT!</em> secara kartun namun tetap bangkit kembali untuk menjawab soal berikutnya sampai 15 soal selesai. Juara ditentukan dari <strong>Skor Akhir Tertinggi</strong>!</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-6 text-right">
+                <button onclick="closeModal('modal-guide')" class="btn-arcade btn-gold px-6 py-3 rounded-xl font-arcade font-bold text-sm">
+                    MENGERTI & SIAP BERMAIN!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PENGATURAN SUARA -->
+    <div id="modal-sound" class="hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 interactive">
+        <div class="panel-space max-w-md w-full rounded-3xl p-6 border-2 border-yellow-400">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
+                <h3 class="font-arcade font-black text-xl text-yellow-400 flex items-center gap-2">
+                    <i class="fa-solid fa-volume-high"></i> PENGATURAN SUARA
+                </h3>
+                <button onclick="closeModal('modal-sound')" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between bg-slate-900/80 p-4 rounded-2xl border border-slate-700">
+                    <div>
+                        <div class="font-arcade font-bold text-sm text-white">MUSIK LATAR LUAR ANGKASA</div>
+                        <div class="text-xs text-slate-400">Synthesizer Space Arcade Theme</div>
+                    </div>
+                    <button id="toggle-bgm-btn" onclick="toggleBGM()" class="btn-arcade px-4 py-2 rounded-xl font-arcade font-bold text-xs bg-emerald-600 text-white">
+                        AKTIF (ON)
+                    </button>
+                </div>
+                <div class="flex items-center justify-between bg-slate-900/80 p-4 rounded-2xl border border-slate-700">
+                    <div>
+                        <div class="font-arcade font-bold text-sm text-white">EFEK SUARA PERTARUNGAN (SFX)</div>
+                        <div class="text-xs text-slate-400">Bel, Pukulan Tinju, Countdown & Jawaban</div>
+                    </div>
+                    <button id="toggle-sfx-btn" onclick="toggleSFX()" class="btn-arcade px-4 py-2 rounded-xl font-arcade font-bold text-xs bg-emerald-600 text-white">
+                        AKTIF (ON)
+                    </button>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700">
+                    <div class="font-arcade font-bold text-xs text-cyan-300 mb-2">UJI EFEK SUARA ARCADE:</div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="SoundEngine.playBell()" class="btn-arcade py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold border border-slate-600">🔔 Bel Ring</button>
+                        <button onclick="SoundEngine.playPunch()" class="btn-arcade py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold border border-slate-600">🥊 Pukulan</button>
+                        <button onclick="SoundEngine.playCorrect()" class="btn-arcade py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold border border-slate-600">✨ Benar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 text-right">
+                <button onclick="closeModal('modal-sound')" class="btn-arcade btn-gold px-6 py-2.5 rounded-xl font-arcade font-bold text-sm">
+                    SIMPAN & TUTUP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PAUSE PERMAINAN -->
+    <div id="modal-pause" class="hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 interactive">
+        <div class="panel-space max-w-md w-full rounded-3xl p-6 text-center border-2 border-yellow-400 animate-banner-pop">
+            <div class="w-16 h-16 rounded-2xl bg-yellow-400/20 border-2 border-yellow-400 flex items-center justify-center mx-auto mb-3 text-yellow-300 text-3xl">
+                <i class="fa-solid fa-pause"></i>
+            </div>
+            <h3 class="font-arcade font-black text-2xl sm:text-3xl text-yellow-400 text-glow-gold">PERTANDINGAN DIJEDA</h3>
+            <p class="text-sm text-slate-300 mt-1 mb-6">Timer, karakter 3D, dan proses soal dihentikan sementara. Status permainan tersimpan.</p>
+            <div class="space-y-3">
+                <button onclick="togglePauseGame()" class="w-full btn-arcade btn-gold py-3.5 rounded-2xl font-arcade font-black text-base flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> LANJUTKAN (RESUME)
+                </button>
+                <button onclick="restartFromPause()" class="w-full btn-arcade btn-red-team py-3 rounded-2xl font-arcade font-bold text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> ULANGI DARI RONDE 1 (RESTART)
+                </button>
+                <button onclick="quitToMenuFromPause()" class="w-full btn-arcade panel-space py-3 rounded-2xl font-arcade font-bold text-sm text-slate-200 border border-slate-500 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-house"></i> KEMBALI KE MENU UTAMA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KONFIRMASI RESTART -->
+    <div id="modal-restart" class="hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 interactive">
+        <div class="panel-space max-w-md w-full rounded-3xl p-6 text-center border-2 border-rose-500 animate-banner-pop">
+            <h3 class="font-arcade font-black text-2xl text-rose-400 mb-2">ULANGI PERTANDINGAN?</h3>
+            <p class="text-sm text-slate-300 mb-6">Skor dan HP kedua tim akan direset kembali ke Ronde 1.</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="closeModal('modal-restart')" class="btn-arcade panel-space py-3 rounded-xl font-arcade font-bold text-sm border border-slate-500">
+                    BATAL
+                </button>
+                <button onclick="executeRestartMatch()" class="btn-arcade btn-red-team py-3 rounded-xl font-arcade font-bold text-sm">
+                    YA, ULANGI!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- JAVASCRIPT: QUESTIONS, STATE, AUDIO, THREE.JS      -->
+    <!-- ================================================== -->
+    <script>
+        /**************************************************************
+         * 1. DAFTAR 15 PERTANYAAN WAJIB (PERSIS SESUAI INSTRUKSI)
+         **************************************************************/
+        const QUESTIONS = [
+            {
+                number: 1,
+                question: "Perputaran Bumi pada porosnya disebut ....",
+                options: ["Revolusi Bumi", "Rotasi Bumi", "Gerhana Bumi", "Gravitasi Bumi"],
+                correct: 1, // B
+                topic: "ROTASI BUMI",
+                explanation: "Rotasi Bumi adalah gerakan Bumi berputar pada porosnya (sumbunya). Satu kali rotasi membutuhkan waktu sekitar 24 jam."
+            },
+            {
+                number: 2,
+                question: "Waktu yang dibutuhkan Bumi untuk melakukan satu kali rotasi adalah ....",
+                options: ["12 jam", "24 jam", "30 hari", "365 hari"],
+                correct: 1, // B
+                topic: "WAKTU ROTASI BUMI",
+                explanation: "Satu kali rotasi Bumi memerlukan waktu sehari semalam atau sekitar 24 jam (tepatnya 23 jam 56 menit 4 detik)."
+            },
+            {
+                number: 3,
+                question: "Salah satu akibat dari rotasi Bumi adalah ....",
+                options: ["Terjadinya siang dan malam", "Terjadinya pergantian tahun", "Terjadinya perubahan musim", "Terjadinya gerhana Bulan"],
+                correct: 0, // A
+                topic: "AKIBAT ROTASI BUMI",
+                explanation: "Rotasi Bumi menyebabkan terjadinya pergantian siang dan malam, gerak semu harian Matahari, serta perbedaan zona waktu."
+            },
+            {
+                number: 4,
+                question: "Bagian Bumi yang terkena cahaya Matahari mengalami ....",
+                options: ["Malam hari", "Musim hujan", "Siang hari", "Musim kemarau"],
+                correct: 2, // C
+                topic: "SIANG HARI",
+                explanation: "Saat Bumi berotasi, belahan Bumi yang menghadap dan terkena cahaya Matahari akan mengalami waktu siang hari."
+            },
+            {
+                number: 5,
+                question: "Bagian Bumi yang tidak terkena cahaya Matahari mengalami ....",
+                options: ["Siang hari", "Malam hari", "Musim panas", "Musim semi"],
+                correct: 1, // B
+                topic: "MALAM HARI",
+                explanation: "Bagian Bumi yang membelakangi Matahari tidak mendapatkan sinar Matahari sehingga mengalami malam hari."
+            },
+            {
+                number: 6,
+                question: "Perputaran Bumi mengelilingi Matahari disebut ....",
+                options: ["Rotasi Bumi", "Revolusi Bumi", "Gravitasi Bumi", "Gerak Bulan"],
+                correct: 1, // B
+                topic: "REVOLUSI BUMI",
+                explanation: "Revolusi Bumi adalah gerakan Bumi beredar mengelilingi Matahari pada lintasan orbitnya."
+            },
+            {
+                number: 7,
+                question: "Waktu yang dibutuhkan Bumi untuk melakukan satu kali revolusi adalah ....",
+                options: ["24 jam", "7 hari", "30 hari", "365¼ hari"],
+                correct: 3, // D
+                topic: "KALA REVOLUSI BUMI",
+                explanation: "Waktu yang dibutuhkan Bumi untuk satu kali mengelilingi Matahari (revolusi) adalah 1 tahun atau sekitar 365¼ hari."
+            },
+            {
+                number: 8,
+                question: "Revolusi Bumi bersama dengan kemiringan sumbu Bumi menyebabkan ....",
+                options: [
+                    "Terjadinya siang dan malam",
+                    "Terjadinya pergantian musim di beberapa wilayah Bumi",
+                    "Terjadinya gempa Bumi",
+                    "Terjadinya angin topan"
+                ],
+                correct: 1, // B
+                topic: "PERGANTIAN MUSIM",
+                explanation: "Revolusi Bumi yang disertai kemiringan sumbu Bumi (23,5°) menyebabkan pergantian musim di belahan Bumi utara dan selatan."
+            },
+            {
+                number: 9,
+                question: "Perbedaan waktu di berbagai wilayah Bumi merupakan salah satu akibat dari ....",
+                options: ["Rotasi Bumi", "Revolusi Bumi", "Gerhana Matahari", "Gerhana Bulan"],
+                correct: 0, // A
+                topic: "PERBEDAAN WAKTU",
+                explanation: "Karena Bumi berputar pada porosnya dari barat ke timur (rotasi), wilayah di timur mengalami siang lebih dahulu sehingga muncul perbedaan zona waktu."
+            },
+            {
+                number: 10,
+                question: "Alat peraga yang dapat digunakan untuk menunjukkan bentuk Bumi dalam pembelajaran adalah ....",
+                options: ["Penggaris", "Globe", "Buku tulis", "Pensil"],
+                correct: 1, // B
+                topic: "ALAT PERAGA BUMI",
+                explanation: "Globe adalah tiruan bola Bumi dalam ukuran kecil yang digunakan untuk memperagakan bentuk serta posisi kemiringan sumbu Bumi."
+            },
+            {
+                number: 11,
+                question: "Dalam percobaan menggunakan globe dan senter, senter berfungsi sebagai ....",
+                options: ["Bulan", "Bintang", "Matahari", "Bumi"],
+                correct: 2, // C
+                topic: "SIMULASI CAHAYA MATAHARI",
+                explanation: "Dalam percobaan rotasi dan revolusi, cahaya senter memancarkan sinar seperti Matahari yang menyinari permukaan Bumi (globe)."
+            },
+            {
+                number: 12,
+                question: "Ketika globe diputar di depan cahaya senter, bagian yang terkena cahaya menunjukkan ....",
+                options: [
+                    "Wilayah yang mengalami malam",
+                    "Wilayah yang mengalami siang",
+                    "Wilayah yang mengalami musim hujan",
+                    "Wilayah yang mengalami musim kemarau"
+                ],
+                correct: 1, // B
+                topic: "PERCOBAAN SIANG DAN MALAM",
+                explanation: "Bagian permukaan globe yang terang terkena sorotan senter menggambarkan wilayah Bumi yang sedang mengalami siang hari."
+            },
+            {
+                number: 13,
+                question: "Tahun kabisat berkaitan dengan waktu revolusi Bumi yang berlangsung sekitar ....",
+                options: ["24 jam", "30 hari", "365¼ hari", "400 hari"],
+                correct: 2, // C
+                topic: "TAHUN KABISAT",
+                explanation: "Sisa waktu ¼ hari dari 365¼ hari setiap tahun terkumpul menjadi 1 hari penuh setelah 4 tahun (366 hari), yang disebut Tahun Kabisat."
+            },
+            {
+                number: 14,
+                question: "Perbedaan utama antara rotasi dan revolusi Bumi adalah ....",
+                options: [
+                    "Rotasi adalah perputaran Bumi pada porosnya, sedangkan revolusi adalah perputaran Bumi mengelilingi Matahari",
+                    "Rotasi adalah perputaran Bumi mengelilingi Matahari, sedangkan revolusi adalah perputaran Bumi pada porosnya",
+                    "Rotasi dan revolusi memiliki arti yang sama",
+                    "Rotasi dan revolusi hanya terjadi pada malam hari"
+                ],
+                correct: 0, // A
+                topic: "ROTASI VS REVOLUSI",
+                explanation: "Rotasi adalah gerak Bumi berputar pada porosnya sendiri (24 jam), sedangkan revolusi adalah gerak Bumi mengelilingi Matahari (365¼ hari)."
+            },
+            {
+                number: 15,
+                question: "Saat melakukan percobaan revolusi Bumi menggunakan globe dan senter, globe harus ....",
+                options: [
+                    "Diletakkan tanpa bergerak",
+                    "Diputar mengelilingi senter dengan arah kemiringan sumbu tetap",
+                    "Dijauhkan dari senter",
+                    "Diletakkan terbalik"
+                ],
+                correct: 1, // B
+                topic: "SIMULASI REVOLUSI BUMI",
+                explanation: "Saat berevolusi mengelilingi Matahari (senter), Bumi (globe) bergerak mengelilingi senter sambil mempertahankan arah kemiringan sumbunya secara tetap."
+            }
+        ];
+
+        const OPTION_LETTERS = ["A", "B", "C", "D"];
+
+        /**************************************************************
+         * 2. STATE PERMAINAN TERPISAH & TERSTRUKTUR
+         **************************************************************/
+        const GameState = {
+            status: 'MENU', // 'MENU' | 'SETUP' | 'INTRO' | 'QUESTION' | 'EVALUATING' | 'PAUSED' | 'VICTORY'
+            previousStatusBeforePause: null,
+
+            // Nama Tim
+            redTeamName: 'RED TEAM',
+            blueTeamName: 'BLUE TEAM',
+
+            // Skor Tim
+            redScore: 0,
+            blueScore: 0,
+
+            // HP Tim (0 - 100)
+            redHP: 100,
+            blueHP: 100,
+
+            // Statistik Akhir
+            redStats: { correct: 0, wrong: 0, noAnswer: 0 },
+            blueStats: { correct: 0, wrong: 0, noAnswer: 0 },
+
+            // Nomor Soal (Index 0 - 14)
+            currentQuestionIndex: 0,
+            roundProcessed: false, // Guard agar tiap soal hanya diproses 1 kali
+
+            // Jawaban Kedua Tim (Independen)
+            redAnswer: null,      // null atau 0..3
+            redAnswerTime: null,  // detik menjawab
+            blueAnswer: null,     // null atau 0..3
+            blueAnswerTime: null, // detik menjawab
+
+            // Timer
+            timeLeft: 20,
+            questionStartTime: 0,
+            timerInterval: null,
+            transitionTimeout: null,
+            actionTimeout: null,
+            introInterval: null,
+
+            // Status Animasi Karakter
+            redAnimState: 'idle',
+            blueAnimState: 'idle'
+        };
+
+        /**************************************************************
+         * 3. WEB AUDIO API SOUND ENGINE (MUSIK & EFEK SUARA TANPA FILE EKSTERNAL)
+         **************************************************************/
+        const SoundEngine = {
+            ctx: null,
+            isMuted: false,
+            bgmEnabled: true,
+            sfxEnabled: true,
+            bgmTimer: null,
+            bgmStep: 0,
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) {
+                        this.ctx = new AudioCtx();
+                    }
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            startBGM() {
+                this.init();
+                if (this.bgmTimer) return;
+                const bassNotes = [110, 110, 130.81, 146.83, 110, 110, 164.81, 146.83];
+                const arpNotes = [440, 523.25, 659.25, 587.33, 440, 659.25, 587.33, 523.25];
+                this.bgmTimer = setInterval(() => {
+                    if (this.isMuted || !this.bgmEnabled || GameState.status === 'PAUSED') return;
+                    if (!this.ctx || this.ctx.state !== 'running') return;
+                    const now = this.ctx.currentTime;
+                    const bFreq = bassNotes[this.bgmStep % bassNotes.length];
+                    const aFreq = arpNotes[this.bgmStep % arpNotes.length];
+
+                    // Space Bass
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(bFreq, now);
+                    gain.gain.setValueAtTime(0.04, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.34);
+
+                    // Space Synth Arpeggio
+                    if (this.bgmStep % 2 === 0) {
+                        const osc2 = this.ctx.createOscillator();
+                        const gain2 = this.ctx.createGain();
+                        osc2.type = 'sine';
+                        osc2.frequency.setValueAtTime(aFreq, now);
+                        gain2.gain.setValueAtTime(0.025, now);
+                        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                        osc2.connect(gain2);
+                        gain2.connect(this.ctx.destination);
+                        osc2.start(now);
+                        osc2.stop(now + 0.26);
+                    }
+                    this.bgmStep++;
+                }, 360);
+            },
+
+            playTone(freq, type = 'sine', duration = 0.2, vol = 0.15, slideTo = null) {
+                if (this.isMuted || !this.sfxEnabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                if (slideTo) {
+                    osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
+                }
+                gain.gain.setValueAtTime(vol, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + duration + 0.02);
+            },
+
+            playBell() {
+                // Boxing Ring Bell Ding-Ding!
+                this.playTone(880, 'triangle', 0.6, 0.25);
+                this.playTone(1760, 'sine', 0.45, 0.15);
+                setTimeout(() => {
+                    this.playTone(880, 'triangle', 0.7, 0.25);
+                    this.playTone(1760, 'sine', 0.5, 0.15);
+                }, 180);
+            },
+
+            playCountdownTick(urgent = false) {
+                this.playTone(urgent ? 780 : 520, 'square', 0.09, urgent ? 0.14 : 0.08);
+            },
+
+            playLockIn() {
+                this.playTone(660, 'sine', 0.1, 0.14, 880);
+            },
+
+            playCorrect() {
+                this.playTone(523.25, 'triangle', 0.15, 0.18);
+                setTimeout(() => this.playTone(659.25, 'triangle', 0.15, 0.18), 110);
+                setTimeout(() => this.playTone(783.99, 'triangle', 0.25, 0.2), 220);
+                setTimeout(() => this.playTone(1046.5, 'sine', 0.35, 0.22), 330);
+            },
+
+            playWrong() {
+                this.playTone(240, 'sawtooth', 0.25, 0.16, 160);
+                setTimeout(() => this.playTone(175, 'sawtooth', 0.35, 0.18, 110), 200);
+            },
+
+            playPunch() {
+                if (this.isMuted || !this.sfxEnabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+
+                // Low impact thud
+                this.playTone(150, 'sine', 0.25, 0.35, 38);
+                this.playTone(95, 'square', 0.18, 0.22, 30);
+
+                // White noise burst for arcade glove impact
+                const bufferSize = this.ctx.sampleRate * 0.15;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.28, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                noise.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start(now);
+            },
+
+            playKnockout() {
+                this.playPunch();
+                setTimeout(() => this.playPunch(), 160);
+                setTimeout(() => {
+                    this.playTone(400, 'sawtooth', 0.6, 0.22, 85);
+                }, 280);
+            },
+
+            playVictoryFanfare() {
+                const notes = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5];
+                const delays = [0, 150, 300, 450, 650, 820];
+                notes.forEach((n, idx) => {
+                    setTimeout(() => this.playTone(n, 'triangle', 0.28, 0.22), delays[idx]);
+                });
+            }
+        };
+
+        /**************************************************************
+         * 4. THREE.JS 3D SPACE ARENA & 3D ASTRONAUT BOXERS
+         **************************************************************/
+        let scene, camera, renderer, clock;
+        let earthMesh, earthClouds, saturnGroup, moonPivot, moonMesh, starField, meteorGroup;
+        let ringPlatform, ropeGlows = [], cornerLightMeshes = [];
+        let redAstronaut, blueAstronaut;
+        let hitBurstGroup;
+
+        // Camera Orbit / Cinematic State
+        let camAngleX = 0;
+        let camAngleY = 0.28;
+        let isDraggingCamera = false;
+        let prevMouseX = 0, prevMouseY = 0;
+        let cameraTargetFocus = new THREE.Vector3(0, 1.2, 0);
+        let cameraDesiredPos = new THREE.Vector3(0, 4.5, 11.2);
+        let screenShakeIntensity = 0;
+        let isActionCutscene = false;
+        function initThreeScene() {
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x06071b, 0.014);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 300);
+            camera.position.set(0, 4.5, 11.2);
+            camera.lookAt(0, 1.8, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            clock = new THREE.Clock();
+
+            // --- LIGHTING ---
+            const ambientLight = new THREE.AmbientLight(0x8b9bb4, 0.85);
+            scene.add(ambientLight);
+
+            // Overhead Ring Spotlight
+            const mainSpot = new THREE.DirectionalLight(0xffffff, 1.25);
+            mainSpot.position.set(2, 16, 8);
+            mainSpot.castShadow = true;
+            mainSpot.shadow.mapSize.width = 1024;
+            mainSpot.shadow.mapSize.height = 1024;
+            scene.add(mainSpot);
+
+            // Red & Blue Rim Lights
+            const redRim = new THREE.PointLight(0xef4444, 1.6, 18);
+            redRim.position.set(-7, 5, 3);
+            scene.add(redRim);
+
+            const blueRim = new THREE.PointLight(0x3b82f6, 1.6, 18);
+            blueRim.position.set(7, 5, 3);
+            scene.add(blueRim);
+
+            // --- BUILD SPACE BACKGROUND (GALAXY, EARTH, SATURN, MOON, STARS, METEORS, NEBULA) ---
+            buildSpaceEnvironment();
+
+            // --- BUILD FUTURISTIC BOXING RING ---
+            buildFuturisticRing();
+
+            // --- BUILD 3D CARTOON ASTRONAUT CHARACTERS ---
+            redAstronaut = createAstronautCharacter('RED');
+            redAstronaut.group.position.set(-2.35, 0.55, 0);
+            redAstronaut.group.rotation.y = Math.PI / 2;
+            scene.add(redAstronaut.group);
+
+            blueAstronaut = createAstronautCharacter('BLUE');
+            blueAstronaut.group.position.set(2.35, 0.55, 0);
+            blueAstronaut.group.rotation.y = -Math.PI / 2;
+            scene.add(blueAstronaut.group);
+
+            // --- 3D HIT SPARKS / STARS BURST ---
+            buildHitBurstParticles();
+
+            // --- CAMERA MOUSE / TOUCH ORBIT LISTENERS ---
+            const dom = renderer.domElement;
+            dom.addEventListener('mousedown', (e) => {
+                isDraggingCamera = true;
+                prevMouseX = e.clientX;
+                prevMouseY = e.clientY;
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingCamera) return;
+                const dx = e.clientX - prevMouseX;
+                const dy = e.clientY - prevMouseY;
+                prevMouseX = e.clientX;
+                prevMouseY = e.clientY;
+                camAngleX -= dx * 0.005;
+                camAngleY = Math.max(0.08, Math.min(0.75, camAngleY + dy * 0.004));
+            });
+            window.addEventListener('mouseup', () => { isDraggingCamera = false; });
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function buildSpaceEnvironment() {
+            // 1. Twinkling Stars Field
+            const starGeo = new THREE.BufferGeometry();
+            const starCount = 1400;
+            const positions = new Float32Array(starCount * 3);
+            const colors = new Float32Array(starCount * 3);
+            for (let i = 0; i < starCount; i++) {
+                const r = 45 + Math.random() * 90;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i * 3 + 2] = r * Math.cos(phi) - 20;
+
+                const palette = [
+                    new THREE.Color(0xffffff),
+                    new THREE.Color(0x93c5fd),
+                    new THREE.Color(0xfde047),
+                    new THREE.Color(0xf472b6)
+                ];
+                const c = palette[i % palette.length];
+                colors[i * 3] = c.r;
+                colors[i * 3 + 1] = c.g;
+                colors[i * 3 + 2] = c.b;
+            }
+            starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            starGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            const starMat = new THREE.PointsMaterial({ size: 0.45, vertexColors: true, transparent: true, opacity: 0.9 });
+            starField = new THREE.Points(starGeo, starMat);
+            scene.add(starField);
+
+            // 2. Nebula Glow Clouds (Blue, Purple, Red)
+            const nebulaColors = [0x3b82f6, 0x9333ea, 0xef4444, 0x4f46e5];
+            const nebulaPositions = [
+                [-26, 14, -45],
+                [24, 18, -50],
+                [0, 22, -55],
+                [-12, -6, -42]
+            ];
+            nebulaPositions.forEach((pos, idx) => {
+                const nebGeo = new THREE.SphereGeometry(12 + idx * 2, 16, 16);
+                const nebMat = new THREE.MeshBasicMaterial({
+                    color: nebulaColors[idx],
+                    transparent: true,
+                    opacity: 0.09,
+                    blending: THREE.AdditiveBlending
+                });
+                const neb = new THREE.Mesh(nebGeo, nebMat);
+                neb.position.set(...pos);
+                scene.add(neb);
+            });
+
+            // 3. Planet Earth (Bumi) + Continents + Clouds + Orbiting Moon (Bulan)
+            const earthGroup = new THREE.Group();
+            earthGroup.position.set(-14, 9.5, -24);
+            // Tilt Earth axis 23.5 degrees!
+            earthGroup.rotation.z = THREE.MathUtils.degToRad(23.5);
+
+            const earthGeo = new THREE.SphereGeometry(4.2, 32, 32);
+            const earthMat = new THREE.MeshStandardMaterial({
+                color: 0x1d4ed8,
+                roughness: 0.6,
+                metalness: 0.1,
+                emissive: 0x0a1936,
+                emissiveIntensity: 0.4
+            });
+            earthMesh = new THREE.Mesh(earthGeo, earthMat);
+
+            // Green Continents patches on Earth
+            const continentGeo = new THREE.DodecahedronGeometry(1.35, 1);
+            const continentMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.7 });
+            const contOffsets = [
+                [2.8, 1.5, 2.2], [-2.6, 1.1, 2.5], [1.2, -2.5, 2.8],
+                [-1.8, -1.8, -2.9], [2.9, 0.5, -2.5], [-2.9, 1.6, -1.8]
+            ];
+            contOffsets.forEach(offset => {
+                const patch = new THREE.Mesh(continentGeo, continentMat);
+                patch.position.set(...offset);
+                patch.scale.set(1.2, 0.7, 1.1);
+                earthMesh.add(patch);
+            });
+
+            // Atmosphere cloud ring
+            const cloudGeo = new THREE.SphereGeometry(4.38, 24, 24);
+            const cloudMat = new THREE.MeshBasicMaterial({
+                color: 0xe0f2fe,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.16
+            });
+            earthClouds = new THREE.Mesh(cloudGeo, cloudMat);
+            earthMesh.add(earthClouds);
+
+            earthGroup.add(earthMesh);
+
+            // Moon orbiting Earth
+            moonPivot = new THREE.Group();
+            const moonGeo = new THREE.SphereGeometry(1.05, 24, 24);
+            const moonMat = new THREE.MeshStandardMaterial({
+                color: 0xe2e8f0,
+                roughness: 0.8,
+                emissive: 0x334155,
+                emissiveIntensity: 0.25
+            });
+            moonMesh = new THREE.Mesh(moonGeo, moonMat);
+            moonMesh.position.set(7.5, 1.2, 0);
+            moonPivot.add(moonMesh);
+            earthGroup.add(moonPivot);
+
+            scene.add(earthGroup);
+
+            // 4. Planet Saturn (Saturnus) with Rings
+            saturnGroup = new THREE.Group();
+            saturnGroup.position.set(16, 11, -28);
+            saturnGroup.rotation.z = THREE.MathUtils.degToRad(-26);
+            saturnGroup.rotation.x = THREE.MathUtils.degToRad(18);
+
+            const saturnGeo = new THREE.SphereGeometry(3.4, 32, 32);
+            const saturnMat = new THREE.MeshStandardMaterial({
+                color: 0xfbbf24,
+                roughness: 0.5,
+                emissive: 0x78350f,
+                emissiveIntensity: 0.3
+            });
+            const saturnPlanet = new THREE.Mesh(saturnGeo, saturnMat);
+            saturnGroup.add(saturnPlanet);
+
+            const ringGeo = new THREE.RingGeometry(4.5, 7.2, 64);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: 0xfde68a,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.72
+            });
+            const saturnRing = new THREE.Mesh(ringGeo, ringMat);
+            saturnRing.rotation.x = Math.PI / 2;
+            saturnGroup.add(saturnRing);
+
+            scene.add(saturnGroup);
+
+            // 5. Moving Meteors
+            meteorGroup = new THREE.Group();
+            for (let i = 0; i < 4; i++) {
+                const mGeo = new THREE.ConeGeometry(0.18, 2.2, 8);
+                const mMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.85 });
+                const meteor = new THREE.Mesh(mGeo, mMat);
+                meteor.rotation.z = Math.PI / 3;
+                resetMeteor(meteor, i);
+                meteorGroup.add(meteor);
+            }
+            scene.add(meteorGroup);
+        }
+
+        function resetMeteor(meteor, idx = 0) {
+            meteor.position.set(25 + Math.random() * 25 + idx * 12, 14 + Math.random() * 14, -18 - Math.random() * 25);
+            meteor.userData.speed = 0.22 + Math.random() * 0.18;
+        }
+
+        function buildFuturisticRing() {
+            ringPlatform = new THREE.Group();
+
+            // Main Base Platform
+            const baseGeo = new THREE.BoxGeometry(9.6, 0.8, 6.8);
+            const baseMat = new THREE.MeshStandardMaterial({
+                color: 0x0f172a,
+                metalness: 0.6,
+                roughness: 0.3
+            });
+            const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+            baseMesh.position.y = 0.15;
+            baseMesh.receiveShadow = true;
+            ringPlatform.add(baseMesh);
+
+            // Glowing Cyber Floor Mat
+            const matGeo = new THREE.BoxGeometry(8.8, 0.12, 6.0);
+            const matMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1e293b,
+                metalness: 0.4,
+                roughness: 0.4,
+                emissive: 0x0f172a
+            });
+            const matMesh = new THREE.Mesh(matGeo, matMaterial);
+            matMesh.position.y = 0.56;
+            matMesh.receiveShadow = true;
+            ringPlatform.add(matMesh);
+
+            // Futuristic Tech Grid & Center Circle on Ring Floor
+            const gridHelper = new THREE.GridHelper(8.6, 16, 0x38bdf8, 0x334155);
+            gridHelper.position.y = 0.63;
+            gridHelper.scale.z = 6.0 / 8.6;
+            ringPlatform.add(gridHelper);
+
+            const centerRingGeo = new THREE.RingGeometry(1.1, 1.35, 32);
+            const centerRingMat = new THREE.MeshBasicMaterial({ color: 0xfacc15, side: THREE.DoubleSide });
+            const centerCircle = new THREE.Mesh(centerRingGeo, centerRingMat);
+            centerCircle.rotation.x = -Math.PI / 2;
+            centerCircle.position.y = 0.64;
+            ringPlatform.add(centerCircle);
+
+            // Neon Border Trim around Platform
+            const trimGeo = new THREE.BoxGeometry(9.75, 0.16, 6.95);
+            const trimMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+            const trimMesh = new THREE.Mesh(trimGeo, trimMat);
+            trimMesh.position.y = 0.42;
+            ringPlatform.add(trimMesh);
+
+            // 4 Corner Posts
+            const corners = [
+                { x: -4.4, z: -3.0, color: 0xef4444 },
+                { x: -4.4, z: 3.0, color: 0xef4444 },
+                { x: 4.4, z: -3.0, color: 0x3b82f6 },
+                { x: 4.4, z: 3.0, color: 0x3b82f6 }
+            ];
+            corners.forEach(c => {
+                const postGeo = new THREE.CylinderGeometry(0.18, 0.22, 2.7, 16);
+                const postMat = new THREE.MeshStandardMaterial({
+                    color: c.color,
+                    metalness: 0.7,
+                    roughness: 0.2,
+                    emissive: c.color,
+                    emissiveIntensity: 0.35
+                });
+                const post = new THREE.Mesh(postGeo, postMat);
+                post.position.set(c.x, 1.9, c.z);
+                ringPlatform.add(post);
+
+                const capGeo = new THREE.SphereGeometry(0.26, 16, 16);
+                const capMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+                const cap = new THREE.Mesh(capGeo, capMat);
+                cap.position.set(c.x, 3.3, c.z);
+                cornerLightMeshes.push(cap);
+                ringPlatform.add(cap);
+            });
+
+            // 4 Futuristic Energy Ropes (Tali Pembatas Ring)
+            const ropeHeights = [1.15, 1.65, 2.15, 2.65];
+            const ropeColors = [0xef4444, 0x38bdf8, 0xfacc15, 0x3b82f6];
+            ropeHeights.forEach((h, idx) => {
+                const rMat = new THREE.MeshBasicMaterial({ color: ropeColors[idx] });
+
+                // Front & Back Ropes (along X)
+                [-3.0, 3.0].forEach(zPos => {
+                    const rGeo = new THREE.CylinderGeometry(0.035, 0.035, 8.8, 8);
+                    const rope = new THREE.Mesh(rGeo, rMat);
+                    rope.rotation.z = Math.PI / 2;
+                    rope.position.set(0, h, zPos);
+                    ringPlatform.add(rope);
+                    ropeGlows.push(rope);
+                });
+
+                // Left & Right Ropes (along Z)
+                [-4.4, 4.4].forEach(xPos => {
+                    const rGeo = new THREE.CylinderGeometry(0.035, 0.035, 6.0, 8);
+                    const rope = new THREE.Mesh(rGeo, rMat);
+                    rope.rotation.x = Math.PI / 2;
+                    rope.position.set(xPos, h, 0);
+                    ringPlatform.add(rope);
+                    ropeGlows.push(rope);
+                });
+            });
+
+            // Overhead Futuristic Spotlight Rig & Digital Scoreboard Frame
+            const rigGroup = new THREE.Group();
+            rigGroup.position.set(0, 6.3, -1.2);
+            const rigBarGeo = new THREE.BoxGeometry(5.8, 0.45, 1.2);
+            const rigBarMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 });
+            const rigBar = new THREE.Mesh(rigBarGeo, rigBarMat);
+            rigGroup.add(rigBar);
+
+            const holoGeo = new THREE.PlaneGeometry(5.2, 0.75);
+            const holoMat = new THREE.MeshBasicMaterial({
+                color: 0x38bdf8,
+                transparent: true,
+                opacity: 0.22,
+                side: THREE.DoubleSide
+            });
+            const holoBoard = new THREE.Mesh(holoGeo, holoMat);
+            holoBoard.position.y = -0.55;
+            rigGroup.add(holoBoard);
+
+            ringPlatform.add(rigGroup);
+            scene.add(ringPlatform);
+        }
+
+        function createAstronautCharacter(team) {
+            const isRed = team === 'RED';
+            const mainColor = isRed ? 0xef4444 : 0x3b82f6;
+            const darkColor = isRed ? 0x991b1b : 0x1d4ed8;
+            const accentColor = isRed ? 0xfca5a5 : 0x93c5fd;
+            const gloveColor = isRed ? 0xdc2626 : 0x2563eb;
+
+            const root = new THREE.Group();
+            const bodyPivot = new THREE.Group();
+            root.add(bodyPivot);
+
+            const suitMat = new THREE.MeshStandardMaterial({ color: mainColor, roughness: 0.35, metalness: 0.15 });
+            const darkMat = new THREE.MeshStandardMaterial({ color: darkColor, roughness: 0.45, metalness: 0.2 });
+            const whiteTrimMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3, metalness: 0.2 });
+            const goldMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.25, metalness: 0.6, emissive: 0x713f12, emissiveIntensity: 0.3 });
+
+            // 1. Torso (Baju Astronot Kartun 3D)
+            const torsoGeo = new THREE.CylinderGeometry(0.52, 0.46, 1.15, 20);
+            const torso = new THREE.Mesh(torsoGeo, suitMat);
+            torso.position.y = 1.45;
+            torso.castShadow = true;
+            bodyPivot.add(torso);
+
+            // Chest Control Panel
+            const chestGeo = new THREE.BoxGeometry(0.46, 0.36, 0.16);
+            const chestPanel = new THREE.Mesh(chestGeo, whiteTrimMat);
+            chestPanel.position.set(0, 0.1, 0.46);
+            torso.add(chestPanel);
+
+            const badgeGeo = new THREE.SphereGeometry(0.08, 12, 12);
+            const badge = new THREE.Mesh(badgeGeo, goldMat);
+            badge.position.set(0, 0, 0.08);
+            chestPanel.add(badge);
+
+            // Belt
+            const beltGeo = new THREE.CylinderGeometry(0.49, 0.49, 0.18, 20);
+            const belt = new THREE.Mesh(beltGeo, goldMat);
+            belt.position.y = -0.48;
+            torso.add(belt);
+
+            // Life Support Backpack
+            const packGeo = new THREE.BoxGeometry(0.72, 0.88, 0.42);
+            const backpack = new THREE.Mesh(packGeo, darkMat);
+            backpack.position.set(0, 0.08, -0.52);
+            torso.add(backpack);
+
+            // 2. Helmet Luar Angkasa & Kaca Transparan
+            const headGroup = new THREE.Group();
+            headGroup.position.set(0, 2.42, 0);
+            bodyPivot.add(headGroup);
+
+            // Astronaut Cartoon Head Inside Helmet
+            const innerHeadGeo = new THREE.SphereGeometry(0.38, 20, 20);
+            const skinMat = new THREE.MeshStandardMaterial({ color: 0xfde68a, roughness: 0.5 });
+            const innerHead = new THREE.Mesh(innerHeadGeo, skinMat);
+            headGroup.add(innerHead);
+
+            // Expressive Cartoon Eyes inside Helmet
+            const eyeGeo = new THREE.SphereGeometry(0.055, 12, 12);
+            const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+            const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+            leftEye.position.set(-0.13, 0.06, 0.34);
+            const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+            rightEye.position.set(0.13, 0.06, 0.34);
+            innerHead.add(leftEye);
+            innerHead.add(rightEye);
+
+            // Outer Helmet Shell
+            const helmetShellGeo = new THREE.SphereGeometry(0.58, 24, 24);
+            const helmetShell = new THREE.Mesh(helmetShellGeo, suitMat);
+            helmetShell.scale.set(1.02, 1.0, 1.02);
+            headGroup.add(helmetShell);
+
+            // Transparent Glass Visor (Kaca Transparan)
+            const visorGeo = new THREE.SphereGeometry(0.53, 24, 24);
+            const visorMat = new THREE.MeshPhysicalMaterial({
+                color: 0x38bdf8,
+                transparent: true,
+                opacity: 0.42,
+                roughness: 0.1,
+                metalness: 0.2
+            });
+            const visor = new THREE.Mesh(visorGeo, visorMat);
+            visor.position.set(0, 0.02, 0.14);
+            headGroup.add(visor);
+
+            // Helmet Neck Ring & Antenna
+            const neckRingGeo = new THREE.TorusGeometry(0.45, 0.07, 12, 24);
+            const neckRing = new THREE.Mesh(neckRingGeo, whiteTrimMat);
+            neckRing.rotation.x = Math.PI / 2;
+            neckRing.position.y = -0.45;
+            headGroup.add(neckRing);
+
+            const antStickGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.35, 8);
+            const antStick = new THREE.Mesh(antStickGeo, whiteTrimMat);
+            antStick.position.set(0, 0.68, 0);
+            headGroup.add(antStick);
+
+            const antTipGeo = new THREE.SphereGeometry(0.07, 12, 12);
+            const antTip = new THREE.Mesh(antTipGeo, goldMat);
+            antTip.position.set(0, 0.86, 0);
+            headGroup.add(antTip);
+
+            // Orbiting Stun Stars (Hidden unless Stunned / Hit)
+            const stunStarsGroup = new THREE.Group();
+            stunStarsGroup.position.set(0, 0.95, 0);
+            stunStarsGroup.visible = false;
+            for (let s = 0; s < 4; s++) {
+                const stGeo = new THREE.OctahedronGeometry(0.12, 0);
+                const stMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+                const stMesh = new THREE.Mesh(stGeo, stMat);
+                const angle = (s / 4) * Math.PI * 2;
+                stMesh.position.set(Math.cos(angle) * 0.55, 0, Math.sin(angle) * 0.55);
+                stunStarsGroup.add(stMesh);
+            }
+            headGroup.add(stunStarsGroup);
+
+            // 3. Arms & Big 3D Boxing Gloves (Sarung Tinju Merah / Biru)
+            const gloveMat = new THREE.MeshStandardMaterial({
+                color: gloveColor,
+                roughness: 0.25,
+                metalness: 0.2,
+                emissive: darkColor,
+                emissiveIntensity: 0.25
+            });
+
+            function createArmWithGlove(isLeft) {
+                const shoulderPivot = new THREE.Group();
+                shoulderPivot.position.set(isLeft ? -0.66 : 0.66, 1.82, 0);
+
+                const shoulderPad = new THREE.Mesh(new THREE.SphereGeometry(0.22, 14, 14), whiteTrimMat);
+                shoulderPivot.add(shoulderPad);
+
+                const armMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.13, 0.62, 12), suitMat);
+                armMesh.position.set(0, -0.25, 0.22);
+                armMesh.rotation.x = Math.PI / 3;
+                shoulderPivot.add(armMesh);
+
+                // Big Cartoon Boxing Glove
+                const gloveGroup = new THREE.Group();
+                gloveGroup.position.set(0, -0.45, 0.55);
+
+                const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.2, 14), goldMat);
+                cuff.rotation.x = Math.PI / 2;
+                gloveGroup.add(cuff);
+
+                const mainGlove = new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 20), gloveMat);
+                mainGlove.scale.set(1.0, 0.92, 1.25);
+                mainGlove.position.z = 0.26;
+                gloveGroup.add(mainGlove);
+
+                const thumbGlove = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), gloveMat);
+                thumbGlove.position.set(isLeft ? 0.22 : -0.22, 0.1, 0.22);
+                gloveGroup.add(thumbGlove);
+
+                shoulderPivot.add(gloveGroup);
+                return { shoulderPivot, gloveGroup };
+            }
+
+            const leftArm = createArmWithGlove(true);
+            const rightArm = createArmWithGlove(false);
+            bodyPivot.add(leftArm.shoulderPivot);
+            bodyPivot.add(rightArm.shoulderPivot);
+
+            // 4. Legs & Astronaut Boots (Sepatu Astronot)
+            function createLegWithBoot(isLeft) {
+                const hipPivot = new THREE.Group();
+                hipPivot.position.set(isLeft ? -0.26 : 0.26, 0.88, 0);
+
+                const legMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.15, 0.65, 14), suitMat);
+                legMesh.position.y = -0.32;
+                hipPivot.add(legMesh);
+
+                const bootGroup = new THREE.Group();
+                bootGroup.position.set(0, -0.72, 0.08);
+
+                const bootBase = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.26, 0.52), whiteTrimMat);
+                bootGroup.add(bootBase);
+
+                const bootSole = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.08, 0.55), goldMat);
+                bootSole.position.y = -0.14;
+                bootGroup.add(bootSole);
+
+                hipPivot.add(bootGroup);
+                return hipPivot;
+            }
+
+            const leftLeg = createLegWithBoot(true);
+            const rightLeg = createLegWithBoot(false);
+            bodyPivot.add(leftLeg);
+            bodyPivot.add(rightLeg);
+
+            return {
+                team,
+                group: root,
+                bodyPivot,
+                torso,
+                headGroup,
+                stunStarsGroup,
+                leftArm: leftArm.shoulderPivot,
+                rightArm: rightArm.shoulderPivot,
+                leftGlove: leftArm.gloveGroup,
+                rightGlove: rightArm.gloveGroup,
+                leftLeg,
+                rightLeg,
+                homeX: isRed ? -2.35 : 2.35,
+                homeZ: 0,
+                homeRotY: isRed ? Math.PI / 2 : -Math.PI / 2,
+                animState: 'idle',
+                animTimer: 0,
+                punchVariant: 0
+            };
+        }
+
+        function buildHitBurstParticles() {
+            hitBurstGroup = new THREE.Group();
+            hitBurstGroup.visible = false;
+            for (let i = 0; i < 12; i++) {
+                const starGeo = new THREE.OctahedronGeometry(0.18, 0);
+                const starMat = new THREE.MeshBasicMaterial({
+                    color: i % 2 === 0 ? 0xfacc15 : 0xf97316
+                });
+                const p = new THREE.Mesh(starGeo, starMat);
+                const angle = (i / 12) * Math.PI * 2;
+                p.userData.dir = new THREE.Vector3(
+                    Math.cos(angle) * (1.2 + Math.random()),
+                    Math.sin(angle) * (1.2 + Math.random()),
+                    (Math.random() - 0.5) * 1.5
+                );
+                hitBurstGroup.add(p);
+            }
+            scene.add(hitBurstGroup);
+        }
+
+        function trigger3DHitBurst(x, y, z) {
+            hitBurstGroup.position.set(x, y, z);
+            hitBurstGroup.visible = true;
+            hitBurstGroup.userData.timer = 0;
+            hitBurstGroup.children.forEach(p => {
+                p.position.set(0, 0, 0);
+                p.scale.setScalar(1);
+            });
+            screenShakeIntensity = 0.28;
+        }
+
+        /**************************************************************
+         * 5. SISTEM 10 ANIMASI KARAKTER ASTRONOT 3D (HALUS & JELAS)
+         **************************************************************/
+        function setAstronautAnimation(astro, stateName) {
+            astro.animState = stateName;
+            astro.animTimer = 0;
+            if (stateName === 'punch') {
+                astro.punchVariant = (astro.punchVariant + 1) % 2; // Variasi Jab & Hook
+            }
+            astro.stunStarsGroup.visible = (stateName === 'stun' || stateName === 'knockdown');
+        }
+
+        function updateAstronautProceduralAnim(astro, dt, elapsed) {
+            astro.animTimer += dt;
+            const t = astro.animTimer;
+            const isRed = astro.team === 'RED';
+            const dir = isRed ? 1 : -1;
+
+            // Default Reset Targets
+            let targetX = astro.homeX;
+            let targetY = 0.55;
+            let targetZ = astro.homeZ;
+            let bodyRotX = 0, bodyRotY = 0, bodyRotZ = 0;
+            let headRotX = 0, headRotY = 0, headRotZ = 0;
+            let lArmX = -0.5, lArmY = 0.25, lArmZ = 0;
+            let rArmX = -0.6, rArmY = -0.25, rArmZ = 0;
+            let lGloveZ = 0.55, rGloveZ = 0.55;
+            let lLegX = 0, rLegX = 0;
+
+            switch (astro.animState) {
+                case 'idle': {
+                    // 1. IDLE: Berdiri sambil bergerak ringan (boxer rhythm)
+                    const bob = Math.sin(elapsed * 4.5 + (isRed ? 0 : 1.5));
+                    targetY = 0.55 + Math.abs(bob) * 0.08;
+                    bodyRotZ = bob * 0.04;
+                    lArmX = -0.65 + Math.sin(elapsed * 4.5) * 0.1;
+                    rArmX = -0.75 - Math.sin(elapsed * 4.5) * 0.1;
+                    lLegX = bob * 0.08;
+                    rLegX = -bob * 0.08;
+                    break;
+                }
+                case 'walk': {
+                    // 2. WALK: Berjalan menuju arena
+                    const walkCycle = Math.sin(elapsed * 10);
+                    targetY = 0.55 + Math.abs(walkCycle) * 0.1;
+                    lLegX = walkCycle * 0.55;
+                    rLegX = -walkCycle * 0.55;
+                    lArmX = -0.4 - walkCycle * 0.45;
+                    rArmX = -0.4 + walkCycle * 0.45;
+                    bodyRotZ = -0.06;
+                    break;
+                }
+                case 'jump': {
+                    // 3. JUMP: Melompat senang
+                    const jumpWave = Math.abs(Math.sin(t * 6.5));
+                    targetY = 0.55 + jumpWave * 0.95;
+                    lArmX = -2.4;
+                    rArmX = -2.4;
+                    lArmZ = -0.35;
+                    rArmZ = 0.35;
+                    lLegX = -jumpWave * 0.3;
+                    rLegX = jumpWave * 0.3;
+                    headRotX = -0.15;
+                    break;
+                }
+                case 'punch': {
+                    // 4. PUNCH: Maju mendekati lawan, angkat sarung tinju, Jab/Hook, kembali halus
+                    // Durasi siklus serangan ~1.5 detik
+                    if (t < 0.35) {
+                        // Dash forward & wind up
+                        const p = t / 0.35;
+                        targetX = THREE.MathUtils.lerp(astro.homeX, isRed ? 0.55 : -0.55, p);
+                        bodyRotY = -0.35 * dir;
+                        rArmX = -1.1;
+                        lArmX = -0.8;
+                    } else if (t < 0.85) {
+                        // Rapid Jab + Hook Combo!
+                        targetX = isRed ? 0.65 : -0.65;
+                        const strikePhase = (t - 0.35) / 0.5;
+                        if (strikePhase < 0.5) {
+                            // Left Jab
+                            lArmX = -1.45;
+                            lGloveZ = 1.35;
+                            bodyRotY = 0.35 * dir;
+                        } else {
+                            // Right Power Hook
+                            rArmX = -1.55;
+                            rArmY = -0.35;
+                            rGloveZ = 1.55;
+                            bodyRotY = -0.5 * dir;
+                        }
+                    } else if (t < 1.5) {
+                        // Smooth return to home corner
+                        const p = (t - 0.85) / 0.65;
+                        targetX = THREE.MathUtils.lerp(isRed ? 0.65 : -0.65, astro.homeX, p);
+                    } else {
+                        setAstronautAnimation(astro, 'idle');
+                    }
+                    break;
+                }
+                case 'hit': {
+                    // 5. HIT: Terkena pukulan, tubuh terdorong ke belakang
+                    const recoil = Math.sin(Math.min(t * 4.5, Math.PI));
+                    targetX = astro.homeX - dir * recoil * 0.75;
+                    bodyRotZ = dir * recoil * 0.42;
+                    headRotX = -recoil * 0.55;
+                    lArmX = -0.2;
+                    rArmX = -0.2;
+                    lArmZ = -0.5;
+                    rArmZ = 0.5;
+                    if (t > 1.1) {
+                        setAstronautAnimation(astro, 'idle');
+                    }
+                    break;
+                }
+                case 'dodge': {
+                    // 6. DODGE: Menghindar ke samping & merunduk
+                    const weave = Math.sin(t * 6);
+                    targetZ = weave * 0.65;
+                    targetY = 0.35;
+                    bodyRotX = 0.35;
+                    lArmX = -0.9;
+                    rArmX = -0.9;
+                    if (t > 1.2) {
+                        setAstronautAnimation(astro, 'idle');
+                    }
+                    break;
+                }
+                case 'block': {
+                    // 7. BLOCK: Menangkis dengan kedua sarung tinju rapat di depan helm
+                    lArmX = -1.35;
+                    rArmX = -1.35;
+                    lArmY = 0.45;
+                    rArmY = -0.45;
+                    bodyRotZ = dir * 0.12;
+                    if (t > 1.2) {
+                        setAstronautAnimation(astro, 'idle');
+                    }
+                    break;
+                }
+                case 'stun': {
+                    // 8. STUN: Terlihat pusing dengan bintang berputar di atas helm
+                    const sway = Math.sin(elapsed * 6);
+                    bodyRotZ = sway * 0.22;
+                    bodyRotX = Math.cos(elapsed * 6) * 0.18;
+                    headRotY = sway * 0.45;
+                    lArmX = -0.2;
+                    rArmX = -0.2;
+                    astro.stunStarsGroup.rotation.y += dt * 4.5;
+                    break;
+                }
+                case 'knockdown': {
+                    // 9. KNOCKDOWN: Jatuh secara kartun ke lantai ring
+                    const fallProgress = Math.min(t / 0.45, 1);
+                    bodyRotZ = dir * fallProgress * (Math.PI / 2.1);
+                    targetY = 0.55 - fallProgress * 0.25;
+                    lArmX = -2.1 * fallProgress;
+                    rArmX = -2.1 * fallProgress;
+                    astro.stunStarsGroup.rotation.y += dt * 5;
+                    break;
+                }
+                case 'victory': {
+                    // 10. VICTORY: Mengangkat kedua tangan tinggi-tinggi
+                    const cheer = Math.sin(elapsed * 7);
+                    targetY = 0.55 + Math.abs(cheer) * 0.22;
+                    lArmX = -2.6 + cheer * 0.15;
+                    rArmX = -2.6 - cheer * 0.15;
+                    lArmZ = -0.35;
+                    rArmZ = 0.35;
+                    headRotY = cheer * 0.2;
+                    break;
+                }
+                case 'salute': {
+                    // Hormat sportif kepada pemenang
+                    rArmX = -2.1;
+                    rArmY = -0.5;
+                    lArmX = -0.2;
+                    headRotX = 0.15;
+                    break;
+                }
+            }
+
+            // Smooth Interpolation (Lerp) agar semua transisi gerakan sangat halus
+            const lerpSpeed = Math.min(dt * 12, 1);
+            astro.group.position.x = THREE.MathUtils.lerp(astro.group.position.x, targetX, lerpSpeed);
+            astro.group.position.y = THREE.MathUtils.lerp(astro.group.position.y, targetY, lerpSpeed);
+            astro.group.position.z = THREE.MathUtils.lerp(astro.group.position.z, targetZ, lerpSpeed);
+            astro.group.rotation.y = THREE.MathUtils.lerp(astro.group.rotation.y, astro.homeRotY, lerpSpeed);
+
+            astro.bodyPivot.rotation.x = THREE.MathUtils.lerp(astro.bodyPivot.rotation.x, bodyRotX, lerpSpeed);
+            astro.bodyPivot.rotation.y = THREE.MathUtils.lerp(astro.bodyPivot.rotation.y, bodyRotY, lerpSpeed);
+            astro.bodyPivot.rotation.z = THREE.MathUtils.lerp(astro.bodyPivot.rotation.z, bodyRotZ, lerpSpeed);
+
+            astro.headGroup.rotation.x = THREE.MathUtils.lerp(astro.headGroup.rotation.x, headRotX, lerpSpeed);
+            astro.headGroup.rotation.y = THREE.MathUtils.lerp(astro.headGroup.rotation.y, headRotY, lerpSpeed);
+            astro.headGroup.rotation.z = THREE.MathUtils.lerp(astro.headGroup.rotation.z, headRotZ, lerpSpeed);
+
+            astro.leftArm.rotation.x = THREE.MathUtils.lerp(astro.leftArm.rotation.x, lArmX, lerpSpeed);
+            astro.leftArm.rotation.y = THREE.MathUtils.lerp(astro.leftArm.rotation.y, lArmY, lerpSpeed);
+            astro.leftArm.rotation.z = THREE.MathUtils.lerp(astro.leftArm.rotation.z, lArmZ, lerpSpeed);
+
+            astro.rightArm.rotation.x = THREE.MathUtils.lerp(astro.rightArm.rotation.x, rArmX, lerpSpeed);
+            astro.rightArm.rotation.y = THREE.MathUtils.lerp(astro.rightArm.rotation.y, rArmY, lerpSpeed);
+            astro.rightArm.rotation.z = THREE.MathUtils.lerp(astro.rightArm.rotation.z, rArmZ, lerpSpeed);
+
+            astro.leftGlove.position.z = THREE.MathUtils.lerp(astro.leftGlove.position.z, lGloveZ, lerpSpeed);
+            astro.rightGlove.position.z = THREE.MathUtils.lerp(astro.rightGlove.position.z, rGloveZ, lerpSpeed);
+
+            astro.leftLeg.rotation.x = THREE.MathUtils.lerp(astro.leftLeg.rotation.x, lLegX, lerpSpeed);
+            astro.rightLeg.rotation.x = THREE.MathUtils.lerp(astro.rightLeg.rotation.x, rLegX, lerpSpeed);
+        }
+
+        // Demo tombol 10 animasi di halaman utama
+        function demoAnimation(animName) {
+            SoundEngine.playLockIn();
+            if (animName === 'punch') {
+                setAstronautAnimation(redAstronaut, 'punch');
+                setTimeout(() => {
+                    SoundEngine.playPunch();
+                    setAstronautAnimation(blueAstronaut, 'hit');
+                    trigger3DHitBurst(blueAstronaut.group.position.x - 0.4, 2.3, 0);
+                }, 420);
+            } else {
+                setAstronautAnimation(redAstronaut, animName);
+                setAstronautAnimation(blueAstronaut, animName);
+            }
+        }
+
+        function animateLoop() {
+            requestAnimationFrame(animateLoop);
+            const dt = Math.min(clock.getDelta(), 0.1);
+            const elapsed = clock.getElapsedTime();
+
+            // Jika permainan sedang PAUSED, bekukan animasi karakter
+            if (GameState.status !== 'PAUSED') {
+                // 1. Rotate Earth (Rotasi Bumi) & Orbit Moon
+                if (earthMesh) {
+                    earthMesh.rotation.y += dt * 0.28;
+                    earthClouds.rotation.y -= dt * 0.12;
+                }
+                if (moonPivot) {
+                    moonPivot.rotation.y += dt * 0.45;
+                }
+                if (saturnGroup) {
+                    saturnGroup.rotation.y += dt * 0.12;
+                }
+                if (starField) {
+                    starField.rotation.y += dt * 0.015;
+                }
+
+                // 2. Move Meteors
+                if (meteorGroup) {
+                    meteorGroup.children.forEach((m, idx) => {
+                        m.position.x -= m.userData.speed;
+                        m.position.y -= m.userData.speed * 0.55;
+                        if (m.position.x < -38 || m.position.y < -15) {
+                            resetMeteor(m, idx);
+                        }
+                    });
+                }
+
+                // 3. Update Both Astronauts
+                if (redAstronaut && blueAstronaut) {
+                    updateAstronautProceduralAnim(redAstronaut, dt, elapsed);
+                    updateAstronautProceduralAnim(blueAstronaut, dt, elapsed);
+                }
+
+                // 4. Update 3D Hit Sparks Burst
+                if (hitBurstGroup && hitBurstGroup.visible) {
+                    hitBurstGroup.userData.timer += dt;
+                    const ht = hitBurstGroup.userData.timer;
+                    hitBurstGroup.children.forEach(p => {
+                        p.position.addScaledVector(p.userData.dir, dt * 4.2);
+                        p.rotation.x += dt * 8;
+                        p.rotation.y += dt * 8;
+                        p.scale.setScalar(Math.max(0, 1 - ht * 1.4));
+                    });
+                    if (ht > 0.75) {
+                        hitBurstGroup.visible = false;
+                    }
+                }
+            }
+
+            // 5. Camera Orbit & Screen Shake
+            const radius = isActionCutscene ? 8.8 : 11.2;
+            const focusY = isActionCutscene ? 1.85 : (GameState.status === 'QUESTION' ? 0.95 : 1.5);
+            cameraTargetFocus.y = THREE.MathUtils.lerp(cameraTargetFocus.y, focusY, dt * 6);
+
+            const targetCamX = Math.sin(camAngleX) * radius * Math.cos(camAngleY);
+            const targetCamY = Math.sin(camAngleY) * radius + 1.4;
+            const targetCamZ = Math.cos(camAngleX) * radius * Math.cos(camAngleY);
+
+            camera.position.x = THREE.MathUtils.lerp(camera.position.x, targetCamX, dt * 5);
+            camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetCamY, dt * 5);
+            camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetCamZ, dt * 5);
+
+            if (screenShakeIntensity > 0.005) {
+                camera.position.x += (Math.random() - 0.5) * screenShakeIntensity;
+                camera.position.y += (Math.random() - 0.5) * screenShakeIntensity;
+                screenShakeIntensity *= 0.85;
+            }
+
+            camera.lookAt(cameraTargetFocus);
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            if (!camera || !renderer) return;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        /**************************************************************
+         * 6. ALUR NAVIGASI LAYAR & INTRO COUNTDOWN (3 - 2 - 1 - FIGHT)
+         **************************************************************/
+        function showOnlyScreen(screenId) {
+            ['screen-menu', 'screen-setup', 'screen-intro', 'screen-battle', 'screen-victory'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            if (screenId) {
+                document.getElementById(screenId).classList.remove('hidden');
+            }
+        }
+
+        function openSetupScreen() {
+            SoundEngine.startBGM();
+            SoundEngine.playLockIn();
+            stopConfetti();
+            GameState.status = 'SETUP';
+            showOnlyScreen('screen-setup');
+
+            // Reset posisi karakter di tengah arena
+            redAstronaut.homeX = -2.35;
+            blueAstronaut.homeX = 2.35;
+            redAstronaut.homeRotY = Math.PI / 2;
+            blueAstronaut.homeRotY = -Math.PI / 2;
+            setAstronautAnimation(redAstronaut, 'idle');
+            setAstronautAnimation(blueAstronaut, 'idle');
+        }
+
+        function backToMenu() {
+            SoundEngine.playLockIn();
+            clearAllTimers();
+            stopConfetti();
+            GameState.status = 'MENU';
+            showOnlyScreen('screen-menu');
+
+            redAstronaut.homeX = -2.35;
+            blueAstronaut.homeX = 2.35;
+            redAstronaut.homeRotY = Math.PI / 2;
+            blueAstronaut.homeRotY = -Math.PI / 2;
+            setAstronautAnimation(redAstronaut, 'idle');
+            setAstronautAnimation(blueAstronaut, 'idle');
+        }
+
+        function startBattleIntro() {
+            SoundEngine.startBGM();
+            SoundEngine.playLockIn();
+
+            // Simpan nama tim dari input (default RED TEAM / BLUE TEAM)
+            const rInput = document.getElementById('input-red-name').value.trim().toUpperCase();
+            const bInput = document.getElementById('input-blue-name').value.trim().toUpperCase();
+            GameState.redTeamName = rInput || 'RED TEAM';
+            GameState.blueTeamName = bInput || 'BLUE TEAM';
+
+            // Reset seluruh state pertandingan
+            resetBattleState();
+
+            // Tempatkan kedua astronot di luar tepi ring untuk animasi WALK masuk ke arena
+            redAstronaut.group.position.x = -5.8;
+            blueAstronaut.group.position.x = 5.8;
+            redAstronaut.homeX = -2.35;
+            blueAstronaut.homeX = 2.35;
+            setAstronautAnimation(redAstronaut, 'walk');
+            setAstronautAnimation(blueAstronaut, 'walk');
+
+            GameState.status = 'INTRO';
+            showOnlyScreen('screen-intro');
+            const introBanner = document.getElementById('intro-banner-text');
+
+            const sequence = [
+                { text: '3', sound: () => SoundEngine.playCountdownTick(false) },
+                { text: '2', sound: () => SoundEngine.playCountdownTick(false) },
+                { text: '1', sound: () => SoundEngine.playCountdownTick(true) },
+                { text: "LET'S BATTLE!", sound: () => SoundEngine.playBell() }
+            ];
+
+            let step = 0;
+            function runStep() {
+                if (step < sequence.length) {
+                    introBanner.textContent = sequence[step].text;
+                    introBanner.classList.remove('animate-banner-pop');
+                    void introBanner.offsetWidth;
+                    introBanner.classList.add('animate-banner-pop');
+                    sequence[step].sound();
+
+                    if (step === 3) {
+                        setAstronautAnimation(redAstronaut, 'jump');
+                        setAstronautAnimation(blueAstronaut, 'jump');
+                    }
+                    step++;
+                    GameState.introInterval = setTimeout(runStep, 900);
+                } else {
+                    setAstronautAnimation(redAstronaut, 'idle');
+                    setAstronautAnimation(blueAstronaut, 'idle');
+                    showOnlyScreen('screen-battle');
+                    loadQuestionRound(0);
+                }
+            }
+            runStep();
+        }
+
+        function resetBattleState() {
+            clearAllTimers();
+            GameState.redScore = 0;
+            GameState.blueScore = 0;
+            GameState.redHP = 100;
+            GameState.blueHP = 100;
+            GameState.redStats = { correct: 0, wrong: 0, noAnswer: 0 };
+            GameState.blueStats = { correct: 0, wrong: 0, noAnswer: 0 };
+            GameState.currentQuestionIndex = 0;
+            GameState.roundProcessed = false;
+
+            // Update HUD Nama, Skor, dan HP
+            document.getElementById('hud-red-name').textContent = GameState.redTeamName;
+            document.getElementById('hud-blue-name').textContent = GameState.blueTeamName;
+            document.getElementById('pad-red-title').textContent = `KONTROL ${GameState.redTeamName}`;
+            document.getElementById('pad-blue-title').textContent = `KONTROL ${GameState.blueTeamName}`;
+            updateScoreAndHPHUD();
+        }
+
+        function clearAllTimers() {
+            if (GameState.timerInterval) {
+                clearInterval(GameState.timerInterval);
+                GameState.timerInterval = null;
+            }
+            if (GameState.transitionTimeout) {
+                clearTimeout(GameState.transitionTimeout);
+                GameState.transitionTimeout = null;
+            }
+            if (GameState.actionTimeout) {
+                clearTimeout(GameState.actionTimeout);
+                GameState.actionTimeout = null;
+            }
+            if (GameState.introInterval) {
+                clearTimeout(GameState.introInterval);
+                GameState.introInterval = null;
+            }
+        }
+
+        /**************************************************************
+         * 7. MEKANISME SOAL, TIMER 20 DETIK & JAWABAN BERSAMAAN
+         **************************************************************/
+        function loadQuestionRound(index) {
+            clearAllTimers();
+            isActionCutscene = false;
+            GameState.currentQuestionIndex = index;
+            GameState.roundProcessed = false;
+            GameState.redAnswer = null;
+            GameState.redAnswerTime = null;
+            GameState.blueAnswer = null;
+            GameState.blueAnswerTime = null;
+            GameState.timeLeft = 20;
+            GameState.questionStartTime = performance.now();
+            GameState.status = 'QUESTION';
+
+            // Pastikan kedua astronot kembali ke posisi berdiri siap bertarung (kecuali baru bangkit dari KO)
+            setAstronautAnimation(redAstronaut, 'idle');
+            setAstronautAnimation(blueAstronaut, 'idle');
+
+            // Bunyikan bel awal ronde
+            SoundEngine.playBell();
+
+            const q = QUESTIONS[index];
+            const roundStr = String(q.number).padStart(2, '0') + ' / 15';
+            document.getElementById('hud-round-number').textContent = roundStr;
+            document.getElementById('hud-round-mobile').textContent = 'RONDE ' + roundStr;
+            document.getElementById('question-round-label').textContent = 'RONDE ' + roundStr;
+            document.getElementById('question-topic-badge').textContent = q.topic;
+            document.getElementById('question-text').textContent = q.question;
+
+            // Sembunyikan banner & kartu penjelasan dari ronde sebelumnya, tampilkan kembali panel kuis
+            document.getElementById('arena-banner').classList.add('hidden');
+            document.getElementById('round-explanation-card').classList.add('hidden');
+            document.getElementById('active-quiz-panel').classList.remove('hidden');
+
+            // Reset tombol jawaban kedua tim
+            for (let i = 0; i < 4; i++) {
+                const btnR = document.getElementById(`btn-red-${i}`);
+                const txtR = document.getElementById(`text-red-${i}`);
+                btnR.disabled = false;
+                btnR.className = 'btn-arcade btn-option-red rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5';
+                txtR.textContent = q.options[i];
+
+                const btnB = document.getElementById(`btn-blue-${i}`);
+                const txtB = document.getElementById(`text-blue-${i}`);
+                btnB.disabled = false;
+                btnB.className = 'btn-arcade btn-option-blue rounded-xl p-2.5 sm:p-3 text-left flex items-center gap-2.5';
+                txtB.textContent = q.options[i];
+            }
+
+            // Reset status lock masing-masing tim
+            const redStatus = document.getElementById('status-red-lock');
+            redStatus.textContent = 'PILIH JAWABAN!';
+            redStatus.className = 'px-2.5 py-0.5 rounded-full bg-red-950 border border-red-400/50 font-arcade font-bold text-[10px] sm:text-xs text-yellow-300';
+
+            const blueStatus = document.getElementById('status-blue-lock');
+            blueStatus.textContent = 'PILIH JAWABAN!';
+            blueStatus.className = 'px-2.5 py-0.5 rounded-full bg-blue-950 border border-blue-400/50 font-arcade font-bold text-[10px] sm:text-xs text-yellow-300';
+
+            updateTimerDisplay();
+
+            // Jalankan Countdown Timer 20 Detik
+            GameState.timerInterval = setInterval(() => {
+                if (GameState.status !== 'QUESTION') return;
+                GameState.timeLeft--;
+                updateTimerDisplay();
+
+                if (GameState.timeLeft > 0 && GameState.timeLeft <= 5) {
+                    SoundEngine.playCountdownTick(true);
+                } else if (GameState.timeLeft > 5 && GameState.timeLeft <= 10) {
+                    SoundEngine.playCountdownTick(false);
+                }
+
+                if (GameState.timeLeft <= 0) {
+                    clearInterval(GameState.timerInterval);
+                    GameState.timerInterval = null;
+                    evaluateSimultaneousRound();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerBox = document.getElementById('hud-timer-box');
+            const timerText = document.getElementById('hud-timer-text');
+            const t = Math.max(0, GameState.timeLeft);
+            timerText.textContent = t;
+
+            timerBox.classList.remove('border-emerald-400', 'border-yellow-400', 'border-red-500', 'timer-urgent');
+            timerText.classList.remove('text-emerald-400', 'text-yellow-400', 'text-red-500');
+
+            if (t >= 11) {
+                // Hijau (20 - 11 detik)
+                timerBox.classList.add('border-emerald-400');
+                timerText.classList.add('text-emerald-400');
+            } else if (t >= 6) {
+                // Kuning (10 - 6 detik)
+                timerBox.classList.add('border-yellow-400');
+                timerText.classList.add('text-yellow-400');
+            } else {
+                // Merah & Berkedip (5 - 1 detik)
+                timerBox.classList.add('border-red-500', 'timer-urgent');
+                timerText.classList.add('text-red-500');
+            }
+        }
+
+        // Fungsi saat salah satu tim menekan tombol A, B, C, atau D
+        function handleTeamAnswer(team, optionIndex) {
+            if (GameState.status !== 'QUESTION' || GameState.roundProcessed) return;
+
+            const elapsedSec = ((performance.now() - GameState.questionStartTime) / 1000).toFixed(1);
+
+            if (team === 'RED') {
+                if (GameState.redAnswer !== null) return; // Hanya boleh menjawab 1 kali per soal
+                GameState.redAnswer = optionIndex;
+                GameState.redAnswerTime = elapsedSec;
+                SoundEngine.playLockIn();
+
+                // Nonaktifkan semua tombol Tim Merah & tandai tombol yang dipilih
+                for (let i = 0; i < 4; i++) {
+                    const btn = document.getElementById(`btn-red-${i}`);
+                    btn.disabled = true;
+                    if (i === optionIndex) {
+                        btn.classList.add('selected');
+                    }
+                }
+                const redStatus = document.getElementById('status-red-lock');
+                redStatus.innerHTML = '<i class="fa-solid fa-lock mr-1"></i>ANSWER LOCKED';
+                redStatus.className = 'px-2.5 py-0.5 rounded-full bg-yellow-400 text-slate-950 font-arcade font-black text-[10px] sm:text-xs shadow';
+
+            } else if (team === 'BLUE') {
+                if (GameState.blueAnswer !== null) return; // Hanya boleh menjawab 1 kali per soal
+                GameState.blueAnswer = optionIndex;
+                GameState.blueAnswerTime = elapsedSec;
+                SoundEngine.playLockIn();
+
+                // Nonaktifkan semua tombol Tim Biru & tandai tombol yang dipilih
+                for (let i = 0; i < 4; i++) {
+                    const btn = document.getElementById(`btn-blue-${i}`);
+                    btn.disabled = true;
+                    if (i === optionIndex) {
+                        btn.classList.add('selected');
+                    }
+                }
+                const blueStatus = document.getElementById('status-blue-lock');
+                blueStatus.innerHTML = '<i class="fa-solid fa-lock mr-1"></i>ANSWER LOCKED';
+                blueStatus.className = 'px-2.5 py-0.5 rounded-full bg-yellow-400 text-slate-950 font-arcade font-black text-[10px] sm:text-xs shadow';
+            }
+
+            // Jika KEDUA tim sudah menjawab, langsung hentikan timer dan evaluasi hasil!
+            if (GameState.redAnswer !== null && GameState.blueAnswer !== null) {
+                if (GameState.timerInterval) {
+                    clearInterval(GameState.timerInterval);
+                    GameState.timerInterval = null;
+                }
+                setTimeout(() => evaluateSimultaneousRound(), 280);
+            }
+        }
+
+        // Dukungan Keyboard Simultan agar 2 tim di Laptop / Smart Board juga bisa memencet tombol secara bersamaan
+        window.addEventListener('keydown', (e) => {
+            if (GameState.status !== 'QUESTION') return;
+            const key = e.key.toLowerCase();
+            // Tim Merah: A, S, D, F atau 1, 2, 3, 4
+            if (key === 'a' || key === '1') handleTeamAnswer('RED', 0);
+            else if (key === 's' || key === '2') handleTeamAnswer('RED', 1);
+            else if (key === 'd' || key === '3') handleTeamAnswer('RED', 2);
+            else if (key === 'f' || key === '4') handleTeamAnswer('RED', 3);
+            // Tim Biru: J, K, L, ; atau 7, 8, 9, 0
+            else if (key === 'j' || key === '7') handleTeamAnswer('BLUE', 0);
+            else if (key === 'k' || key === '8') handleTeamAnswer('BLUE', 1);
+            else if (key === 'l' || key === '9') handleTeamAnswer('BLUE', 2);
+            else if (key === ';' || key === '0') handleTeamAnswer('BLUE', 3);
+        });
+
+        /**************************************************************
+         * 8. EVALUASI 5 KONDISI HASIL, SKOR, HP, DAN ANIMASI SERANGAN
+         **************************************************************/
+        function evaluateSimultaneousRound() {
+            if (GameState.roundProcessed) return;
+            GameState.roundProcessed = true;
+            GameState.status = 'EVALUATING';
+
+            if (GameState.timerInterval) {
+                clearInterval(GameState.timerInterval);
+                GameState.timerInterval = null;
+            }
+
+            // Kunci semua tombol yang belum diklik
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`btn-red-${i}`).disabled = true;
+                document.getElementById(`btn-blue-${i}`).disabled = true;
+            }
+
+            const q = QUESTIONS[GameState.currentQuestionIndex];
+            const correctIdx = q.correct;
+
+            const redAnswered = GameState.redAnswer !== null;
+            const blueAnswered = GameState.blueAnswer !== null;
+            const redIsCorrect = redAnswered && GameState.redAnswer === correctIdx;
+            const blueIsCorrect = blueAnswered && GameState.blueAnswer === correctIdx;
+
+            // Catat statistik benar / salah / tidak menjawab
+            if (!redAnswered) GameState.redStats.noAnswer++;
+            else if (redIsCorrect) GameState.redStats.correct++;
+            else GameState.redStats.wrong++;
+
+            if (!blueAnswered) GameState.blueStats.noAnswer++;
+            else if (blueIsCorrect) GameState.blueStats.correct++;
+            else GameState.blueStats.wrong++;
+
+            // Sorot warna tombol jawaban benar & salah pada masing-masing panel
+            for (let i = 0; i < 4; i++) {
+                const btnR = document.getElementById(`btn-red-${i}`);
+                const btnB = document.getElementById(`btn-blue-${i}`);
+                if (i === correctIdx) {
+                    btnR.classList.add('option-correct-reveal');
+                    btnB.classList.add('option-correct-reveal');
+                } else {
+                    if (GameState.redAnswer === i) btnR.classList.add('option-wrong-reveal');
+                    if (GameState.blueAnswer === i) btnB.classList.add('option-wrong-reveal');
+                }
+            }
+
+            // Tentukan Kondisi Hasil (Kondisi A, B, C, D, E)
+            let bannerTitle = '';
+            let bannerSub = '';
+
+            // Sembunyikan panel soal & pilihan jawaban selama animasi pertarungan berlangsung
+            // agar aksi memukul di tengah ring 100% terlihat jelas tanpa terhalang tulisan!
+            document.getElementById('active-quiz-panel').classList.add('hidden');
+            document.getElementById('round-explanation-card').classList.add('hidden');
+            isActionCutscene = true;
+
+            if (redIsCorrect && blueIsCorrect) {
+                // KONDISI A: KEDUA TIM MENJAWAB BENAR
+                GameState.redScore += 100;
+                GameState.blueScore += 100;
+                bannerTitle = 'DOUBLE CORRECT!';
+                bannerSub = `${GameState.redTeamName} +100 Poin & ${GameState.blueTeamName} +100 Poin! Tidak ada serangan!`;
+                SoundEngine.playCorrect();
+                setAstronautAnimation(redAstronaut, 'jump');
+                setAstronautAnimation(blueAstronaut, 'jump');
+                spawnFloatingImpactText('+100 PTS', 'left', 'text-yellow-300');
+                spawnFloatingImpactText('+100 PTS', 'right', 'text-yellow-300');
+
+            } else if (redIsCorrect && !blueIsCorrect) {
+                // KONDISI B (atau Kondisi E di mana Merah benar & Biru tidak menjawab)
+                GameState.redScore += 100;
+                GameState.blueHP = Math.max(0, GameState.blueHP - 15);
+                bannerTitle = 'RED TEAM WINS THE ROUND!';
+                bannerSub = `${GameState.redTeamName} +100 Poin & menyerang! HP ${GameState.blueTeamName} -15!`;
+                SoundEngine.playCorrect();
+                executeBoxingAttack('RED');
+
+            } else if (blueIsCorrect && !redIsCorrect) {
+                // KONDISI C (atau Kondisi E di mana Biru benar & Merah tidak menjawab)
+                GameState.blueScore += 100;
+                GameState.redHP = Math.max(0, GameState.redHP - 15);
+                bannerTitle = 'BLUE TEAM WINS THE ROUND!';
+                bannerSub = `${GameState.blueTeamName} +100 Poin & menyerang! HP ${GameState.redTeamName} -15!`;
+                SoundEngine.playCorrect();
+                executeBoxingAttack('BLUE');
+
+            } else if (redAnswered && blueAnswered && !redIsCorrect && !blueIsCorrect) {
+                // KONDISI D: KEDUA TIM SALAH
+                bannerTitle = 'BOTH WRONG!';
+                bannerSub = 'Kedua tim belum tepat. Tidak ada poin & tidak ada serangan.';
+                SoundEngine.playWrong();
+                setAstronautAnimation(redAstronaut, 'stun');
+                setAstronautAnimation(blueAstronaut, 'stun');
+
+            } else {
+                // KONDISI E: Satu tim salah & lawan tidak menjawab, ATAU kedua tim tidak menjawab
+                bannerTitle = (!redAnswered && !blueAnswered) ? 'NO ANSWER! WAKTU HABIS!' : 'BOTH MISSED!';
+                bannerSub = 'Tidak ada tim yang mendapat poin dan tidak ada serangan.';
+                SoundEngine.playWrong();
+                setAstronautAnimation(redAstronaut, 'stun');
+                setAstronautAnimation(blueAstronaut, 'stun');
+            }
+
+            // Perbarui HUD Skor & HP
+            updateScoreAndHPHUD();
+
+            // Tampilkan Banner Arena di bagian atas (tidak menutupi karakter)
+            showArenaBanner(bannerTitle, bannerSub);
+
+            // Tampilkan Kartu Evaluasi & Penjelasan Materi di bagian bawah SETELAH animasi pukulan selesai (1.55 detik)
+            GameState.actionTimeout = setTimeout(() => {
+                isActionCutscene = false;
+                populateExplanationCard(q, redAnswered, redIsCorrect, blueAnswered, blueIsCorrect);
+            }, 1550);
+
+            // Jadwalkan perpindahan ke soal berikutnya
+            GameState.transitionTimeout = setTimeout(() => {
+                proceedToNextRoundOrVictory();
+            }, 5200);
+        }
+
+        function executeBoxingAttack(attackerTeam) {
+            if (attackerTeam === 'RED') {
+                setAstronautAnimation(redAstronaut, 'punch');
+                spawnFloatingImpactText('+100 PTS', 'left', 'text-yellow-300');
+
+                setTimeout(() => {
+                    const isKO = GameState.blueHP <= 0;
+                    if (isKO) {
+                        SoundEngine.playKnockout();
+                        setAstronautAnimation(blueAstronaut, 'knockdown');
+                        showArenaBanner('KNOCKOUT!', `${GameState.blueTeamName} jatuh KO namun tetap berjuang di ronde berikutnya!`);
+                        spawnFloatingImpactText('KNOCKOUT! -15 HP', 'right', 'text-rose-400');
+                    } else {
+                        SoundEngine.playPunch();
+                        setAstronautAnimation(blueAstronaut, 'hit');
+                        spawnFloatingImpactText('POW! -15 HP', 'right', 'text-rose-400');
+                    }
+                    trigger3DHitBurst(blueAstronaut.group.position.x - 0.4, 2.3, 0);
+                }, 420);
+
+            } else if (attackerTeam === 'BLUE') {
+                setAstronautAnimation(blueAstronaut, 'punch');
+                spawnFloatingImpactText('+100 PTS', 'right', 'text-yellow-300');
+
+                setTimeout(() => {
+                    const isKO = GameState.redHP <= 0;
+                    if (isKO) {
+                        SoundEngine.playKnockout();
+                        setAstronautAnimation(redAstronaut, 'knockdown');
+                        showArenaBanner('KNOCKOUT!', `${GameState.redTeamName} jatuh KO namun tetap berjuang di ronde berikutnya!`);
+                        spawnFloatingImpactText('KNOCKOUT! -15 HP', 'left', 'text-rose-400');
+                    } else {
+                        SoundEngine.playPunch();
+                        setAstronautAnimation(redAstronaut, 'hit');
+                        spawnFloatingImpactText('BAM! -15 HP', 'left', 'text-rose-400');
+                    }
+                    trigger3DHitBurst(redAstronaut.group.position.x + 0.4, 2.3, 0);
+                }, 420);
+            }
+        }
+
+        function updateScoreAndHPHUD() {
+            document.getElementById('hud-red-score').textContent = GameState.redScore;
+            document.getElementById('hud-blue-score').textContent = GameState.blueScore;
+
+            const rHP = GameState.redHP;
+            const bHP = GameState.blueHP;
+
+            document.getElementById('hud-red-hp-bar').style.width = `${rHP}%`;
+            document.getElementById('hud-red-hp-text').textContent = `${rHP} / 100`;
+
+            document.getElementById('hud-blue-hp-bar').style.width = `${bHP}%`;
+            document.getElementById('hud-blue-hp-text').textContent = `${bHP} / 100`;
+        }
+
+        function showArenaBanner(title, subtitle) {
+            const banner = document.getElementById('arena-banner');
+            const titleEl = document.getElementById('arena-banner-title');
+            const subEl = document.getElementById('arena-banner-sub');
+
+            titleEl.textContent = title;
+            subEl.textContent = subtitle;
+            banner.classList.remove('hidden', 'animate-banner-pop');
+            void banner.offsetWidth;
+            banner.classList.add('animate-banner-pop');
+        }
+
+        function populateExplanationCard(q, redAnswered, redIsCorrect, blueAnswered, blueIsCorrect) {
+            const card = document.getElementById('round-explanation-card');
+            card.classList.remove('hidden');
+
+            // Info Jawaban Tim Merah
+            const redChoiceEl = document.getElementById('exp-red-choice');
+            const redTimeEl = document.getElementById('exp-red-time');
+            const redBadgeEl = document.getElementById('exp-red-badge');
+
+            if (!redAnswered) {
+                redChoiceEl.textContent = 'Tidak Menjawab';
+                redTimeEl.textContent = 'Waktu: Habis (20.0 dtk)';
+                redBadgeEl.textContent = 'TIDAK JAWAB';
+                redBadgeEl.className = 'px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-amber-600 text-white';
+            } else {
+                const rIdx = GameState.redAnswer;
+                redChoiceEl.textContent = `${OPTION_LETTERS[rIdx]}. ${q.options[rIdx]}`;
+                redTimeEl.textContent = `Waktu: ${GameState.redAnswerTime} detik`;
+                if (redIsCorrect) {
+                    redBadgeEl.textContent = 'BENAR +100';
+                    redBadgeEl.className = 'px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-emerald-600 text-white';
+                } else {
+                    redBadgeEl.textContent = 'SALAH +0';
+                    redBadgeEl.className = 'px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-rose-600 text-white';
+                }
+            }
+
+            // Info Jawaban Tim Biru
+            const blueChoiceEl = document.getElementById('exp-blue-choice');
+            const blueTimeEl = document.getElementById('exp-blue-time');
+            const blueBadgeEl = document.getElementById('exp-blue-badge');
+
+            if (!blueAnswered) {
+                blueChoiceEl.textContent = 'Tidak Menjawab';
+                blueTimeEl.textContent = 'Waktu: Habis (20.0 dtk)';
+                blueBadgeEl.textContent = 'TIDAK JAWAB';
+                blueBadgeEl.className = 'px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-amber-600 text-white';
+            } else {
+                const bIdx = GameState.blueAnswer;
+                blueChoiceEl.textContent = `${OPTION_LETTERS[bIdx]}. ${q.options[bIdx]}`;
+                blueTimeEl.textContent = `Waktu: ${GameState.blueAnswerTime} detik`;
+                if (blueIsCorrect) {
+                    blueBadgeEl.textContent = 'BENAR +100';
+                    blueBadgeEl.className = 'px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-emerald-600 text-white';
+                } else {
+                    blueBadgeEl.textContent = 'SALAH +0';
+                    blueBadgeEl.className = 'px-2.5 py-1 rounded-lg font-arcade font-bold text-xs bg-rose-600 text-white';
+                }
+            }
+
+            // Kunci Jawaban & Penjelasan Materi
+            const cIdx = q.correct;
+            document.getElementById('exp-correct-key').textContent = `KUNCI JAWABAN: ${OPTION_LETTERS[cIdx]}. ${q.options[cIdx]}`;
+            document.getElementById('exp-materi-text').textContent = `${q.topic}: ${q.explanation}`;
+        }
+
+        function spawnFloatingImpactText(text, side, colorClass) {
+            const container = document.getElementById('impact-overlay');
+            const el = document.createElement('div');
+            const posClass = side === 'left' ? 'left-[8%] sm:left-[14%]' : 'right-[8%] sm:right-[14%]';
+            el.className = `absolute top-[22%] ${posClass} font-arcade font-black text-xl sm:text-3xl ${colorClass} drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] animate-banner-pop`;
+            el.textContent = text;
+            container.appendChild(el);
+            setTimeout(() => {
+                el.remove();
+            }, 1400);
+        }
+
+        function proceedToNextRoundOrVictory() {
+            if (GameState.currentQuestionIndex + 1 < QUESTIONS.length) {
+                document.getElementById('round-explanation-card').classList.add('hidden');
+                showArenaBanner('NEXT ROUND!', `Bersiap menuju Ronde ${GameState.currentQuestionIndex + 2}!`);
+                SoundEngine.playLockIn();
+                GameState.transitionTimeout = setTimeout(() => {
+                    loadQuestionRound(GameState.currentQuestionIndex + 1);
+                }, 1100);
+            } else {
+                showVictoryScreen();
+            }
+        }
+
+        /**************************************************************
+         * 9. HALAMAN KEMENANGAN (CHAMPIONSHIP SCREEN) & CONFETTI
+         **************************************************************/
+        function showVictoryScreen() {
+            clearAllTimers();
+            GameState.status = 'VICTORY';
+            showOnlyScreen('screen-victory');
+            SoundEngine.playVictoryFanfare();
+            startConfetti();
+
+            // Posisikan kedua astronot di tengah arena menghadap kamera
+            redAstronaut.homeX = -1.35;
+            blueAstronaut.homeX = 1.35;
+            redAstronaut.homeRotY = 0.25;
+            blueAstronaut.homeRotY = -0.25;
+
+            const headline = document.getElementById('victory-headline');
+            const subline = document.getElementById('victory-subline');
+            const badgeRed = document.getElementById('badge-winner-red');
+            const badgeBlue = document.getElementById('badge-winner-blue');
+
+            badgeRed.classList.add('hidden');
+            badgeBlue.classList.add('hidden');
+
+            if (GameState.redScore > GameState.blueScore) {
+                headline.textContent = 'RED TEAM CHAMPION!';
+                headline.className = 'font-arcade font-black text-3xl sm:text-5xl md:text-6xl text-red-400 text-glow-red tracking-wide';
+                subline.textContent = `${GameState.redTeamName} memenangkan Space Boxing Championship dengan skor ${GameState.redScore}!`;
+                badgeRed.classList.remove('hidden');
+                setAstronautAnimation(redAstronaut, 'victory');
+                setAstronautAnimation(blueAstronaut, 'salute');
+
+            } else if (GameState.blueScore > GameState.redScore) {
+                headline.textContent = 'BLUE TEAM CHAMPION!';
+                headline.className = 'font-arcade font-black text-3xl sm:text-5xl md:text-6xl text-blue-400 text-glow-blue tracking-wide';
+                subline.textContent = `${GameState.blueTeamName} memenangkan Space Boxing Championship dengan skor ${GameState.blueScore}!`;
+                badgeBlue.classList.remove('hidden');
+                setAstronautAnimation(blueAstronaut, 'victory');
+                setAstronautAnimation(redAstronaut, 'salute');
+
+            } else {
+                headline.textContent = 'DRAW! AMAZING BATTLE!';
+                headline.className = 'font-arcade font-black text-3xl sm:text-5xl md:text-6xl text-yellow-400 text-glow-gold tracking-wide';
+                subline.textContent = `Kedua tim sama kuat dengan skor seri ${GameState.redScore}!`;
+                setAstronautAnimation(redAstronaut, 'victory');
+                setAstronautAnimation(blueAstronaut, 'victory');
+            }
+
+            // Isi Tabel Hasil Kejuaraan
+            document.getElementById('res-red-name').textContent = GameState.redTeamName;
+            document.getElementById('res-red-score').textContent = GameState.redScore;
+            document.getElementById('res-red-correct').textContent = GameState.redStats.correct;
+            document.getElementById('res-red-wrong').textContent = GameState.redStats.wrong;
+            document.getElementById('res-red-noans').textContent = GameState.redStats.noAnswer;
+            document.getElementById('res-red-hp').textContent = `${GameState.redHP} / 100`;
+
+            document.getElementById('res-blue-name').textContent = GameState.blueTeamName;
+            document.getElementById('res-blue-score').textContent = GameState.blueScore;
+            document.getElementById('res-blue-correct').textContent = GameState.blueStats.correct;
+            document.getElementById('res-blue-wrong').textContent = GameState.blueStats.wrong;
+            document.getElementById('res-blue-noans').textContent = GameState.blueStats.noAnswer;
+            document.getElementById('res-blue-hp').textContent = `${GameState.blueHP} / 100`;
+
+            document.getElementById('victory-results-wrapper').classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function rematchImmediate() {
+            stopConfetti();
+            startBattleIntro();
+        }
+
+        function toggleVictoryTable() {
+            SoundEngine.playLockIn();
+            const wrapper = document.getElementById('victory-results-wrapper');
+            wrapper.classList.toggle('opacity-0');
+            wrapper.classList.toggle('pointer-events-none');
+        }
+
+        /**************************************************************
+         * 10. FITUR PAUSE, RESUME, RESTART, MUTE & FULLSCREEN
+         **************************************************************/
+        function togglePauseGame() {
+            if (GameState.status === 'QUESTION' || GameState.status === 'EVALUATING') {
+                GameState.previousStatusBeforePause = GameState.status;
+                GameState.status = 'PAUSED';
+                if (GameState.transitionTimeout) {
+                    clearTimeout(GameState.transitionTimeout);
+                    GameState.transitionTimeout = null;
+                }
+                openModal('modal-pause');
+                SoundEngine.playLockIn();
+            } else if (GameState.status === 'PAUSED') {
+                closeModal('modal-pause');
+                GameState.status = GameState.previousStatusBeforePause || 'QUESTION';
+                SoundEngine.playLockIn();
+                // Jika dijeda saat fase EVALUATING, lanjutkan ke ronde berikutnya setelah 2 detik
+                if (GameState.status === 'EVALUATING') {
+                    GameState.transitionTimeout = setTimeout(() => {
+                        proceedToNextRoundOrVictory();
+                    }, 2000);
+                }
+            }
+        }
+
+        function restartFromPause() {
+            closeModal('modal-pause');
+            startBattleIntro();
+        }
+
+        function quitToMenuFromPause() {
+            closeModal('modal-pause');
+            backToMenu();
+        }
+
+        function confirmRestartMatch() {
+            if (GameState.status === 'QUESTION' || GameState.status === 'EVALUATING') {
+                GameState.previousStatusBeforePause = GameState.status;
+                GameState.status = 'PAUSED';
+                openModal('modal-restart');
+            }
+        }
+
+        function executeRestartMatch() {
+            closeModal('modal-restart');
+            startBattleIntro();
+        }
+
+        function openModal(id) {
+            SoundEngine.playLockIn();
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            SoundEngine.playLockIn();
+            document.getElementById(id).classList.add('hidden');
+            if (id === 'modal-restart' && GameState.status === 'PAUSED') {
+                GameState.status = GameState.previousStatusBeforePause || 'QUESTION';
+            }
+        }
+
+        function toggleMute() {
+            SoundEngine.isMuted = !SoundEngine.isMuted;
+            const iconClass = SoundEngine.isMuted ? 'fa-solid fa-volume-xmark text-rose-400' : 'fa-solid fa-volume-high';
+            document.getElementById('btn-menu-mute').innerHTML = `<i class="${iconClass}"></i>`;
+            document.getElementById('btn-hud-mute').innerHTML = `<i class="${iconClass}"></i>`;
+            if (!SoundEngine.isMuted) {
+                SoundEngine.playLockIn();
+            }
+        }
+
+        function toggleBGM() {
+            SoundEngine.bgmEnabled = !SoundEngine.bgmEnabled;
+            const btn = document.getElementById('toggle-bgm-btn');
+            if (SoundEngine.bgmEnabled) {
+                btn.textContent = 'AKTIF (ON)';
+                btn.className = 'btn-arcade px-4 py-2 rounded-xl font-arcade font-bold text-xs bg-emerald-600 text-white';
+                SoundEngine.startBGM();
+            } else {
+                btn.textContent = 'MATI (OFF)';
+                btn.className = 'btn-arcade px-4 py-2 rounded-xl font-arcade font-bold text-xs bg-rose-600 text-white';
+            }
+        }
+
+        function toggleSFX() {
+            SoundEngine.sfxEnabled = !SoundEngine.sfxEnabled;
+            const btn = document.getElementById('toggle-sfx-btn');
+            if (SoundEngine.sfxEnabled) {
+                btn.textContent = 'AKTIF (ON)';
+                btn.className = 'btn-arcade px-4 py-2 rounded-xl font-arcade font-bold text-xs bg-emerald-600 text-white';
+                SoundEngine.playCorrect();
+            } else {
+                btn.textContent = 'MATI (OFF)';
+                btn.className = 'btn-arcade px-4 py-2 rounded-xl font-arcade font-bold text-xs bg-rose-600 text-white';
+            }
+        }
+
+        function toggleFullscreen() {
+            SoundEngine.playLockIn();
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                }
+            }
+        }
+
+        /**************************************************************
+         * 11. CONFETTI SYSTEM UNTUK HALAMAN KEMENANGAN
+         **************************************************************/
+        let confettiAnimId = null;
+        let confettiParticles = [];
+
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.classList.remove('hidden');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+
+            const colors = ['#ef4444', '#3b82f6', '#facc15', '#22c55e', '#a855f7', '#38bdf8'];
+            confettiParticles = Array.from({ length: 110 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                w: 8 + Math.random() * 8,
+                h: 6 + Math.random() * 6,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vy: 2.2 + Math.random() * 3.5,
+                vx: (Math.random() - 0.5) * 2,
+                rot: Math.random() * Math.PI * 2,
+                vRot: (Math.random() - 0.5) * 0.12
+            }));
+
+            function renderConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confettiParticles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.rot += p.vRot;
+                    if (p.y > canvas.height + 20) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+                confettiAnimId = requestAnimationFrame(renderConfetti);
+            }
+            renderConfetti();
+        }
+
+        function stopConfetti() {
+            if (confettiAnimId) {
+                cancelAnimationFrame(confettiAnimId);
+                confettiAnimId = null;
+            }
+            const canvas = document.getElementById('confetti-canvas');
+            if (canvas) canvas.classList.add('hidden');
+        }
+
+        /**************************************************************
+         * 12. INITIALIZE ON WINDOW LOAD
+         **************************************************************/
+        window.onload = function () {
+            initThreeScene();
+            animateLoop();
+        };
+    </script>
+</body>
+</html>
