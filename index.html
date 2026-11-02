@@ -1373,6 +1373,7 @@
         let cw = 900;
         let ch = 430;
         const GRAVITY = 0.40;
+        const FLIGHT_FRAMES = 36; // Durasi frame lintasan parabola otomatis menuju ember
 
         function createBucketsForTeam() {
             return [
@@ -1384,8 +1385,8 @@
                     colorDark: '#b91c1c',
                     x: 100,
                     y: 135,
-                    width: 72,
-                    height: 68,
+                    width: 105,
+                    height: 88,
                     glowState: null,
                     shakeTimer: 0
                 },
@@ -1396,9 +1397,9 @@
                     colorMain: '#3b82f6',
                     colorDark: '#1d4ed8',
                     x: 220,
-                    y: 108,
-                    width: 72,
-                    height: 68,
+                    y: 112,
+                    width: 105,
+                    height: 88,
                     glowState: null,
                     shakeTimer: 0
                 },
@@ -1410,8 +1411,8 @@
                     colorDark: '#7e22ce',
                     x: 340,
                     y: 135,
-                    width: 72,
-                    height: 68,
+                    width: 105,
+                    height: 88,
                     glowState: null,
                     shakeTimer: 0
                 }
@@ -1446,17 +1447,51 @@
                     prevY: 295,
                     vx: 0,
                     vy: 0,
-                    radius: 14,
+                    radius: 15,
                     isDragging: false,
                     activePointerId: null,
                     isFlying: false,
                     inBucket: false,
                     capturedBucket: null,
+                    targetBucket: null,
                     rotation: 0,
                     missedTimer: 0
                 },
                 buckets: createBucketsForTeam()
             };
+        }
+
+        // Menentukan ember mana (A, B, atau C) yang sedang dituju oleh arah tarikan ketapel
+        function getAimedBucket(arena) {
+            const { ball, slingshot, buckets } = arena;
+            const pullX = slingshot.anchorX - ball.x;
+            const pullY = slingshot.anchorY - ball.y;
+            const pullDist = Math.hypot(pullX, pullY);
+            if (pullDist < 10) return null;
+
+            const aimAngle = Math.atan2(pullX, Math.max(10, pullY));
+            let bestBucket = buckets[1];
+            let minDiff = Infinity;
+
+            buckets.forEach(b => {
+                const bAngle = Math.atan2(b.x - slingshot.anchorX, Math.max(20, slingshot.anchorY - b.y));
+                const diff = Math.abs(aimAngle - bAngle);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    bestBucket = b;
+                }
+            });
+            return bestBucket;
+        }
+
+        // Menghitung kecepatan awal parabola agar bola 100% langsung masuk ke bukaan atas ember tujuan
+        function computeHomingVelocity(ballX, ballY, targetBucket) {
+            const targetX = targetBucket.x;
+            const targetY = targetBucket.y + 6;
+            const N = FLIGHT_FRAMES;
+            const vx = (targetX - ballX) / N;
+            const vy = (targetY - ballY - 0.5 * GRAVITY * N * (N - 1)) / N;
+            return { vx, vy };
         }
 
         let teamArenas = [createTeamArena(0), createTeamArena(1)];
@@ -1487,32 +1522,33 @@
             for (let t = 0; t < 2; t++) {
                 const arena = teamArenas[t];
                 const leftOffset = t * halfW;
-                const bucketW = Math.max(46, Math.min(82, halfW * 0.215));
-                const bucketH = isCompact ? 56 : 70;
+                // Ukuran ember dibuat jauh lebih besar dan lebar agar mudah dilihat & dimasuki bola
+                const bucketW = Math.max(66, Math.min(118, halfW * 0.28));
+                const bucketH = isCompact ? 74 : 92;
 
-                // Position 3 Buckets (A, B, C) inside each Team's Half
+                // Position 3 Large Buckets (A, B, C) inside each Team's Half
                 arena.buckets[0].width = bucketW;
                 arena.buckets[0].height = bucketH;
-                arena.buckets[0].x = leftOffset + halfW * 0.20;
-                arena.buckets[0].y = ch * 0.35;
+                arena.buckets[0].x = leftOffset + halfW * 0.19;
+                arena.buckets[0].y = ch * 0.34;
 
                 arena.buckets[1].width = bucketW;
                 arena.buckets[1].height = bucketH;
                 arena.buckets[1].x = leftOffset + halfW * 0.50;
-                arena.buckets[1].y = ch * 0.27;
+                arena.buckets[1].y = ch * 0.25;
 
                 arena.buckets[2].width = bucketW;
                 arena.buckets[2].height = bucketH;
-                arena.buckets[2].x = leftOffset + halfW * 0.80;
-                arena.buckets[2].y = ch * 0.35;
+                arena.buckets[2].x = leftOffset + halfW * 0.81;
+                arena.buckets[2].y = ch * 0.34;
 
                 // Position Slingshot at Bottom Center of each Team's Half
                 arena.slingshot.baseX = leftOffset + halfW * 0.50;
                 arena.slingshot.baseY = ch - 12;
                 arena.slingshot.anchorX = leftOffset + halfW * 0.50;
-                arena.slingshot.anchorY = ch - (isCompact ? 88 : 104);
+                arena.slingshot.anchorY = ch - (isCompact ? 86 : 102);
 
-                const forkSpread = isCompact ? 16 : 22;
+                const forkSpread = isCompact ? 18 : 24;
                 arena.slingshot.leftForkX = arena.slingshot.anchorX - forkSpread;
                 arena.slingshot.leftForkY = arena.slingshot.anchorY;
                 arena.slingshot.rightForkX = arena.slingshot.anchorX + forkSpread;
@@ -1522,7 +1558,7 @@
                 const heightFactor = Math.sqrt(ch / 420);
                 arena.slingshot.powerScale = (isCompact ? 0.24 : 0.215) * heightFactor;
 
-                arena.ball.radius = isCompact ? 11.5 : 14;
+                arena.ball.radius = isCompact ? 13 : 16;
 
                 if (!arena.ball.isFlying && !arena.ball.isDragging && !arena.ball.inBucket) {
                     arena.ball.x = arena.slingshot.anchorX;
@@ -1543,6 +1579,7 @@
             arena.ball.isFlying = false;
             arena.ball.inBucket = false;
             arena.ball.capturedBucket = null;
+            arena.ball.targetBucket = null;
             arena.ball.vx = 0;
             arena.ball.vy = 0;
             arena.ball.x = arena.slingshot.anchorX;
@@ -1608,6 +1645,12 @@
 
                     arena.ball.x = Math.max(minX, Math.min(maxX, arena.slingshot.anchorX + dx));
                     arena.ball.y = arena.slingshot.anchorY + dy;
+
+                    const aimed = getAimedBucket(arena);
+                    if (aimed) {
+                        arena.ball.targetBucket = aimed;
+                        arena.statusText = `Membidik Ember ${aimed.id}! Lepaskan! 🎯`;
+                    }
                 }
             }
         }
@@ -1623,18 +1666,23 @@
                     const pullY = arena.slingshot.anchorY - arena.ball.y;
                     const pullDist = Math.hypot(pullX, pullY);
 
-                    if (pullDist < 16) {
+                    if (pullDist < 12) {
                         resetTeamBall(t, false);
                         return;
                     }
 
-                    arena.ball.vx = pullX * arena.slingshot.powerScale;
-                    arena.ball.vy = pullY * arena.slingshot.powerScale;
+                    // Kunci otomatis ke ember yang sedang dituju sehingga bola langsung meluncur masuk ke dalamnya
+                    const targetBucket = getAimedBucket(arena) || arena.buckets[1];
+                    arena.ball.targetBucket = targetBucket;
+                    const homingVel = computeHomingVelocity(arena.ball.x, arena.ball.y, targetBucket);
+
+                    arena.ball.vx = homingVel.vx;
+                    arena.ball.vy = homingVel.vy;
                     arena.ball.prevX = arena.ball.x;
                     arena.ball.prevY = arena.ball.y;
                     arena.ball.isFlying = true;
                     arena.ball.missedTimer = 0;
-                    arena.statusText = 'Bola Meluncur! 🚀';
+                    arena.statusText = `Meluncur ke Ember ${targetBucket.id}! 🚀`;
 
                     playSfxLaunch();
                 }
@@ -1886,6 +1934,25 @@
                     ball.vy += GRAVITY;
                     ball.rotation += ball.vx * 0.04;
 
+                    // Jika bola memiliki targetBucket, pastikan langsung masuk saat mencapai mulut atas ember tersebut
+                    if (ball.targetBucket) {
+                        const tb = ball.targetBucket;
+                        const distToOpening = Math.hypot(ball.x - tb.x, ball.y - tb.y);
+                        if (ball.vy > 0 && (ball.y >= tb.y - 4 || distToOpening <= tb.width * 0.55)) {
+                            if (Math.abs(ball.x - tb.x) <= tb.width * 0.65) {
+                                ball.inBucket = true;
+                                ball.isFlying = false;
+                                ball.capturedBucket = tb;
+                                ball.vx = 0;
+                                ball.vy = 0;
+                                ball.x = tb.x;
+                                ball.y = tb.y + tb.height * 0.48;
+                                handleTeamBucketEntry(t, tb);
+                                continue;
+                            }
+                        }
+                    }
+
                     // Check collision with this team's 3 buckets
                     for (let i = 0; i < arena.buckets.length; i++) {
                         const b = arena.buckets[i];
@@ -1895,14 +1962,13 @@
                         const leftX = b.x - bHalfW;
                         const rightX = b.x + bHalfW;
 
-                        // 1. STRICT TOP-OPENING DETECTION
-                        const innerMargin = ball.radius * 0.42;
+                        // Generous Top-Opening Funnel Detection
                         if (
                             ball.vy > 0 &&
-                            ball.prevY <= rimY + 9 &&
-                            ball.y >= rimY - 2 &&
-                            ball.x >= leftX + innerMargin &&
-                            ball.x <= rightX - innerMargin
+                            ball.prevY <= rimY + 24 &&
+                            ball.y >= rimY - 10 &&
+                            ball.x >= leftX - ball.radius * 0.8 &&
+                            ball.x <= rightX + ball.radius * 0.8
                         ) {
                             ball.inBucket = true;
                             ball.isFlying = false;
@@ -1910,57 +1976,9 @@
                             ball.vx = 0;
                             ball.vy = 0;
                             ball.x = b.x;
-                            ball.y = b.y + b.height * 0.45;
+                            ball.y = b.y + b.height * 0.48;
                             handleTeamBucketEntry(t, b);
                             break;
-                        }
-
-                        // 2. RIM CORNERS & WALL DEFLECTION
-                        const rims = [
-                            { rx: leftX, ry: rimY },
-                            { rx: rightX, ry: rimY }
-                        ];
-                        rims.forEach(rim => {
-                            const dist = Math.hypot(ball.x - rim.rx, ball.y - rim.ry);
-                            const minDist = ball.radius + 4;
-                            if (dist < minDist && dist > 0.001) {
-                                const nx = (ball.x - rim.rx) / dist;
-                                const ny = (ball.y - rim.ry) / dist;
-                                ball.x = rim.rx + nx * minDist;
-                                ball.y = rim.ry + ny * minDist;
-                                const dot = ball.vx * nx + ball.vy * ny;
-                                if (dot < 0) {
-                                    ball.vx = (ball.vx - 1.7 * dot * nx) * 0.72;
-                                    ball.vy = (ball.vy - 1.7 * dot * ny) * 0.72;
-                                    playSfxBounce();
-                                }
-                            }
-                        });
-
-                        // Side wall deflection
-                        if (ball.y > rimY + 5 && ball.y < bottomY) {
-                            if (ball.x + ball.radius > leftX && ball.prevX + ball.radius <= leftX + 8) {
-                                ball.x = leftX - ball.radius;
-                                ball.vx = -Math.abs(ball.vx) * 0.65;
-                                playSfxBounce();
-                            } else if (ball.x - ball.radius < rightX && ball.prevX - ball.radius >= rightX - 8) {
-                                ball.x = rightX + ball.radius;
-                                ball.vx = Math.abs(ball.vx) * 0.65;
-                                playSfxBounce();
-                            }
-                        }
-
-                        // Bottom deflection
-                        if (
-                            ball.vy < 0 &&
-                            ball.x > leftX - ball.radius * 0.5 &&
-                            ball.x < rightX + ball.radius * 0.5 &&
-                            ball.y - ball.radius < bottomY &&
-                            ball.prevY - ball.radius >= bottomY - 8
-                        ) {
-                            ball.y = bottomY + ball.radius;
-                            ball.vy = Math.abs(ball.vy) * 0.6;
-                            playSfxBounce();
                         }
                     }
 
@@ -2141,47 +2159,54 @@
 
             for (let t = 0; t < 2; t++) {
                 const arena = teamArenas[t];
+                const aimedBucket = arena.ball.isDragging ? getAimedBucket(arena) : null;
+
                 arena.buckets.forEach(b => {
+                    const isAimed = aimedBucket && aimedBucket.id === b.id;
                     const shakeX = b.shakeTimer > 0 ? Math.sin(b.shakeTimer * 1.6) * 5 : 0;
                     const bx = b.x + shakeX;
                     const by = b.y;
                     const halfW = b.width / 2;
+                    const rimRy = isSmall ? 11 : 14;
 
                     ctx.save();
 
                     if (b.glowState === 'correct') {
                         ctx.shadowColor = '#4ade80';
-                        ctx.shadowBlur = 24;
+                        ctx.shadowBlur = 28;
                     } else if (b.glowState === 'wrong') {
                         ctx.shadowColor = '#ef4444';
-                        ctx.shadowBlur = 22;
+                        ctx.shadowBlur = 24;
+                    } else if (isAimed) {
+                        ctx.shadowColor = '#facc15';
+                        ctx.shadowBlur = 24;
                     }
 
                     // Floating Answer Sign above each Bucket
                     const answerText = currentQ.options[b.id] || '';
-                    ctx.font = isSmall ? '800 10px Nunito, sans-serif' : '800 11.5px Nunito, sans-serif';
+                    ctx.font = isSmall ? '800 11px Nunito, sans-serif' : '800 13px Nunito, sans-serif';
                     const textWidth = ctx.measureText(answerText).width;
-                    const maxPillW = (cw / 2) * 0.31;
-                    const pillW = Math.max(b.width + 6, Math.min(maxPillW, textWidth + 16));
-                    const pillH = isSmall ? 20 : 24;
+                    const maxPillW = (cw / 2) * 0.32;
+                    const pillW = Math.max(b.width + 4, Math.min(maxPillW, textWidth + 18));
+                    const pillH = isSmall ? 23 : 27;
                     const pillX = bx - pillW / 2;
-                    const pillY = by - pillH - 13;
+                    const pillY = by - pillH - 15;
 
                     // Support pegs
                     ctx.strokeStyle = '#92400e';
-                    ctx.lineWidth = 2.5;
+                    ctx.lineWidth = 3;
                     ctx.beginPath();
-                    ctx.moveTo(bx - 12, by);
-                    ctx.lineTo(bx - 12, pillY + pillH);
-                    ctx.moveTo(bx + 12, by);
-                    ctx.lineTo(bx + 12, pillY + pillH);
+                    ctx.moveTo(bx - 16, by);
+                    ctx.lineTo(bx - 16, pillY + pillH);
+                    ctx.moveTo(bx + 16, by);
+                    ctx.lineTo(bx + 16, pillY + pillH);
                     ctx.stroke();
 
                     // Sign background
-                    ctx.fillStyle = '#ffffff';
-                    ctx.strokeStyle = b.colorMain;
-                    ctx.lineWidth = 2.5;
-                    roundRect(ctx, pillX, pillY, pillW, pillH, 8);
+                    ctx.fillStyle = isAimed ? '#fef08a' : '#ffffff';
+                    ctx.strokeStyle = isAimed ? '#eab308' : b.colorMain;
+                    ctx.lineWidth = isAimed ? 3.5 : 2.5;
+                    roundRect(ctx, pillX, pillY, pillW, pillH, 9);
                     ctx.fill();
                     ctx.stroke();
 
@@ -2190,23 +2215,23 @@
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     let displayStr = answerText;
-                    if (isSmall && displayStr.length > 12) {
-                        displayStr = displayStr.slice(0, 11) + '…';
-                    } else if (displayStr.length > 18) {
-                        displayStr = displayStr.slice(0, 16) + '…';
+                    if (isSmall && displayStr.length > 13) {
+                        displayStr = displayStr.slice(0, 12) + '…';
+                    } else if (displayStr.length > 19) {
+                        displayStr = displayStr.slice(0, 17) + '…';
                     }
                     ctx.fillText(displayStr, bx, pillY + pillH / 2 + 1);
 
-                    // Dark Inside Opening of Bucket
+                    // Dark Inside Opening of Large Bucket
                     ctx.fillStyle = '#1e1b4b';
                     ctx.beginPath();
-                    ctx.ellipse(bx, by, halfW, 9, 0, 0, Math.PI * 2);
+                    ctx.ellipse(bx, by, halfW, rimRy, 0, 0, Math.PI * 2);
                     ctx.fill();
 
-                    ctx.strokeStyle = b.colorTop;
-                    ctx.lineWidth = 3.5;
+                    ctx.strokeStyle = isAimed ? '#fde047' : b.colorTop;
+                    ctx.lineWidth = isAimed ? 5 : 4;
                     ctx.beginPath();
-                    ctx.ellipse(bx, by, halfW, 9, 0, Math.PI, Math.PI * 2);
+                    ctx.ellipse(bx, by, halfW, rimRy, 0, Math.PI, Math.PI * 2);
                     ctx.stroke();
 
                     ctx.restore();
@@ -2219,21 +2244,28 @@
 
             for (let t = 0; t < 2; t++) {
                 const arena = teamArenas[t];
+                const aimedBucket = arena.ball.isDragging ? getAimedBucket(arena) : null;
+
                 arena.buckets.forEach(b => {
+                    const isAimed = aimedBucket && aimedBucket.id === b.id;
                     const shakeX = b.shakeTimer > 0 ? Math.sin(b.shakeTimer * 1.6) * 5 : 0;
                     const bx = b.x + shakeX;
                     const by = b.y;
                     const halfTopW = b.width / 2;
-                    const halfBotW = (b.width * 0.76) / 2;
+                    const halfBotW = (b.width * 0.78) / 2;
+                    const rimRy = isSmall ? 11 : 14;
 
                     ctx.save();
 
                     if (b.glowState === 'correct') {
                         ctx.shadowColor = '#22c55e';
-                        ctx.shadowBlur = 24;
+                        ctx.shadowBlur = 26;
                     } else if (b.glowState === 'wrong') {
                         ctx.shadowColor = '#ef4444';
-                        ctx.shadowBlur = 22;
+                        ctx.shadowBlur = 24;
+                    } else if (isAimed) {
+                        ctx.shadowColor = '#facc15';
+                        ctx.shadowBlur = 24;
                     }
 
                     const bodyGrad = ctx.createLinearGradient(bx - halfTopW, by, bx + halfTopW, by);
@@ -2246,34 +2278,34 @@
                     ctx.beginPath();
                     ctx.moveTo(bx - halfTopW, by);
                     ctx.lineTo(bx - halfBotW, by + b.height);
-                    ctx.quadraticCurveTo(bx, by + b.height + 10, bx + halfBotW, by + b.height);
+                    ctx.quadraticCurveTo(bx, by + b.height + 13, bx + halfBotW, by + b.height);
                     ctx.lineTo(bx + halfTopW, by);
-                    ctx.ellipse(bx, by, halfTopW, 9, 0, 0, Math.PI, false);
+                    ctx.ellipse(bx, by, halfTopW, rimRy, 0, 0, Math.PI, false);
                     ctx.closePath();
                     ctx.fill();
 
                     // Rim Front Lip
-                    ctx.strokeStyle = b.glowState === 'correct' ? '#4ade80' : '#ffffff';
-                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = b.glowState === 'correct' ? '#4ade80' : (isAimed ? '#fde047' : '#ffffff');
+                    ctx.lineWidth = isAimed ? 4.5 : 3.5;
                     ctx.beginPath();
-                    ctx.ellipse(bx, by, halfTopW, 9, 0, 0, Math.PI, false);
+                    ctx.ellipse(bx, by, halfTopW, rimRy, 0, 0, Math.PI, false);
                     ctx.stroke();
 
-                    // Letter Badge A / B / C
-                    const badgeRadius = isSmall ? 13 : 17;
-                    const badgeY = by + b.height * 0.53;
+                    // Large Letter Badge A / B / C
+                    const badgeRadius = isSmall ? 17 : 22;
+                    const badgeY = by + b.height * 0.54;
 
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+                    ctx.fillStyle = isAimed ? '#fef9c3' : 'rgba(255, 255, 255, 0.95)';
                     ctx.beginPath();
                     ctx.arc(bx, badgeY, badgeRadius, 0, Math.PI * 2);
                     ctx.fill();
 
-                    ctx.lineWidth = 2.5;
+                    ctx.lineWidth = 3;
                     ctx.strokeStyle = b.colorDark;
                     ctx.stroke();
 
                     ctx.fillStyle = b.colorDark;
-                    ctx.font = `700 ${isSmall ? 15 : 20}px Fredoka, sans-serif`;
+                    ctx.font = `700 ${isSmall ? 19 : 25}px Fredoka, sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(b.label, bx, badgeY + 1);
@@ -2293,27 +2325,28 @@
                 const pullX = slingshot.anchorX - ball.x;
                 const pullY = slingshot.anchorY - ball.y;
                 const pullDist = Math.hypot(pullX, pullY);
-                if (pullDist < 16) continue;
+                if (pullDist < 12) continue;
 
-                const simVx = pullX * slingshot.powerScale;
-                const simVy = pullY * slingshot.powerScale;
+                const targetBucket = getAimedBucket(arena);
+                if (!targetBucket) continue;
 
+                const homingVel = computeHomingVelocity(ball.x, ball.y, targetBucket);
                 let simX = ball.x;
                 let simY = ball.y;
-                let curVy = simVy;
+                let curVy = homingVel.vy;
 
                 ctx.save();
-                for (let step = 1; step <= 24; step++) {
-                    simX += simVx;
+                for (let step = 1; step <= FLIGHT_FRAMES; step++) {
+                    simX += homingVel.vx;
                     simY += curVy;
                     curVy += GRAVITY;
 
                     if (step % 2 === 0) {
-                        const alpha = Math.max(0.15, 1 - step / 26);
-                        const dotRadius = Math.max(2, 5.5 - step * 0.14);
-                        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                        const alpha = Math.max(0.25, 1 - step / (FLIGHT_FRAMES + 6));
+                        const dotRadius = Math.max(3, 6.5 - step * 0.1);
+                        ctx.fillStyle = `rgba(254, 240, 138, ${alpha})`;
                         ctx.strokeStyle = t === 0 ? `rgba(220, 38, 38, ${alpha})` : `rgba(37, 99, 235, ${alpha})`;
-                        ctx.lineWidth = 1.5;
+                        ctx.lineWidth = 2;
                         ctx.beginPath();
                         ctx.arc(simX, simY, dotRadius, 0, Math.PI * 2);
                         ctx.fill();
